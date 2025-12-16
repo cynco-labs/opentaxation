@@ -12,10 +12,9 @@ import {
   ShareNetwork,
 } from 'phosphor-react';
 import { useTranslation } from 'react-i18next';
-import type { ComparisonResult, TaxCalculationInputs } from '@tax-engine/core';
+import type { ComparisonResult } from '@tax-engine/core';
 
 interface ShareButtonProps {
-  inputs: TaxCalculationInputs;
   comparison: ComparisonResult | null;
   generateShareableLink: () => string;
   className?: string;

@@ -13,6 +13,7 @@ import {
   Buildings,
   UsersThree,
   Briefcase,
+  CalendarCheck,
 } from 'phosphor-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

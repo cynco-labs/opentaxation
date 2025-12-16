@@ -107,5 +107,4 @@ export const RATE_LIMITS = {
   SAVE_CALCULATION: { maxRequests: 10, windowMs: 60000 }, // 10 per minute
   ERROR_REPORT: { maxRequests: 10, windowMs: 60000 }, // 10 per minute
   SHARE_LINK: { maxRequests: 20, windowMs: 60000 }, // 20 per minute
-  PDF_EXPORT: { maxRequests: 5, windowMs: 60000 }, // 5 per minute (heavy operation)
 } as const;

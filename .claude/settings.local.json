@@ -55,9 +55,13 @@
       "Bash(npm ls:*)",
       "Bash(npx tsc:*)",
       "Bash(npx knip:*)",
-      "Bash(sips:*)"
+      "Bash(sips:*)",
+      "Bash(npx eslint:*)"
     ],
     "deny": [],
     "ask": []
+  },
+  "enabledPlugins": {
+    "supabase@claude-plugins-official": true
   }
 }

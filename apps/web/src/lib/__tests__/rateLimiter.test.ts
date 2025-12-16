@@ -192,6 +192,5 @@ describe('RATE_LIMITS', () => {
     expect(RATE_LIMITS.SAVE_CALCULATION).toEqual({ maxRequests: 10, windowMs: 60000 });
     expect(RATE_LIMITS.ERROR_REPORT).toEqual({ maxRequests: 10, windowMs: 60000 });
     expect(RATE_LIMITS.SHARE_LINK).toEqual({ maxRequests: 20, windowMs: 60000 });
-    expect(RATE_LIMITS.PDF_EXPORT).toEqual({ maxRequests: 5, windowMs: 60000 });
   });
 });

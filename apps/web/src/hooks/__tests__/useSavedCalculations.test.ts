@@ -7,6 +7,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 
 // Use vi.hoisted to define mocks that will be available during vi.mock hoisting
 const { mockSupabase, mockUseAuth } = vi.hoisted(() => {
+  const mockUser = { id: 'test-user-id', email: 'test@example.com' };
+
   const mockSupabaseData = [
     {
       id: '1',

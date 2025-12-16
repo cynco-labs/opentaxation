@@ -27,7 +27,6 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tooltip": "^1.0.7",
-    "@react-pdf/renderer": "^3.4.4",
     "@supabase/supabase-js": "^2.86.0",
     "@tax-engine/config": "*",
     "@tax-engine/core": "*",

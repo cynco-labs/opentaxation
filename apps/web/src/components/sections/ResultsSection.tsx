@@ -8,7 +8,6 @@ import RecommendationCard from '../RecommendationCard';
 import WhatsNextCTA from '../WhatsNextCTA';
 import CrossoverChart from '../CrossoverChart';
 import NonTaxFactorsCard from '../NonTaxFactorsCard';
-import LazyPDFButton from '../LazyPDFButton';
 import ShareButton from '../ShareButton';
 import SupportButton from '../SupportButton';
 import type { ComparisonResult, TaxCalculationInputs } from '@tax-engine/core';
@@ -146,21 +145,19 @@ function ResultsSection({ comparison, inputs, generateShareableLink, hideHeader 
                 </motion.div>
 
                 {/* Action Buttons - Sticky at bottom on mobile */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.35 }}
-                  className="flex justify-center gap-3 sm:gap-3 pt-4 pb-2"
-                >
-                  <LazyPDFButton inputs={inputs} comparison={comparison} />
-                  {generateShareableLink && (
+                {generateShareableLink && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.35 }}
+                    className="flex justify-center gap-3 sm:gap-3 pt-4 pb-2"
+                  >
                     <ShareButton
-                      inputs={inputs}
                       comparison={comparison}
                       generateShareableLink={generateShareableLink}
                     />
-                  )}
-                </motion.div>
+                  </motion.div>
+                )}
 
                 {/* Sign-in prompt for guests */}
                 {!isSignedIn && (
