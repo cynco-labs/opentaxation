@@ -51,7 +51,10 @@
       "Bash(npx playwright:*)",
       "Bash(BASE_URL=http://localhost:3002 npx playwright test:*)",
       "Bash(SKIP_SERVER=1 BASE_URL=http://localhost:3002 npx playwright test:*)",
-      "Bash(SKIP_SERVER=1 BASE_URL=http://localhost:3001 npx playwright test:*)"
+      "Bash(SKIP_SERVER=1 BASE_URL=http://localhost:3001 npx playwright test:*)",
+      "Bash(npm ls:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx knip:*)"
     ],
     "deny": [],
     "ask": []

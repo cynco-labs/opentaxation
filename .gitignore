@@ -16,6 +16,11 @@ out/
 .DS_Store
 *.pem
 
+# Local-only files (not for public repo)
+MAINTAINERS.md
+REVIEW_FINDINGS.md
+CHANGELOG.md
+
 # Environment variables (keep secrets out of version control)
 .env
 .env*.local
@@ -40,7 +45,6 @@ yarn-error.log*
 *~
 
 # Keep documentation files
-!CHANGELOG.md
 !docs/**/*.md
 
 
