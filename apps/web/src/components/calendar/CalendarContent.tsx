@@ -5,16 +5,10 @@ import {
   Buildings,
   UsersThree,
   Briefcase,
-  Calendar,
   Clock,
   Warning,
   CaretDown,
   CaretRight,
-  Receipt,
-  FileText,
-  Wallet,
-  Alarm,
-  Flag,
 } from 'phosphor-react';
 import {
   type EntityType,
@@ -55,63 +49,25 @@ const entityDescriptions: Record<EntityType, { title: string; subtitle: string; 
   },
 };
 
-// Phosphor-style background
-function PhosphorBackground() {
+// Subtle background with contour lines
+function SubtleBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Topographic contour lines */}
+    <div className="absolute inset-0 overflow-hidden pointer-events-none hidden sm:block">
       <svg
-        className="absolute w-full h-full opacity-[0.3]"
+        className="absolute w-full h-full opacity-[0.12]"
         viewBox="0 0 1200 800"
         fill="none"
         preserveAspectRatio="xMidYMid slice"
       >
-        <path d="M-100 400 Q 200 350, 400 380 T 800 360 T 1300 400" className="stroke-border" strokeWidth="1" fill="none" />
-        <path d="M-100 450 Q 250 400, 500 420 T 900 400 T 1300 450" className="stroke-border" strokeWidth="1" fill="none" />
-        <path d="M-100 500 Q 300 450, 550 470 T 950 450 T 1300 500" className="stroke-border" strokeWidth="1" fill="none" />
-        <path d="M-100 300 Q 150 280, 350 300 T 700 280 T 1300 320" className="stroke-border" strokeWidth="1" fill="none" />
-        <path d="M-100 200 Q 180 170, 380 190 T 750 170 T 1300 210" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="1000" cy="120" rx="80" ry="40" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="1000" cy="120" rx="40" ry="20" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="100" cy="700" rx="60" ry="30" className="stroke-border" strokeWidth="1" fill="none" />
+        <path d="M-100 350 Q 200 300, 400 330 T 800 310 T 1300 360" className="stroke-foreground/40" strokeWidth="0.75" fill="none" />
+        <path d="M-100 400 Q 250 350, 500 380 T 900 360 T 1300 410" className="stroke-foreground/30" strokeWidth="0.75" fill="none" />
+        <path d="M-100 450 Q 300 400, 550 430 T 950 400 T 1300 460" className="stroke-foreground/25" strokeWidth="0.75" fill="none" />
+        <path d="M-100 280 Q 150 260, 350 280 T 700 260 T 1300 300" className="stroke-foreground/20" strokeWidth="0.75" fill="none" />
+        <path d="M-100 200 Q 180 170, 380 190 T 750 170 T 1300 210" className="stroke-foreground/15" strokeWidth="0.75" fill="none" />
+        <ellipse cx="1000" cy="120" rx="80" ry="40" className="stroke-foreground/15" strokeWidth="0.5" fill="none" />
+        <ellipse cx="1000" cy="120" rx="40" ry="20" className="stroke-foreground/10" strokeWidth="0.5" fill="none" />
+        <ellipse cx="100" cy="650" rx="60" ry="30" className="stroke-foreground/15" strokeWidth="0.5" fill="none" />
       </svg>
-
-      {/* Floating icons */}
-      <div className="absolute top-[10%] left-[5%] flex flex-col items-center gap-1 opacity-30">
-        <Calendar weight="light" className="h-6 w-6 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">calendar</span>
-      </div>
-
-      <div className="absolute top-[25%] right-[8%] flex flex-col items-center gap-1 opacity-30">
-        <Receipt weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">receipt</span>
-      </div>
-
-      <div className="absolute top-[60%] left-[3%] flex flex-col items-center gap-1 opacity-30">
-        <FileText weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">file-text</span>
-      </div>
-
-      <div className="absolute top-[45%] right-[4%] flex flex-col items-center gap-1 opacity-30">
-        <Alarm weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">alarm</span>
-      </div>
-
-      <div className="absolute bottom-[25%] right-[15%] flex flex-col items-center gap-1 opacity-30">
-        <Flag weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">flag</span>
-      </div>
-
-      <div className="absolute bottom-[15%] left-[12%] flex flex-col items-center gap-1 opacity-30">
-        <Wallet weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">wallet</span>
-      </div>
     </div>
   );
 }
@@ -346,7 +302,7 @@ export default function CalendarContent() {
 
   return (
     <div className="h-full overflow-y-auto overscroll-contain relative bg-background">
-      <PhosphorBackground />
+      <SubtleBackground />
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 pb-safe">
         {/* Hero */}
@@ -354,19 +310,22 @@ export default function CalendarContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: smoothEase }}
-          className="text-center space-y-4"
+          className="text-center space-y-5"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/50 border border-border rounded-full text-xs font-medium text-muted-foreground">
             <Clock weight="fill" className="h-3.5 w-3.5" />
             YA 2024/2025 Deadlines
           </div>
 
-          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+          <h1
+            className="text-3xl sm:text-4xl md:text-[2.75rem] font-normal leading-tight tracking-tight text-foreground"
+            style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
+          >
             Tax deadlines that won't<br />
             <span className="text-muted-foreground">sneak up on you</span>
           </h1>
 
-          <p className="text-muted-foreground max-w-lg mx-auto">
+          <p className="text-muted-foreground max-w-md mx-auto text-[15px]">
             Because "I forgot" doesn't work on LHDN. All Malaysian tax filing deadlines in one place.
           </p>
         </motion.div>

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Coins,
@@ -21,7 +21,6 @@ import {
   ComparisonVisual,
   CrossoverVisualization,
   FAQItem,
-  FloatingCalcCard,
 } from '@/components/landing';
 import { useState, useEffect, memo } from 'react';
 
@@ -32,13 +31,13 @@ interface CalculatorContentProps {
 // Smooth easing
 const smoothEase = [0.25, 0.1, 0.25, 1];
 
-// Animation variants - only for one-time animations
+// Reduced animation for mobile - shorter duration, less movement
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 12 },
   visible: (delay: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay, ease: smoothEase },
+    transition: { duration: 0.4, delay: delay * 0.8, ease: smoothEase },
   }),
 };
 
@@ -245,7 +244,6 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
   const navigate = useNavigate();
   const { user, isLoading } = useAuth();
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  const prefersReducedMotion = useReducedMotion();
 
   const featureItems = [
     { icon: Wallet, textKey: "landingPage.know.keep" },
@@ -268,27 +266,13 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
   return (
     <div className="min-h-full bg-background">
       {/* HERO SECTION */}
-      <section className="relative min-h-[calc(100vh-180px)] sm:min-h-[85vh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Topographic map background - hidden on mobile for performance */}
+      <section className="relative flex items-center justify-center overflow-hidden">
+        {/* Subtle topographic background - desktop only */}
         <div className="hidden sm:block">
           <TopographicBackground />
         </div>
 
-        {/* Floating calculation cards - CSS animated, desktop only */}
-        <FloatingCalcCard className="top-[20%] left-[8%] hidden lg:block" animationDelay="0s">
-          RM 150,000 × 24%
-        </FloatingCalcCard>
-        <FloatingCalcCard className="top-[25%] right-[10%] hidden lg:block" animationDelay="1s">
-          = RM 36,000
-        </FloatingCalcCard>
-        <FloatingCalcCard className="bottom-[28%] left-[10%] hidden lg:block" animationDelay="2s">
-          EPF: 11%
-        </FloatingCalcCard>
-        <FloatingCalcCard className="bottom-[22%] right-[8%] hidden lg:block" animationDelay="3s" accent>
-          Net: RM 114,000
-        </FloatingCalcCard>
-
-        <div className="relative z-10 container-content text-center py-8 sm:py-20 lg:py-28 max-w-4xl px-5">
+        <div className="relative z-10 container-content text-center py-10 sm:py-16 lg:py-24 max-w-4xl px-4 sm:px-6">
           {/* GitHub Star Badge */}
           <GitHubStarBadge />
 
@@ -297,7 +281,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0}
-            className="font-serif text-[2rem] xs:text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-normal leading-[1.1] tracking-tight text-foreground mb-6 sm:mb-8"
+            className="font-serif text-[1.75rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.75rem] font-normal leading-[1.15] tracking-tight text-foreground mb-5 sm:mb-6"
             style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             {t('landingPage.hero.title1')}
@@ -310,7 +294,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0.1}
-            className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-12 text-balance px-2"
+            className="text-[15px] sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-6 sm:mb-10 text-balance"
           >
             {t('landingPage.hero.subtitle')}
           </motion.p>
@@ -320,7 +304,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0.2}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-12"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-10"
           >
             {isLoading ? (
               <div className="h-14 w-48 bg-muted animate-pulse rounded-2xl" />
@@ -364,11 +348,11 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* THE DECISION - Interactive Comparison */}
-      <section className="py-20 sm:py-28 bg-background-secondary">
-        <div className="container-content text-center">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">The Question</p>
+      <section className="py-12 sm:py-20 bg-background-secondary">
+        <div className="container-content text-center px-4 sm:px-6">
+          <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">The Question</p>
           <h2
-            className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-foreground"
+            className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-foreground"
             style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             Which structure keeps more in your pocket?
@@ -378,79 +362,79 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* CROSSOVER VISUALIZATION */}
-      <section id="crossover" className="py-24 sm:py-32 bg-background-secondary">
-        <div className="container-content">
-          <div className="text-center mb-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">The Insight</p>
+      <section id="crossover" className="py-12 sm:py-20 bg-background-secondary">
+        <div className="container-content px-4 sm:px-6">
+          <div className="text-center mb-2">
+            <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">The Insight</p>
             <h2
-              className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal mb-4 text-foreground"
+              className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal mb-3 text-foreground"
               style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
             >
               {t('landingPage.magic.title')}{' '}
               <span className="italic">{t('landingPage.magic.range')}</span>
             </h2>
-            <p className="text-muted-foreground max-w-lg mx-auto text-balance">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto text-balance">
               {t('landingPage.magic.below')} {t('landingPage.magic.above')}
             </p>
           </div>
           <CrossoverVisualization />
-          <p className="text-center text-sm text-muted-foreground/70 mt-4">{t('landingPage.magic.caveat')}</p>
+          <p className="text-center text-xs sm:text-sm text-muted-foreground/70 mt-3">{t('landingPage.magic.caveat')}</p>
         </div>
       </section>
 
       {/* THE HONEST TRUTH - Bento Grid Style */}
-      <section className="py-24 sm:py-32">
-        <div className="container-content">
-          <div className="text-center mb-16">
+      <section className="py-12 sm:py-20">
+        <div className="container-content px-4 sm:px-6">
+          <div className="text-center mb-8 sm:mb-12">
             <h2
-              className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal mb-4 text-foreground"
+              className="font-serif text-xl sm:text-2xl md:text-3xl font-normal mb-3 text-foreground"
               style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
             >
               {t('landingPage.truth.title')}
             </h2>
-            <p className="text-muted-foreground">{t('landingPage.truth.subtitle')}</p>
+            <p className="text-sm sm:text-base text-muted-foreground">{t('landingPage.truth.subtitle')}</p>
           </div>
 
           {/* Bento Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {/* Large feature card */}
-            <div className="md:row-span-2 p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-foreground to-foreground/90 text-background relative overflow-hidden group">
-              <div className="absolute top-6 right-6 text-[120px] font-bold leading-none text-background/5 select-none">
+            <div className="md:row-span-2 p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-foreground text-background relative overflow-hidden">
+              <div className="absolute top-4 right-4 text-[60px] sm:text-[80px] font-bold leading-none text-background/5 select-none">
                 01
               </div>
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-background/10 flex items-center justify-center mb-6">
-                  <ChartLineUp weight="light" className="h-6 w-6 text-background" />
+                <div className="w-10 h-10 rounded-xl bg-background/10 flex items-center justify-center mb-4 sm:mb-5">
+                  <ChartLineUp weight="light" className="h-5 w-5 text-background" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-4">{t('landingPage.truth.noWinner.title')}</h3>
-                <p className="text-background/70 leading-relaxed">{t('landingPage.truth.noWinner.desc')}</p>
+                <h3 className="text-lg sm:text-xl font-semibold mb-3">{t('landingPage.truth.noWinner.title')}</h3>
+                <p className="text-sm sm:text-base text-background/70 leading-relaxed">{t('landingPage.truth.noWinner.desc')}</p>
               </div>
             </div>
 
-            {/* Amber accent card */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-amber/10 border border-amber/20 relative overflow-hidden group">
-              <div className="absolute top-4 right-4 text-[80px] font-bold leading-none text-amber/10 select-none">
+            {/* Muted accent card */}
+            <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-muted/50 border border-border relative overflow-hidden">
+              <div className="absolute top-3 right-3 text-[50px] sm:text-[60px] font-bold leading-none text-foreground/5 select-none">
                 02
               </div>
               <div className="relative z-10">
-                <div className="w-10 h-10 rounded-xl bg-amber/20 flex items-center justify-center mb-5">
-                  <Receipt weight="light" className="h-5 w-5 text-amber" />
+                <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center mb-4">
+                  <Receipt weight="light" className="h-4 w-4 text-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{t('landingPage.truth.hidden.title')}</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{t('landingPage.truth.hidden.title')}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{t('landingPage.truth.hidden.desc')}</p>
               </div>
             </div>
 
             {/* Simple card */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-card border border-border relative overflow-hidden group hover:border-foreground/20 transition-colors">
-              <div className="absolute top-4 right-4 text-[80px] font-bold leading-none text-foreground/5 select-none">
+            <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border relative overflow-hidden">
+              <div className="absolute top-3 right-3 text-[50px] sm:text-[60px] font-bold leading-none text-foreground/5 select-none">
                 03
               </div>
               <div className="relative z-10">
-                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-5">
-                  <Coins weight="light" className="h-5 w-5 text-foreground" />
+                <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center mb-4">
+                  <Coins weight="light" className="h-4 w-4 text-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">{t('landingPage.truth.changed.title')}</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{t('landingPage.truth.changed.title')}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{t('landingPage.truth.changed.desc')}</p>
               </div>
             </div>
@@ -459,12 +443,12 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* WHAT YOU'LL KNOW - Elegant Checklist */}
-      <section id="features" className="py-24 sm:py-32 bg-background-secondary">
-        <div className="container-content">
+      <section id="features" className="py-12 sm:py-20 bg-background-secondary">
+        <div className="container-content px-4 sm:px-6">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 sm:mb-10">
               <h2
-                className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-foreground"
+                className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-foreground"
                 style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
               >
                 {t('landingPage.know.title')}
@@ -472,59 +456,57 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             </div>
 
             {/* Two-column checklist */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-5">
               {featureItems.map((item) => (
                 <div
                   key={item.textKey}
-                  className="flex items-start gap-4 group"
+                  className="flex items-start gap-3"
                 >
-                  {/* Animated check circle */}
+                  {/* Check circle */}
                   <div className="relative flex-shrink-0 mt-0.5">
-                    <div className="w-6 h-6 rounded-full border-2 border-amber flex items-center justify-center bg-amber/10 group-hover:bg-amber/20 transition-colors">
-                      <CheckCircle weight="fill" className="h-4 w-4 text-amber" />
+                    <div className="w-5 h-5 rounded-full border border-foreground/20 flex items-center justify-center bg-muted/50">
+                      <CheckCircle weight="fill" className="h-3.5 w-3.5 text-foreground/60" />
                     </div>
                   </div>
                   {/* Text */}
-                  <div className="flex-1">
-                    <span className="text-[15px] sm:text-base text-foreground font-medium leading-relaxed">
-                      {t(item.textKey)}
-                    </span>
-                  </div>
+                  <span className="text-sm sm:text-[15px] text-foreground leading-relaxed">
+                    {t(item.textKey)}
+                  </span>
                 </div>
               ))}
             </div>
 
             {/* Subtle bottom decoration */}
-            <div className="flex items-center justify-center gap-2 mt-12 text-muted-foreground/40">
-              <div className="w-12 h-px bg-border" />
-              <span className="text-xs uppercase tracking-widest">2 min</span>
-              <div className="w-12 h-px bg-border" />
+            <div className="flex items-center justify-center gap-2 mt-8 sm:mt-10 text-muted-foreground/40">
+              <div className="w-8 h-px bg-border" />
+              <span className="text-[10px] uppercase tracking-widest">2 min</span>
+              <div className="w-8 h-px bg-border" />
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ SECTION */}
-      <section id="faq" className="py-24 sm:py-32">
-        <div className="container-content max-w-3xl">
+      <section id="faq" className="py-12 sm:py-20">
+        <div className="container-content max-w-3xl px-4 sm:px-6">
           {/* Header */}
-          <div className="text-center mb-12">
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <div className="text-center mb-8 sm:mb-10">
+            <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">
               Common Questions
             </p>
             <h2
-              className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-foreground mb-4"
+              className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-foreground mb-3"
               style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
             >
               {t('landingPage.faq.title')}
             </h2>
-            <p className="text-muted-foreground text-[15px] max-w-lg mx-auto text-balance">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto text-balance">
               Everything you need to know about Enterprise vs <span className="whitespace-nowrap">Sdn Bhd</span>
             </p>
           </div>
 
           {/* FAQ Items - Card-style accordion */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {faqItems.map((faq, idx) => (
               <FAQItem
                 key={idx}
@@ -538,13 +520,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           </div>
 
           {/* Bottom helper text */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="text-center text-sm text-muted-foreground mt-10"
-          >
+          <p className="text-center text-sm text-muted-foreground mt-8">
             Still have questions?{' '}
             <a
               href="mailto:hello@opentaxation.my"
@@ -552,153 +528,62 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             >
               Get in touch
             </a>
-          </motion.p>
+          </p>
         </div>
       </section>
 
-      {/* FINAL CTA - Stunning Visual Section */}
-      <section className="relative py-20 sm:py-32 lg:py-40 bg-foreground text-background overflow-hidden">
-        {/* Animated background elements - hidden on mobile for performance */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Floating circles - only on desktop, respects prefers-reduced-motion */}
-          <motion.div
-            className="absolute top-20 left-[10%] w-64 h-64 rounded-full bg-background/[0.03] blur-3xl hidden sm:block"
-            animate={prefersReducedMotion ? {} : {
-              y: [0, -30, 0],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-20 right-[15%] w-96 h-96 rounded-full bg-amber/[0.05] blur-3xl hidden sm:block"
-            animate={prefersReducedMotion ? {} : {
-              y: [0, 20, 0],
-              scale: [1, 0.95, 1],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-background/[0.02] blur-3xl hidden md:block"
-            animate={prefersReducedMotion ? {} : {
-              scale: [1, 1.2, 1],
-            }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
-
-          {/* Grid pattern overlay */}
-          <div
-            className="absolute inset-0 opacity-[0.03] hidden sm:block"
-            style={{
-              backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)',
-              backgroundSize: '40px 40px',
-            }}
-          />
-        </div>
-
+      {/* FINAL CTA */}
+      <section className="relative py-14 sm:py-20 lg:py-24 bg-foreground text-background overflow-hidden">
         {/* Content */}
-        <div className="relative container-content text-center max-w-3xl">
-          {/* Decorative line */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="w-16 h-px bg-background/30 mx-auto mb-8"
-          />
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-xs uppercase tracking-[0.3em] text-background/50 mb-6"
-          >
+        <div className="relative container-content text-center max-w-2xl px-4 sm:px-6">
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-background/40 mb-4 sm:mb-5">
             Take the next step
-          </motion.p>
+          </p>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal mb-6 text-background"
+          <h2
+            className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal mb-4 sm:mb-5 text-background"
             style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             Ready to find out?
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-background/60 mb-12 text-lg sm:text-xl max-w-xl mx-auto text-balance"
-          >
+          <p className="text-sm sm:text-base text-background/60 mb-8 sm:mb-10 max-w-md mx-auto text-balance">
             Stop guessing. Get the numbers. Make the right decision.
-          </motion.p>
+          </p>
 
-          {/* CTA Button - Inverted style for dark background */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+          {/* CTA Button */}
+          <button
+            onClick={onStart}
+            className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-background text-foreground font-medium active:scale-95 active:opacity-90 transition-transform"
           >
-            <motion.button
-              onClick={onStart}
-              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-background text-foreground font-medium overflow-hidden active:bg-background/95"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.95, opacity: 0.9 }}
-            >
-              {/* Shimmer effect */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/10 to-transparent skew-x-12"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '200%' }}
-                transition={{ duration: 0.8 }}
-              />
+            <span className="text-sm sm:text-[15px]">{t('landingPage.hero.cta')}</span>
+            <ArrowRight weight="bold" className="h-4 w-4" />
+          </button>
 
-              <span className="relative text-[15px]">{t('landingPage.hero.cta')}</span>
-              <ArrowRight weight="bold" className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </motion.button>
-          </motion.div>
-
-          {/* Trust indicators */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex items-center justify-center gap-6 mt-12 text-sm text-background/40"
-          >
-            <span className="flex items-center gap-2">
-              <CheckCircle weight="fill" className="h-4 w-4 text-background/30" />
+          {/* Trust indicators - stacked on mobile */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mt-8 sm:mt-10 text-xs sm:text-sm text-background/40">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle weight="fill" className="h-3.5 w-3.5 text-background/30" />
               Free forever
             </span>
-            <span className="w-1 h-1 rounded-full bg-background/20" />
-            <span className="flex items-center gap-2">
-              <CheckCircle weight="fill" className="h-4 w-4 text-background/30" />
+            <span className="hidden sm:block w-1 h-1 rounded-full bg-background/20" />
+            <span className="flex items-center gap-1.5">
+              <CheckCircle weight="fill" className="h-3.5 w-3.5 text-background/30" />
               No signup required
             </span>
-            <span className="hidden sm:block w-1 h-1 rounded-full bg-background/20" />
-            <span className="hidden sm:flex items-center gap-2">
-              <CheckCircle weight="fill" className="h-4 w-4 text-background/30" />
-              YA 2024/2025 rates
-            </span>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* FOOTER - Clean & Modern */}
-      <footer className="py-16 sm:py-20 bg-background">
-        <div className="container-content">
+      {/* FOOTER */}
+      <footer className="py-10 sm:py-14 bg-background border-t border-border">
+        <div className="container-content px-4 sm:px-6">
           {/* Main footer content */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-12">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
             {/* Logo & tagline */}
-            <div className="flex flex-col gap-3">
-              <a href="/" className="inline-flex items-center gap-2.5 group">
-                {/* Mark - matches header Logo component */}
-                <div className="relative flex-shrink-0 w-6 h-6">
+            <div className="flex flex-col gap-2">
+              <a href="/" className="inline-flex items-center gap-2 group">
+                <div className="relative flex-shrink-0 w-5 h-5">
                   <svg viewBox="0 0 24 24" fill="none" className="w-full h-full" aria-hidden="true">
                     <path
                       d="M12 3a9 9 0 1 0 6.36 2.64"
@@ -709,52 +594,43 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
                     />
                   </svg>
                 </div>
-                <span className="font-medium tracking-tight text-[17px] text-foreground">
+                <span className="font-medium tracking-tight text-[15px] text-foreground">
                   opentaxation<span className="text-muted-foreground">.my</span>
                 </span>
               </a>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Open-source tax calculator for Malaysian businesses
               </p>
             </div>
 
             {/* Navigation links */}
-            <div className="flex flex-wrap items-center gap-6 sm:gap-8">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
               {[
                 { href: "https://github.com/hazlijohar95/opentaxation.my", label: "GitHub", external: true },
                 { href: "#features", label: "Features" },
                 { href: "#faq", label: "FAQ" },
-                { href: "#crossover", label: "The Crossover" },
               ].map((link) => (
-                <motion.a
+                <a
                   key={link.label}
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors relative group"
-                  whileHover={{ y: -1 }}
+                  className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-foreground transition-all group-hover:w-full" />
-                </motion.a>
+                </a>
               ))}
               <SupportButton />
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="h-px bg-border mb-8" />
-
           {/* Bottom section */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+          <div className="pt-6 border-t border-border">
             <p
-              className="text-muted-foreground italic text-center sm:text-left max-w-2xl text-balance"
+              className="text-xs text-muted-foreground/70 italic text-center sm:text-left max-w-xl text-balance"
               style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
             >
               {t('landingPage.footer.disclaimer')}
-            </p>
-            <p className="text-muted-foreground/60 whitespace-nowrap">
-              {t('landingPage.footer.vibeCoded')}
             </p>
           </div>
         </div>
