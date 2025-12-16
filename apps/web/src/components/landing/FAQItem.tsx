@@ -37,7 +37,7 @@ export default function FAQItem({
         onClick={onClick}
         aria-expanded={isOpen}
         aria-controls={answerId}
-        className="w-full flex items-start gap-4 p-5 sm:p-6 text-left"
+        className="w-full flex items-start gap-4 p-5 sm:p-6 text-left min-h-[56px] active:bg-foreground/5 transition-colors"
       >
         {/* Number indicator */}
         <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${

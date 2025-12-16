@@ -58,7 +58,7 @@ function PillButton({
   variant?: 'default' | 'outline';
   className?: string;
 }) {
-  const baseStyles = "inline-flex items-center gap-2 px-6 py-3 rounded-full text-[15px] font-medium transition-all duration-200 active:scale-[0.98]";
+  const baseStyles = "inline-flex items-center gap-2 px-6 py-3 sm:py-3 rounded-full text-[15px] font-medium transition-all duration-200 active:scale-95 active:opacity-90";
   const variants = {
     default: "bg-foreground text-background hover:bg-foreground/90",
     outline: "bg-transparent border border-border text-foreground hover:bg-muted/50",
@@ -102,7 +102,7 @@ function HeroCTA({ onClick, children }: { onClick: () => void; children: React.R
       onMouseLeave={() => setIsHovered(false)}
       className="group relative inline-flex items-center gap-3 pl-6 pr-4 py-3.5 rounded-2xl bg-foreground text-background overflow-hidden"
       whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.95, opacity: 0.9 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
       {/* Animated gradient background on hover */}
@@ -268,11 +268,13 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
   return (
     <div className="min-h-full bg-background">
       {/* HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Topographic map background - Phosphor-inspired */}
-        <TopographicBackground />
+      <section className="relative min-h-screen sm:min-h-[85vh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Topographic map background - hidden on mobile for performance */}
+        <div className="hidden sm:block">
+          <TopographicBackground />
+        </div>
 
-        {/* Floating calculation cards - CSS animated */}
+        {/* Floating calculation cards - CSS animated, desktop only */}
         <FloatingCalcCard className="top-[20%] left-[8%] hidden lg:block" animationDelay="0s">
           RM 150,000 × 24%
         </FloatingCalcCard>
@@ -286,7 +288,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           Net: RM 114,000
         </FloatingCalcCard>
 
-        <div className="relative z-10 container-content text-center py-20 sm:py-28 max-w-4xl">
+        <div className="relative z-10 container-content text-center py-12 sm:py-20 lg:py-28 max-w-4xl px-5">
           {/* GitHub Star Badge */}
           <GitHubStarBadge />
 
@@ -295,7 +297,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0}
-            className="font-serif text-[2.5rem] sm:text-[3.25rem] md:text-[4rem] lg:text-[4.5rem] font-normal leading-[1.1] tracking-tight text-foreground mb-8"
+            className="font-serif text-[2rem] xs:text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-normal leading-[1.1] tracking-tight text-foreground mb-6 sm:mb-8"
             style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             {t('landingPage.hero.title1')}
@@ -308,7 +310,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0.1}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 text-balance"
+            className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-12 text-balance px-2"
           >
             {t('landingPage.hero.subtitle')}
           </motion.p>
@@ -318,7 +320,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0.2}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-12"
           >
             {isLoading ? (
               <div className="h-14 w-48 bg-muted animate-pulse rounded-2xl" />
@@ -555,12 +557,12 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* FINAL CTA - Stunning Visual Section */}
-      <section className="relative py-32 sm:py-40 bg-foreground text-background overflow-hidden">
-        {/* Animated background elements */}
+      <section className="relative py-20 sm:py-32 lg:py-40 bg-foreground text-background overflow-hidden">
+        {/* Animated background elements - hidden on mobile for performance */}
         <div className="absolute inset-0 overflow-hidden">
-          {/* Floating circles - respects prefers-reduced-motion */}
+          {/* Floating circles - only on desktop, respects prefers-reduced-motion */}
           <motion.div
-            className="absolute top-20 left-[10%] w-64 h-64 rounded-full bg-background/[0.03] blur-3xl"
+            className="absolute top-20 left-[10%] w-64 h-64 rounded-full bg-background/[0.03] blur-3xl hidden sm:block"
             animate={prefersReducedMotion ? {} : {
               y: [0, -30, 0],
               scale: [1, 1.1, 1],
@@ -568,7 +570,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute bottom-20 right-[15%] w-96 h-96 rounded-full bg-amber/[0.05] blur-3xl"
+            className="absolute bottom-20 right-[15%] w-96 h-96 rounded-full bg-amber/[0.05] blur-3xl hidden sm:block"
             animate={prefersReducedMotion ? {} : {
               y: [0, 20, 0],
               scale: [1, 0.95, 1],
@@ -576,7 +578,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-background/[0.02] blur-3xl"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-background/[0.02] blur-3xl hidden md:block"
             animate={prefersReducedMotion ? {} : {
               scale: [1, 1.2, 1],
             }}
@@ -585,7 +587,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
 
           {/* Grid pattern overlay */}
           <div
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.03] hidden sm:block"
             style={{
               backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)',
               backgroundSize: '40px 40px',
@@ -644,9 +646,9 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           >
             <motion.button
               onClick={onStart}
-              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-background text-foreground font-medium overflow-hidden"
+              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-background text-foreground font-medium overflow-hidden active:bg-background/95"
               whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.95, opacity: 0.9 }}
             >
               {/* Shimmer effect */}
               <motion.div
