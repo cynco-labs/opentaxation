@@ -16,6 +16,29 @@ initErrorTracking();
 // Initialize analytics
 initAnalytics();
 
+// Mobile-only PWA service worker registration
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+  if (isMobile) {
+    // Register SW only on mobile
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' });
+    });
+  } else {
+    // Unregister any existing SW on desktop to prevent caching issues
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (const registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+}
+
+registerServiceWorker();
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>

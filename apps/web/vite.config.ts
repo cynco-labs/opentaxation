@@ -8,14 +8,16 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      // Manual registration - we'll register only on mobile
+      injectRegister: false,
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.png', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'OpenTaxation Malaysia',
         short_name: 'OpenTax',
         description: 'Compare Enterprise vs Sdn Bhd tax scenarios for Malaysian businesses',
-        theme_color: '#000000',
-        background_color: '#ffffff',
+        theme_color: '#2a2825',
+        background_color: '#f7f4ef',
         display: 'standalone',
         orientation: 'portrait-primary',
         scope: '/',
@@ -41,10 +43,13 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        // No external font caching needed - using system fonts
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
       },
+      // Disable PWA in development - prevents caching dev assets
       devOptions: {
-        enabled: true,
+        enabled: false,
       },
     }),
   ],
