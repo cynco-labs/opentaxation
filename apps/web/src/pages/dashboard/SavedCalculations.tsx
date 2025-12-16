@@ -48,16 +48,16 @@ export default function SavedCalculations() {
 
   if (!isConfigured) {
     return (
-      <div className="space-y-6">
-        <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
+      <div className="space-y-5 sm:space-y-6">
+        <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
           Saved Calculations
         </h1>
-        <Card className="p-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-            <Calculator weight="duotone" className="h-8 w-8 text-muted-foreground" />
+        <Card className="p-6 sm:p-8 text-center">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-3 sm:mb-4">
+            <Calculator weight="duotone" className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground" />
           </div>
-          <h3 className="font-semibold mb-1">Database Not Configured</h3>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          <h3 className="font-semibold text-sm sm:text-base mb-1">Database Not Configured</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
             To save calculations, configure your Supabase credentials in the .env.local file.
           </p>
         </Card>
@@ -66,12 +66,12 @@ export default function SavedCalculations() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
+    <div className="space-y-5 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
           Saved Calculations
         </h1>
-        <Button onClick={() => navigate('/')}>
+        <Button onClick={() => navigate('/')} className="min-h-[44px]">
           <Plus weight="bold" className="h-4 w-4 mr-2" />
           New Calculation
         </Button>
@@ -93,9 +93,9 @@ export default function SavedCalculations() {
 
       {/* Calculations list */}
       {isLoading ? (
-        <div className="grid gap-4">
+        <div className="grid gap-3 sm:gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Card key={i} className="p-6 animate-pulse">
+            <Card key={i} className="p-4 sm:p-5 animate-pulse">
               <div className="flex justify-between">
                 <div className="space-y-2 flex-1">
                   <div className="h-5 bg-muted rounded w-1/3" />
@@ -107,7 +107,7 @@ export default function SavedCalculations() {
           ))}
         </div>
       ) : filteredCalculations && filteredCalculations.length > 0 ? (
-        <div className="grid gap-4">
+        <div className="grid gap-3 sm:gap-4">
           {filteredCalculations.map((calc) => (
             <CalculationCard
               key={calc.id}
@@ -120,24 +120,24 @@ export default function SavedCalculations() {
           ))}
         </div>
       ) : (
-        <Card className="p-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+        <Card className="p-6 sm:p-8 text-center">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-3 sm:mb-4">
             {searchQuery ? (
-              <MagnifyingGlass weight="duotone" className="h-8 w-8 text-muted-foreground" />
+              <MagnifyingGlass weight="duotone" className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground" />
             ) : (
-              <Calculator weight="duotone" className="h-8 w-8 text-muted-foreground" />
+              <Calculator weight="duotone" className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground" />
             )}
           </div>
-          <h3 className="font-semibold mb-1">
+          <h3 className="font-semibold text-sm sm:text-base mb-1">
             {searchQuery ? 'No results found' : 'No saved calculations'}
           </h3>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-4">
             {searchQuery
               ? 'Try a different search term'
               : 'Run a tax comparison and save it to see it here'}
           </p>
           {!searchQuery && (
-            <Button onClick={() => navigate('/')}>
+            <Button onClick={() => navigate('/')} className="min-h-[44px]">
               <Plus weight="bold" className="h-4 w-4 mr-2" />
               New Calculation
             </Button>
@@ -169,31 +169,31 @@ function CalculationCard({
 
   return (
     <Card
-      className="p-6 cursor-pointer hover:border-foreground/20 transition-colors"
+      className="p-4 sm:p-5 cursor-pointer active:scale-[0.99] sm:hover:border-foreground/20 transition-all"
       onClick={onClick}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3 sm:gap-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold truncate">{name}</h3>
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <h3 className="font-semibold text-sm sm:text-base truncate">{name}</h3>
             {results.recommendation !== 'neutral' && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted text-xs">
+              <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full bg-muted text-[10px] sm:text-xs">
                 <RecommendedIcon weight="fill" className="h-3 w-3" />
                 {results.recommendation === 'sdn-bhd' ? 'Sdn Bhd' : 'Enterprise'}
               </span>
             )}
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Profit: {formatCurrency(inputs.businessProfit)}
             {inputs.directorSalary > 0 && ` • Salary: ${formatCurrency(inputs.directorSalary)}`}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">{formatDate(created_at)}</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{formatDate(created_at)}</p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="text-right mr-2">
-            <div className="font-semibold">{formatCurrency(Math.abs(results.taxSavings))}</div>
-            <div className="text-xs text-muted-foreground">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <div className="text-right mr-1 sm:mr-2">
+            <div className="font-semibold text-sm sm:text-base">{formatCurrency(Math.abs(results.taxSavings))}</div>
+            <div className="text-[10px] sm:text-xs text-muted-foreground">
               {results.taxSavings > 0 ? 'Sdn Bhd saves' : 'Enterprise saves'}
             </div>
           </div>
@@ -201,14 +201,14 @@ function CalculationCard({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+            className="h-9 w-9 sm:h-8 sm:w-8 text-muted-foreground hover:text-destructive touch-manipulation"
             onClick={(e) => onDelete(calculation.id, e)}
             disabled={isDeleting}
           >
             <Trash weight="bold" className="h-4 w-4" />
           </Button>
 
-          <ArrowRight weight="bold" className="h-5 w-5 text-muted-foreground" />
+          <ArrowRight weight="bold" className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground hidden sm:block" />
         </div>
       </div>
     </Card>

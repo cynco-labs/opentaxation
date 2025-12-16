@@ -125,11 +125,11 @@ export default function DashboardLayout() {
             </nav>
 
             {/* Main content */}
-            <main className="flex-1 p-6 md:p-8 pb-20 md:pb-8">
+            <main className="flex-1 p-4 sm:p-6 md:p-8 pb-24 md:pb-8">
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.25 }}
               >
                 <Outlet />
               </motion.div>

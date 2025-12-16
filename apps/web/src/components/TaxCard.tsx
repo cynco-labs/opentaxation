@@ -76,42 +76,42 @@ function TaxCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className={`h-full border-border/50 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 hover:border-primary/20 ${hasWarning ? 'border-amber-500/50' : ''} ${className}`}>
+      <Card className={`h-full border-border/50 shadow-sm sm:hover:shadow-lg sm:hover:-translate-y-0.5 transition-all duration-200 sm:hover:border-primary/20 ${hasWarning ? 'border-amber-500/50' : ''} ${className}`}>
         {hasWarning && warningText && (
-          <div className="bg-destructive/5 border-b border-destructive/20 px-4 py-2.5">
+          <div className="bg-destructive/5 border-b border-destructive/20 px-3 sm:px-4 py-2">
             <div className="flex items-center gap-2">
-              <Warning weight="duotone" className="h-4 w-4 text-destructive flex-shrink-0" />
-              <p className="text-xs text-destructive/90">{warningText}</p>
+              <Warning weight="duotone" className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive flex-shrink-0" />
+              <p className="text-[11px] sm:text-xs text-destructive/90">{warningText}</p>
             </div>
           </div>
         )}
-        <CardHeader className="pb-4 px-5 pt-5">
-          <div className="flex items-center justify-between">
-            <CardTitle className="font-display text-base font-semibold">{title}</CardTitle>
-            <Badge variant="default" className="text-xs font-medium">
+        <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-5 pt-4 sm:pt-5">
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="font-display text-sm sm:text-base font-semibold">{title}</CardTitle>
+            <Badge variant="default" className="text-[10px] sm:text-xs font-medium">
               {title === 'Enterprise' || title === t('results.enterprise') ? t('taxCard.soleProp') : t('taxCard.company')}
             </Badge>
           </div>
-          <CardDescription className="text-xs mt-1">{t('taxCard.taxBreakdown')}</CardDescription>
+          <CardDescription className="text-[11px] sm:text-xs mt-0.5">{t('taxCard.taxBreakdown')}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-5 px-5 pb-5">
-          <div className="space-y-4">
-            <div className="flex justify-between items-center py-2 gap-2">
-              <span className="text-xs text-muted-foreground font-medium flex-shrink-0">{t('taxCard.totalTaxPaid')}</span>
-              <span className={`font-numbers font-semibold text-foreground truncate ${safeTax >= 10_000_000 ? 'text-base' : 'text-lg'}`}>
+        <CardContent className="space-y-4 sm:space-y-5 px-4 sm:px-5 pb-4 sm:pb-5">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex justify-between items-center py-1.5 sm:py-2 gap-2">
+              <span className="text-[11px] sm:text-xs text-muted-foreground font-medium flex-shrink-0">{t('taxCard.totalTaxPaid')}</span>
+              <span className={`font-numbers font-semibold text-foreground truncate ${safeTax >= 10_000_000 ? 'text-sm sm:text-base' : 'text-base sm:text-lg'}`}>
                 {formatCurrency(safeTax)}
               </span>
             </div>
 
-            {/* Zakat indicator - visible without expanding */}
+            {/* Zakat indicator */}
             {zakat?.enabled && zakat.taxBenefit > 0 && (
-              <div className="flex items-center gap-2 py-2 px-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-                <Heart weight="duotone" className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+              <div className="flex items-center gap-2 py-2 px-2.5 sm:px-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                <Heart weight="duotone" className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                  <p className="text-[11px] sm:text-xs font-medium text-emerald-700 dark:text-emerald-400">
                     {t('taxCard.zakatSaves')} {formatCurrency(zakat.taxBenefit)}
                   </p>
-                  <p className="text-[10px] text-emerald-600/70 dark:text-emerald-400/70">
+                  <p className="text-[9px] sm:text-[10px] text-emerald-600/70 dark:text-emerald-400/70">
                     {title === 'Enterprise' || title === t('results.enterprise') ? t('taxCard.taxRebate100') : t('taxCard.deduction25')}
                   </p>
                 </div>
@@ -120,17 +120,17 @@ function TaxCard({
 
             <Separator className="bg-border/50" />
 
-            <div className="space-y-3 pt-1">
+            <div className="space-y-2 sm:space-y-3 pt-0.5 sm:pt-1">
               <div className="flex justify-between items-baseline gap-2">
-                <span className="text-xs text-muted-foreground font-medium flex-shrink-0">{t('taxCard.netCashToYou')}</span>
+                <span className="text-[11px] sm:text-xs text-muted-foreground font-medium flex-shrink-0">{t('taxCard.netCashToYou')}</span>
                 <span className={`font-numbers font-bold text-foreground tracking-tight truncate ${
-                  safeNetCash >= 100_000_000 ? 'text-xl' : safeNetCash >= 10_000_000 ? 'text-2xl' : 'text-3xl'
+                  safeNetCash >= 100_000_000 ? 'text-lg sm:text-xl' : safeNetCash >= 10_000_000 ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
                 }`}>
                   {formatCurrency(safeNetCash)}
                 </span>
               </div>
               <div className="flex justify-end">
-                <Badge variant="secondary" className="text-xs font-normal bg-muted/50 text-muted-foreground px-2 py-0.5">
+                <Badge variant="secondary" className="text-[10px] sm:text-xs font-normal bg-muted/50 text-muted-foreground px-2 py-0.5">
                   {(safeEffectiveRate * 100).toFixed(2)}% {t('taxCard.effectiveRate')}
                 </Badge>
               </div>

@@ -259,34 +259,35 @@ function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: Deadlin
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
       layout
     >
-      <Card className={`transition-all duration-300 ${urgency === 'urgent' || urgency === 'overdue' ? 'border-l-4 border-l-amber' : ''}`}>
-        <CardContent className="p-4 sm:p-5">
-          <div className="flex items-start gap-4">
+      <Card className={`transition-all duration-200 ${urgency === 'urgent' || urgency === 'overdue' ? 'border-l-4 border-l-amber' : ''}`}>
+        <CardContent className="p-3 sm:p-4 md:p-5">
+          <div className="flex items-start gap-2.5 sm:gap-4">
             {/* Entity Icon */}
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${urgencyColors[urgency]}`}>
-              <Icon weight="duotone" className="h-5 w-5" />
+            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${urgencyColors[urgency]}`}>
+              <Icon weight="duotone" className="h-4 w-4 sm:h-5 sm:w-5" />
             </div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-3">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-sm font-semibold bg-foreground/5 px-2 py-0.5 rounded">
+              <div className="flex items-start justify-between gap-2 sm:gap-3">
+                <div className="space-y-1 min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                    <span className="font-mono text-xs sm:text-sm font-semibold bg-foreground/5 px-1.5 sm:px-2 py-0.5 rounded">
                       {deadline.formCode}
                     </span>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-[10px] sm:text-xs">
                       {deadline.entityType}
                     </Badge>
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-[10px] sm:text-xs hidden sm:inline-flex">
                       {deadline.frequency}
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                     {deadline.description}
                   </p>
                 </div>
@@ -294,16 +295,16 @@ function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: Deadlin
                 {/* Countdown */}
                 <div className="text-right flex-shrink-0">
                   {daysUntil !== null ? (
-                    <div className="space-y-1">
-                      <div className={`text-2xl font-bold font-numbers ${countdownColors[urgency]}`}>
+                    <div className="space-y-0.5 sm:space-y-1">
+                      <div className={`text-lg sm:text-2xl font-bold font-numbers ${countdownColors[urgency]}`}>
                         {daysUntil < 0 ? 'Overdue' : daysUntil === 0 ? 'Today!' : `${daysUntil}d`}
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-[10px] sm:text-xs text-muted-foreground">
                         {nextDate}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-[10px] sm:text-xs text-muted-foreground">
                       {deadline.dueDate}
                     </div>
                   )}
@@ -317,34 +318,34 @@ function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: Deadlin
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.15 }}
                     className="overflow-hidden"
                   >
-                    <div className="pt-4 mt-4 border-t border-border/50 space-y-4">
+                    <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-border/50 space-y-3 sm:space-y-4">
                       {deadline.notes && (
-                        <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <Info weight="fill" className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                        <div className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground">
+                          <Info weight="fill" className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5" />
                           <span>{deadline.notes}</span>
                         </div>
                       )}
 
                       {/* Actions */}
-                      <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                         <div className="flex items-center gap-2">
                           <Switch
                             id={`reminder-${deadline.id}`}
                             checked={isReminderEnabled}
                             onCheckedChange={() => onToggleReminder(deadline.id)}
                           />
-                          <Label htmlFor={`reminder-${deadline.id}`} className="text-sm cursor-pointer">
+                          <Label htmlFor={`reminder-${deadline.id}`} className="text-xs sm:text-sm cursor-pointer">
                             {isReminderEnabled ? (
                               <span className="flex items-center gap-1.5 text-foreground">
-                                <BellRinging weight="fill" className="h-4 w-4" />
+                                <BellRinging weight="fill" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 Reminder on
                               </span>
                             ) : (
                               <span className="flex items-center gap-1.5 text-muted-foreground">
-                                <Bell weight="regular" className="h-4 w-4" />
+                                <Bell weight="regular" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 Set reminder
                               </span>
                             )}
@@ -356,7 +357,7 @@ function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: Deadlin
                             href={getGoogleCalendarUrl(deadline)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-muted hover:bg-muted/80 transition-colors"
+                            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-medium rounded-lg bg-muted active:bg-muted/70 sm:hover:bg-muted/80 transition-colors min-h-[36px]"
                           >
                             <GoogleLogo weight="bold" className="h-3.5 w-3.5" />
                             Add to Google
@@ -379,16 +380,16 @@ function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: Deadlin
                 }}
                 aria-expanded={isExpanded}
                 aria-label={isExpanded ? 'Show less options' : 'Show more options'}
-                className="mt-3 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors touch-target"
+                className="mt-2 sm:mt-3 flex items-center gap-1 text-[11px] sm:text-xs text-muted-foreground hover:text-foreground transition-colors min-h-[32px] sm:min-h-[36px]"
               >
                 {isExpanded ? (
                   <>
-                    <CaretUp weight="bold" className="h-3.5 w-3.5" />
+                    <CaretUp weight="bold" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     Less
                   </>
                 ) : (
                   <>
-                    <CaretDown weight="bold" className="h-3.5 w-3.5" />
+                    <CaretDown weight="bold" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     More options
                   </>
                 )}
@@ -451,14 +452,14 @@ export default function DashboardCalendar() {
     : taxDeadlines.filter(d => !selectedEntity || d.entityType === selectedEntity);
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-5 sm:space-y-6 max-w-4xl">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <CalendarCheck weight="duotone" className="h-7 w-7" />
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
+          <CalendarCheck weight="duotone" className="h-5 w-5 sm:h-7 sm:w-7" />
           Tax Calendar
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground">
           Track Malaysian tax deadlines and never miss a filing date
         </p>
       </div>
@@ -466,17 +467,18 @@ export default function DashboardCalendar() {
       {/* Urgent Alert */}
       {urgentCount > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25 }}
         >
           <Card className="border-amber-500/30 bg-amber-500/5">
-            <CardContent className="p-4 flex items-center gap-3">
-              <Warning weight="fill" className="h-5 w-5 text-amber-600 flex-shrink-0" />
+            <CardContent className="p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+              <Warning weight="fill" className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 flex-shrink-0" />
               <div>
-                <p className="font-medium text-amber-700 dark:text-amber-400">
+                <p className="font-medium text-sm sm:text-base text-amber-700 dark:text-amber-400">
                   {urgentCount} deadline{urgentCount > 1 ? 's' : ''} due within 7 days
                 </p>
-                <p className="text-sm text-amber-600/80 dark:text-amber-400/80">
+                <p className="text-xs sm:text-sm text-amber-600/80 dark:text-amber-400/80">
                   Make sure to file on time to avoid penalties
                 </p>
               </div>
@@ -486,15 +488,15 @@ export default function DashboardCalendar() {
       )}
 
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
         {/* Entity Filter */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
           <button
             onClick={() => setSelectedEntity(null)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors min-h-[36px] sm:min-h-[40px] ${
               selectedEntity === null
                 ? 'bg-foreground text-background'
-                : 'bg-muted text-muted-foreground hover:text-foreground'
+                : 'bg-muted text-muted-foreground active:bg-muted/80'
             }`}
           >
             All
@@ -505,14 +507,14 @@ export default function DashboardCalendar() {
               <button
                 key={entity}
                 onClick={() => setSelectedEntity(entity)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors min-h-[36px] sm:min-h-[40px] ${
                   selectedEntity === entity
                     ? 'bg-foreground text-background'
-                    : 'bg-muted text-muted-foreground hover:text-foreground'
+                    : 'bg-muted text-muted-foreground active:bg-muted/80'
                 }`}
               >
-                <Icon weight={selectedEntity === entity ? 'fill' : 'regular'} className="h-4 w-4" />
-                {entity}
+                <Icon weight={selectedEntity === entity ? 'fill' : 'regular'} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">{entity}</span>
               </button>
             );
           })}
@@ -523,7 +525,7 @@ export default function DashboardCalendar() {
           variant="outline"
           size="sm"
           onClick={() => downloadICS(exportDeadlines)}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 min-h-[40px] sm:min-h-[36px] w-full sm:w-auto justify-center"
         >
           <Export weight="bold" className="h-4 w-4" />
           Export to Calendar
@@ -537,18 +539,18 @@ export default function DashboardCalendar() {
           checked={showUpcomingOnly}
           onCheckedChange={setShowUpcomingOnly}
         />
-        <Label htmlFor="upcoming-only" className="text-sm cursor-pointer">
+        <Label htmlFor="upcoming-only" className="text-xs sm:text-sm cursor-pointer">
           Show upcoming only (next 90 days)
         </Label>
       </div>
 
       {/* Deadlines List */}
-      <div className="space-y-3">
+      <div className="space-y-2.5 sm:space-y-3">
         {filteredDeadlines.length === 0 ? (
           <Card className="border-dashed">
-            <CardContent className="p-8 text-center">
-              <CalendarCheck weight="duotone" className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-              <p className="text-muted-foreground">
+            <CardContent className="p-6 sm:p-8 text-center">
+              <CalendarCheck weight="duotone" className="h-10 w-10 sm:h-12 sm:w-12 mx-auto text-muted-foreground/50 mb-3 sm:mb-4" />
+              <p className="text-sm sm:text-base text-muted-foreground">
                 {showUpcomingOnly
                   ? 'No upcoming deadlines in the next 90 days'
                   : 'No deadlines found for the selected filter'}
@@ -569,10 +571,10 @@ export default function DashboardCalendar() {
 
       {/* Info Footer */}
       <Card className="bg-muted/30">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <Info weight="fill" className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-            <div className="space-y-1 text-sm text-muted-foreground">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex items-start gap-2 sm:gap-3">
+            <Info weight="fill" className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+            <div className="space-y-1 text-xs sm:text-sm text-muted-foreground">
               <p>
                 Deadlines are based on LHDN (Lembaga Hasil Dalam Negeri Malaysia) guidelines.
                 Some deadlines may vary based on your specific business circumstances.

@@ -49,23 +49,23 @@ function ResultsSection({ comparison, inputs, generateShareableLink, hideHeader 
           {comparison ? (
             <motion.div
               key="results"
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
               className="flex-1 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
               role="region"
               aria-labelledby="results-heading"
               aria-live="polite"
               aria-atomic="true"
             >
-              <div className="px-5 sm:px-5 lg:px-8 py-5 sm:py-5 lg:py-6 space-y-4 pb-safe">
-                {/* Comparison Cards - Stack on mobile, side by side on larger */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="px-4 sm:px-5 lg:px-8 py-4 sm:py-5 lg:py-6 space-y-3 sm:space-y-4 pb-safe">
+                {/* Comparison Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05, duration: 0.35 }}
+                    transition={{ delay: 0.02, duration: 0.25 }}
                   >
                     <TaxCard
                       title={t('results.enterprise')}
@@ -80,9 +80,9 @@ function ResultsSection({ comparison, inputs, generateShareableLink, hideHeader 
                     />
                   </motion.div>
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, duration: 0.35 }}
+                    transition={{ delay: 0.04, duration: 0.25 }}
                   >
                     <TaxCard
                       title={t('results.sdnbhd')}
@@ -110,78 +110,68 @@ function ResultsSection({ comparison, inputs, generateShareableLink, hideHeader 
 
                 {/* Recommendation */}
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15, duration: 0.35 }}
+                  transition={{ delay: 0.06, duration: 0.25 }}
                 >
                   <RecommendationCard comparison={comparison} />
                 </motion.div>
 
-                {/* What's Next CTA - shows only when Sdn Bhd is recommended */}
+                {/* What's Next CTA */}
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.18, duration: 0.35 }}
+                  transition={{ delay: 0.08, duration: 0.25 }}
                 >
                   <WhatsNextCTA comparison={comparison} />
                 </motion.div>
 
                 {/* Crossover Chart */}
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.35 }}
+                  transition={{ delay: 0.1, duration: 0.25 }}
                 >
                   <CrossoverChart inputs={inputs} />
                 </motion.div>
 
                 {/* Non-Tax Factors */}
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25, duration: 0.35 }}
+                  transition={{ delay: 0.12, duration: 0.25 }}
                 >
                   <NonTaxFactorsCard />
                 </motion.div>
 
-                {/* Action Buttons - Sticky at bottom on mobile */}
+                {/* Action Buttons */}
                 {generateShareableLink && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.35 }}
-                    className="flex justify-center gap-3 sm:gap-3 pt-4 pb-2"
-                  >
+                  <div className="flex justify-center gap-3 pt-3 sm:pt-4 pb-2">
                     <ShareButton
                       comparison={comparison}
                       generateShareableLink={generateShareableLink}
                     />
-                  </motion.div>
+                  </div>
                 )}
 
                 {/* Sign-in prompt for guests */}
                 {!isSignedIn && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.35, duration: 0.35 }}
-                    className="pb-6"
-                  >
+                  <div className="pb-4 sm:pb-6">
                     <Link
                       to="/login"
-                      className="flex items-center justify-center gap-2 py-3 px-4 bg-primary/5 hover:bg-primary/10 border border-primary/20 rounded-xl transition-colors group"
+                      className="flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 bg-primary/5 hover:bg-primary/10 border border-primary/20 rounded-xl transition-colors"
                     >
-                      <UserCircle weight="duotone" className="h-5 w-5 text-primary" />
-                      <span className="text-sm text-foreground">
+                      <UserCircle weight="duotone" className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                      <span className="text-xs sm:text-sm text-foreground">
                         <span className="font-medium">{t('results.signIn')}</span>
                         <span className="text-muted-foreground"> {t('results.signInPrompt')}</span>
                       </span>
                     </Link>
-                  </motion.div>
+                  </div>
                 )}
 
                 {/* Support prompt */}
-                <div className="flex justify-center pt-4 pb-6">
+                <div className="flex justify-center pt-3 sm:pt-4 pb-4 sm:pb-6">
                   <SupportButton />
                 </div>
               </div>
