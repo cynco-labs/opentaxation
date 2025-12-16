@@ -143,8 +143,8 @@ export default function BlogAdminEdit() {
       setCategories(cats);
       setTags(tgs);
       setAuthors(auths);
-    } catch (err) {
-      console.error('Failed to load metadata:', err);
+    } catch {
+      // Silently fail - metadata can be refreshed
     }
   };
 
@@ -155,7 +155,7 @@ export default function BlogAdminEdit() {
       // Using direct Supabase query since getPostBySlug only gets published posts
       if (!supabase) throw new Error('Supabase not configured');
 
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('blog_posts')
         .select(`
           *,
@@ -195,8 +195,7 @@ export default function BlogAdminEdit() {
         is_featured: post.is_featured,
         tag_ids: post.tags.map((t) => t.id),
       });
-    } catch (err) {
-      console.error('Failed to load post:', err);
+    } catch {
       setError('Failed to load post');
     } finally {
       setIsLoading(false);
@@ -238,8 +237,7 @@ export default function BlogAdminEdit() {
         await updatePost(id, postData);
         await loadPost(id);
       }
-    } catch (err) {
-      console.error('Failed to save post:', err);
+    } catch {
       setError('Failed to save post. Please try again.');
     } finally {
       setIsSaving(false);
@@ -253,8 +251,7 @@ export default function BlogAdminEdit() {
     try {
       await deletePost(id);
       navigate('/dashboard/blog');
-    } catch (err) {
-      console.error('Failed to delete post:', err);
+    } catch {
       setError('Failed to delete post');
     }
   };
@@ -282,7 +279,7 @@ export default function BlogAdminEdit() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="animate-pulse text-muted-foreground">Loading editor...</div>
       </div>
     );
   }

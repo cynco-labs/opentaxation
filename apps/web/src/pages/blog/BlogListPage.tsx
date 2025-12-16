@@ -53,9 +53,8 @@ export default function BlogListPage() {
 
       setPosts(fetchedPosts);
       setPagination(meta);
-    } catch (err) {
+    } catch {
       setError(t('blog.error.loading', 'Failed to load articles'));
-      console.error('Error fetching posts:', err);
     } finally {
       setIsLoading(false);
     }
@@ -67,8 +66,8 @@ export default function BlogListPage() {
       try {
         const cats = await getCategories();
         setCategories(cats);
-      } catch (err) {
-        console.error('Error fetching categories:', err);
+      } catch {
+        // Silently fail - categories can be refreshed
       }
     }
     loadCategories();
@@ -85,7 +84,7 @@ export default function BlogListPage() {
   }, [currentSearch]);
 
   // Handle search
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams(searchParams);
     if (searchQuery.trim()) {
@@ -96,10 +95,10 @@ export default function BlogListPage() {
     }
     params.set('page', '1');
     setSearchParams(params);
-  };
+  }, [searchParams, searchQuery, setSearchParams]);
 
   // Handle category filter
-  const handleCategoryFilter = (categorySlug: string) => {
+  const handleCategoryFilter = useCallback((categorySlug: string) => {
     const params = new URLSearchParams(searchParams);
     if (categorySlug) {
       params.set('category', categorySlug);
@@ -110,21 +109,21 @@ export default function BlogListPage() {
     params.set('page', '1');
     setSearchParams(params);
     setShowFilters(false);
-  };
+  }, [searchParams, setSearchParams]);
 
   // Clear filters
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSearchParams({ page: '1' });
     setSearchQuery('');
-  };
+  }, [setSearchParams]);
 
   // Handle pagination
-  const goToPage = (page: number) => {
+  const goToPage = useCallback((page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', page.toString());
     setSearchParams(params);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [searchParams, setSearchParams]);
 
   const hasActiveFilters = currentCategory || currentSearch;
 

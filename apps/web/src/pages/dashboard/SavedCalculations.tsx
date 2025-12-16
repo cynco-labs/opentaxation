@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,8 +22,11 @@ export default function SavedCalculations() {
   const [searchQuery, setSearchQuery] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const filteredCalculations = calculations?.filter((calc) =>
-    calc.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredCalculations = useMemo(
+    () => calculations?.filter((calc) =>
+      calc.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    ),
+    [calculations, searchQuery]
   );
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {

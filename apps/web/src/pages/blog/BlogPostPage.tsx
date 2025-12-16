@@ -87,9 +87,8 @@ export default function BlogPostPage() {
             setBookmarked(isBookmarkedStatus);
           }
         }
-      } catch (err) {
+      } catch {
         setError(t('blog.error.loading', 'Failed to load article'));
-        console.error('Error fetching article:', err);
       } finally {
         setIsLoading(false);
       }
@@ -106,8 +105,8 @@ export default function BlogPostPage() {
     try {
       const newStatus = await toggleBookmark(article.id, user.id);
       setBookmarked(newStatus);
-    } catch (err) {
-      console.error('Error toggling bookmark:', err);
+    } catch {
+      // Silently fail - bookmark toggle is not critical
     } finally {
       setBookmarkLoading(false);
     }
@@ -122,8 +121,8 @@ export default function BlogPostPage() {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
+    } catch {
+      // Silently fail - clipboard may not be available
     }
   };
 

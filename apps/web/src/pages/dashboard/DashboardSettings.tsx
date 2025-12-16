@@ -1,7 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, Envelope, Shield, ArrowSquareOut, SignOut } from 'phosphor-react';
+import { User, Shield, ArrowSquareOut, SignOut, Envelope } from 'phosphor-react';
 
 export default function DashboardSettings() {
   const { user, signOut } = useAuth();
@@ -41,31 +41,20 @@ export default function DashboardSettings() {
               <div className="text-sm text-muted-foreground">
                 {userEmail}
               </div>
+              <div className="text-xs text-muted-foreground/60 mt-1">
+                Signed in via Google
+              </div>
             </div>
           </div>
           <Button
             variant="outline"
             onClick={signOut}
-            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10 min-h-[44px]"
           >
             <SignOut weight="bold" className="h-4 w-4 mr-2" />
             Sign Out
           </Button>
         </div>
-      </Card>
-
-      {/* Email preferences */}
-      <Card className="p-6">
-        <h2 className="font-semibold mb-4 flex items-center gap-2">
-          <Envelope weight="duotone" className="h-5 w-5" />
-          Email Preferences
-        </h2>
-        <p className="text-sm text-muted-foreground mb-4">
-          Email notifications are managed through your Google account settings.
-        </p>
-        <Button variant="outline" disabled>
-          Coming Soon
-        </Button>
       </Card>
 
       {/* Privacy & Security */}
@@ -76,17 +65,17 @@ export default function DashboardSettings() {
         </h2>
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Your data is stored securely and never shared with third parties. You can delete your
-            account and all associated data at any time.
+            Your data is stored securely and never shared with third parties.
+            We only store your saved calculations and basic profile information.
           </p>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild className="min-h-[44px]">
               <a href="/privacy" target="_blank" rel="noopener noreferrer">
                 Privacy Policy
                 <ArrowSquareOut weight="bold" className="h-4 w-4 ml-2" />
               </a>
             </Button>
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild className="min-h-[44px]">
               <a href="/terms" target="_blank" rel="noopener noreferrer">
                 Terms of Service
                 <ArrowSquareOut weight="bold" className="h-4 w-4 ml-2" />
@@ -96,15 +85,21 @@ export default function DashboardSettings() {
         </div>
       </Card>
 
-      {/* Danger zone */}
-      <Card className="p-6 border-destructive/50">
-        <h2 className="font-semibold mb-4 text-destructive">Danger Zone</h2>
+      {/* Data & Account */}
+      <Card className="p-6 border-destructive/30">
+        <h2 className="font-semibold mb-4 text-destructive flex items-center gap-2">
+          <Envelope weight="duotone" className="h-5 w-5" />
+          Delete Account
+        </h2>
         <p className="text-sm text-muted-foreground mb-4">
-          Deleting your account will permanently remove all your saved calculations and data. This
-          action cannot be undone.
+          To delete your account and all associated data, please contact us. This action is
+          permanent and cannot be undone.
         </p>
-        <Button variant="destructive" disabled>
-          Delete Account (Coming Soon)
+        <Button variant="outline" asChild className="min-h-[44px]">
+          <a href="mailto:hello@opentaxation.my?subject=Account%20Deletion%20Request">
+            <Envelope weight="bold" className="h-4 w-4 mr-2" />
+            Request Account Deletion
+          </a>
         </Button>
       </Card>
     </div>

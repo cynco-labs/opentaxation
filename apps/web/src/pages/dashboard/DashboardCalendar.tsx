@@ -247,16 +247,16 @@ function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: Deadlin
   const Icon = entityIcons[deadline.entityType];
 
   const urgencyColors = {
-    overdue: 'bg-red-500/10 border-red-500/30 text-red-600',
-    urgent: 'bg-amber-500/10 border-amber-500/30 text-amber-600',
-    soon: 'bg-blue-500/10 border-blue-500/30 text-blue-600',
+    overdue: 'bg-destructive/10 border-destructive/30 text-destructive',
+    urgent: 'bg-amber/10 border-amber/30 text-amber-600 dark:text-amber-400',
+    soon: 'bg-primary/10 border-primary/30 text-primary',
     normal: 'bg-muted/50 border-border text-muted-foreground',
   };
 
   const countdownColors = {
-    overdue: 'text-red-600',
-    urgent: 'text-amber-600',
-    soon: 'text-blue-600',
+    overdue: 'text-destructive',
+    urgent: 'text-amber-600 dark:text-amber-400',
+    soon: 'text-primary',
     normal: 'text-foreground',
   };
 
@@ -266,7 +266,7 @@ function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: Deadlin
       animate={{ opacity: 1, y: 0 }}
       layout
     >
-      <Card className={`transition-all duration-300 ${urgency === 'urgent' || urgency === 'overdue' ? 'border-l-4 border-l-amber-500' : ''}`}>
+      <Card className={`transition-all duration-300 ${urgency === 'urgent' || urgency === 'overdue' ? 'border-l-4 border-l-amber' : ''}`}>
         <CardContent className="p-4 sm:p-5">
           <div className="flex items-start gap-4">
             {/* Entity Icon */}
@@ -374,7 +374,15 @@ function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: Deadlin
               {/* Expand button */}
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="mt-3 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsExpanded(!isExpanded);
+                  }
+                }}
+                aria-expanded={isExpanded}
+                aria-label={isExpanded ? 'Show less options' : 'Show more options'}
+                className="mt-3 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors touch-target"
               >
                 {isExpanded ? (
                   <>
