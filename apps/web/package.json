@@ -73,7 +73,6 @@
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "eslint-plugin-storybook": "^10.1.4",
     "playwright": "^1.57.0",
     "postcss": "^8.4.32",
     "storybook": "^10.1.4",
