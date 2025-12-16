@@ -268,7 +268,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
   return (
     <div className="min-h-full bg-background">
       {/* HERO SECTION */}
-      <section className="relative min-h-screen sm:min-h-[85vh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[calc(100vh-180px)] sm:min-h-[85vh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Topographic map background - hidden on mobile for performance */}
         <div className="hidden sm:block">
           <TopographicBackground />
@@ -288,7 +288,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           Net: RM 114,000
         </FloatingCalcCard>
 
-        <div className="relative z-10 container-content text-center py-12 sm:py-20 lg:py-28 max-w-4xl px-5">
+        <div className="relative z-10 container-content text-center py-8 sm:py-20 lg:py-28 max-w-4xl px-5">
           {/* GitHub Star Badge */}
           <GitHubStarBadge />
 
