@@ -21,10 +21,10 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 
 const statusColors: Record<PostStatus, string> = {
-  draft: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-  published: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-  scheduled: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-  archived: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
+  draft: 'bg-amber/10 text-amber-700 dark:text-amber-400 border border-amber/20',
+  published: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20',
+  scheduled: 'bg-primary/10 text-primary border border-primary/20',
+  archived: 'bg-muted text-muted-foreground border border-border',
 };
 
 const statusLabels: Record<PostStatus, string> = {
@@ -68,9 +68,8 @@ export default function BlogAdminList() {
       });
       setPosts(fetchedPosts);
       setPagination(meta);
-    } catch (err) {
+    } catch {
       setError('Failed to load posts');
-      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -83,8 +82,7 @@ export default function BlogAdminList() {
     try {
       await deletePost(id);
       setPosts(posts.filter((p) => p.id !== id));
-    } catch (err) {
-      console.error('Failed to delete post:', err);
+    } catch {
       alert('Failed to delete post');
     } finally {
       setDeletingId(null);
@@ -206,7 +204,7 @@ export default function BlogAdminList() {
       {/* Posts table */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-muted-foreground">Loading...</div>
+          <div className="p-8 text-center text-muted-foreground animate-pulse">Loading posts...</div>
         ) : error ? (
           <div className="p-8 text-center">
             <p className="text-destructive mb-4">{error}</p>

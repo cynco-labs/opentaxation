@@ -11,7 +11,6 @@ import { useIsMobile } from '../hooks/useMediaQuery';
 import LandingSection from '../components/sections/LandingSection';
 import InputsSection, { type InputCallbacks } from '../components/sections/InputsSection';
 import ResultsSection from '../components/sections/ResultsSection';
-import ShareModal from '../components/ShareModal';
 import { MobileTabLayout, type TabType } from '../components/mobile';
 import LegalFooter from '../components/pages/LegalFooter';
 
@@ -60,9 +59,6 @@ export default function SinglePageApp() {
 
   // Shareable link functionality
   const { generateShareableLink } = useShareableLink(storedInputs, handleLoadSharedInputs);
-
-  // Share modal state
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Create wrapper setters that update localStorage
   const setBusinessProfit = useCallback((value: number) => updateInput('businessProfit', value), [updateInput]);
@@ -222,18 +218,11 @@ export default function SinglePageApp() {
                 <ResultsSection
                   comparison={comparison}
                   inputs={inputs}
-                  onShareClick={() => setIsShareModalOpen(true)}
+                  generateShareableLink={generateShareableLink}
                   hideHeader
                   isSignedIn={isSignedIn}
                 />
               }
-            />
-            <ShareModal
-              isOpen={isShareModalOpen}
-              onClose={() => setIsShareModalOpen(false)}
-              inputs={inputs}
-              comparison={comparison}
-              generateShareableLink={generateShareableLink}
             />
           </motion.div>
         ) : (
@@ -255,15 +244,8 @@ export default function SinglePageApp() {
             <ResultsSection
               comparison={comparison}
               inputs={inputs}
-              onShareClick={() => setIsShareModalOpen(true)}
-              isSignedIn={isSignedIn}
-            />
-            <ShareModal
-              isOpen={isShareModalOpen}
-              onClose={() => setIsShareModalOpen(false)}
-              inputs={inputs}
-              comparison={comparison}
               generateShareableLink={generateShareableLink}
+              isSignedIn={isSignedIn}
             />
           </motion.div>
         )}

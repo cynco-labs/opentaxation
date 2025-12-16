@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Sparkle, ShareNetwork, UserCircle } from 'phosphor-react';
+import { Sparkle, UserCircle } from 'phosphor-react';
 import { Link } from 'react-router-dom';
 import TaxCard from '../TaxCard';
 import RecommendationCard from '../RecommendationCard';
@@ -9,19 +9,21 @@ import WhatsNextCTA from '../WhatsNextCTA';
 import CrossoverChart from '../CrossoverChart';
 import NonTaxFactorsCard from '../NonTaxFactorsCard';
 import LazyPDFButton from '../LazyPDFButton';
+import ShareButton from '../ShareButton';
+import SupportButton from '../SupportButton';
 import type { ComparisonResult, TaxCalculationInputs } from '@tax-engine/core';
 
 interface ResultsSectionProps {
   comparison: ComparisonResult | null;
   inputs: TaxCalculationInputs;
-  onShareClick?: () => void;
+  generateShareableLink?: () => string;
   /** Hide header for mobile tab layout (header is in MobileHeader instead) */
   hideHeader?: boolean;
   /** Whether user is signed in - used to show save prompt for guests */
   isSignedIn?: boolean;
 }
 
-function ResultsSection({ comparison, inputs, onShareClick, hideHeader = false, isSignedIn = false }: ResultsSectionProps) {
+function ResultsSection({ comparison, inputs, generateShareableLink, hideHeader = false, isSignedIn = false }: ResultsSectionProps) {
   const { t } = useTranslation();
 
   return (
@@ -60,7 +62,7 @@ function ResultsSection({ comparison, inputs, onShareClick, hideHeader = false, 
             >
               <div className="px-5 sm:px-5 lg:px-8 py-5 sm:py-5 lg:py-6 space-y-4 pb-safe">
                 {/* Comparison Cards - Stack on mobile, side by side on larger */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -151,14 +153,12 @@ function ResultsSection({ comparison, inputs, onShareClick, hideHeader = false, 
                   className="flex justify-center gap-3 sm:gap-3 pt-4 pb-2"
                 >
                   <LazyPDFButton inputs={inputs} comparison={comparison} />
-                  {onShareClick && (
-                    <button
-                      onClick={onShareClick}
-                      className="inline-flex items-center justify-center gap-2 px-5 sm:px-5 h-12 sm:h-11 bg-card border border-border/50 text-xs sm:text-sm hover:bg-muted/50 hover:border-primary/30 active:scale-[0.98] transition-all duration-200 rounded-xl font-medium shadow-sm min-h-[48px] touch-target"
-                    >
-                      <ShareNetwork weight="duotone" className="h-4 w-4 text-primary" />
-                      <span>{t('results.share')}</span>
-                    </button>
+                  {generateShareableLink && (
+                    <ShareButton
+                      inputs={inputs}
+                      comparison={comparison}
+                      generateShareableLink={generateShareableLink}
+                    />
                   )}
                 </motion.div>
 
@@ -182,6 +182,11 @@ function ResultsSection({ comparison, inputs, onShareClick, hideHeader = false, 
                     </Link>
                   </motion.div>
                 )}
+
+                {/* Support prompt */}
+                <div className="flex justify-center pt-4 pb-6">
+                  <SupportButton />
+                </div>
               </div>
             </motion.div>
           ) : (

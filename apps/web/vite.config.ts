@@ -60,6 +60,7 @@ export default defineConfig({
   },
   build: {
     sourcemap: process.env.NODE_ENV !== 'production',
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -67,6 +68,18 @@ export default defineConfig({
           'charts': ['recharts'],
           'pdf': ['@react-pdf/renderer'],
           'motion': ['framer-motion'],
+          'editor': [
+            '@tiptap/react',
+            '@tiptap/starter-kit',
+            '@tiptap/extension-code-block-lowlight',
+            '@tiptap/extension-heading',
+            '@tiptap/extension-image',
+            '@tiptap/extension-link',
+            '@tiptap/extension-placeholder',
+            '@tiptap/extension-text-align',
+            '@tiptap/extension-underline',
+            'lowlight',
+          ],
         },
       },
     },

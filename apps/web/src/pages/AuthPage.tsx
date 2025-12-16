@@ -1,132 +1,133 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogo, ArrowLeft, Calculator, ShieldCheck, ChartLineUp } from 'phosphor-react';
+import {
+  ArrowLeft,
+  Receipt,
+  Wallet,
+  Buildings,
+  ChartLineUp,
+  Coins,
+  Calculator,
+  Vault,
+  TrendUp,
+  ShieldCheck,
+} from 'phosphor-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 
-// Animated background component that works in both light and dark modes
-function AnimatedBackground() {
+// Smooth easing
+const smoothEase = [0.25, 0.1, 0.25, 1];
+
+// Premium Google Logo with brand colors
+function GoogleLogo({ className = '' }: { className?: string }) {
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Base gradient - adapts to theme */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-muted/30" />
+    <svg viewBox="0 0 24 24" className={className}>
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+    </svg>
+  );
+}
 
-      {/* Floating geometric shapes */}
-      <div className="absolute inset-0">
-        {/* Large circle - top right */}
-        <motion.div
-          className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-gradient-to-br from-foreground/[0.03] to-foreground/[0.08] blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            x: [0, 20, 0],
-            y: [0, -20, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+// Phosphor-style topographic background with floating icons
+function PhosphorBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Topographic contour lines */}
+      <svg
+        className="absolute w-full h-full opacity-[0.35]"
+        viewBox="0 0 1200 800"
+        fill="none"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <path
+          d="M-100 400 Q 200 350, 400 380 T 800 360 T 1300 400"
+          className="stroke-border"
+          strokeWidth="1"
+          fill="none"
+        />
+        <path
+          d="M-100 450 Q 250 400, 500 420 T 900 400 T 1300 450"
+          className="stroke-border"
+          strokeWidth="1"
+          fill="none"
+        />
+        <path
+          d="M-100 500 Q 300 450, 550 470 T 950 450 T 1300 500"
+          className="stroke-border"
+          strokeWidth="1"
+          fill="none"
+        />
+        <path
+          d="M-100 300 Q 150 280, 350 300 T 700 280 T 1300 320"
+          className="stroke-border"
+          strokeWidth="1"
+          fill="none"
+        />
+        <path
+          d="M-100 200 Q 180 170, 380 190 T 750 170 T 1300 210"
+          className="stroke-border"
+          strokeWidth="1"
+          fill="none"
         />
 
-        {/* Medium circle - bottom left */}
-        <motion.div
-          className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-gradient-to-tr from-foreground/[0.04] to-foreground/[0.06] blur-2xl"
-          animate={{
-            scale: [1, 1.15, 1],
-            x: [0, -15, 0],
-            y: [0, 15, 0],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
-        />
-
-        {/* Small accent circle - center */}
-        <motion.div
-          className="absolute top-1/2 left-1/3 w-64 h-64 rounded-full bg-gradient-to-br from-foreground/[0.02] to-foreground/[0.05] blur-2xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 45, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 4,
-          }}
-        />
-      </div>
-
-      {/* Grid pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.015]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, currentColor 1px, transparent 1px),
-            linear-gradient(to bottom, currentColor 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px',
-        }}
-      />
-
-      {/* Diagonal lines */}
-      <svg className="absolute inset-0 w-full h-full opacity-[0.03]" preserveAspectRatio="none">
-        <defs>
-          <pattern id="diagonal-lines" patternUnits="userSpaceOnUse" width="40" height="40" patternTransform="rotate(45)">
-            <line x1="0" y1="0" x2="0" y2="40" stroke="currentColor" strokeWidth="1" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#diagonal-lines)" />
+        {/* Contour clusters */}
+        <ellipse cx="950" cy="150" rx="100" ry="50" className="stroke-border" strokeWidth="1" fill="none" />
+        <ellipse cx="950" cy="150" rx="60" ry="30" className="stroke-border" strokeWidth="1" fill="none" />
+        <ellipse cx="150" cy="650" rx="80" ry="40" className="stroke-border" strokeWidth="1" fill="none" />
+        <ellipse cx="150" cy="650" rx="40" ry="20" className="stroke-border" strokeWidth="1" fill="none" />
       </svg>
 
-      {/* Floating small shapes */}
-      <motion.div
-        className="absolute top-1/4 right-1/4 w-4 h-4 rounded-full bg-foreground/10"
-        animate={{
-          y: [0, -30, 0],
-          opacity: [0.1, 0.3, 0.1],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="absolute top-2/3 right-1/3 w-3 h-3 rounded-full bg-foreground/10"
-        animate={{
-          y: [0, -20, 0],
-          opacity: [0.1, 0.25, 0.1],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
-        }}
-      />
-      <motion.div
-        className="absolute top-1/3 right-1/2 w-2 h-2 rounded-full bg-foreground/10"
-        animate={{
-          y: [0, -25, 0],
-          opacity: [0.1, 0.2, 0.1],
-        }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
-      />
+      {/* Scattered Phosphor icons with labels - like documentation */}
+      <div className="absolute top-[12%] left-[8%] flex flex-col items-center gap-1 opacity-40">
+        <Receipt weight="light" className="h-6 w-6 text-foreground" />
+        <div className="w-1 h-1 rounded-full bg-foreground" />
+        <span className="text-[10px] text-muted-foreground font-medium">receipt-light</span>
+      </div>
 
-      {/* Corner accents */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-to-bl from-foreground/[0.02] to-transparent" />
-      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-to-tr from-foreground/[0.02] to-transparent" />
+      <div className="absolute top-[65%] left-[5%] flex flex-col items-center gap-1 opacity-40">
+        <Vault weight="light" className="h-5 w-5 text-foreground" />
+        <div className="w-1 h-1 rounded-full bg-foreground" />
+        <span className="text-[10px] text-muted-foreground font-medium">vault-light</span>
+      </div>
+
+      <div className="absolute top-[20%] right-[8%] flex flex-col items-center gap-1 opacity-40">
+        <Buildings weight="light" className="h-6 w-6 text-foreground" />
+        <div className="w-1 h-1 rounded-full bg-foreground" />
+        <span className="text-[10px] text-muted-foreground font-medium">buildings-light</span>
+      </div>
+
+      <div className="absolute top-[75%] right-[12%] flex flex-col items-center gap-1 opacity-40">
+        <ChartLineUp weight="light" className="h-5 w-5 text-foreground" />
+        <div className="w-1 h-1 rounded-full bg-foreground" />
+        <span className="text-[10px] text-muted-foreground font-medium">chart-line-up</span>
+      </div>
+
+      <div className="absolute bottom-[20%] left-[20%] flex flex-col items-center gap-1 opacity-40">
+        <Coins weight="light" className="h-5 w-5 text-foreground" />
+        <div className="w-1 h-1 rounded-full bg-foreground" />
+        <span className="text-[10px] text-muted-foreground font-medium">coins-light</span>
+      </div>
+
+      <div className="absolute top-[40%] right-[5%] flex flex-col items-center gap-1 opacity-40">
+        <Wallet weight="light" className="h-5 w-5 text-foreground" />
+        <div className="w-1 h-1 rounded-full bg-foreground" />
+        <span className="text-[10px] text-muted-foreground font-medium">wallet-light</span>
+      </div>
+
+      <div className="absolute top-[50%] left-[3%] flex flex-col items-center gap-1 opacity-40">
+        <Calculator weight="light" className="h-5 w-5 text-foreground" />
+        <div className="w-1 h-1 rounded-full bg-foreground" />
+        <span className="text-[10px] text-muted-foreground font-medium">calculator</span>
+      </div>
+
+      <div className="absolute bottom-[35%] right-[4%] flex flex-col items-center gap-1 opacity-40">
+        <TrendUp weight="light" className="h-5 w-5 text-foreground" />
+        <div className="w-1 h-1 rounded-full bg-foreground" />
+        <span className="text-[10px] text-muted-foreground font-medium">trend-up</span>
+      </div>
     </div>
   );
 }
@@ -135,37 +136,20 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const { user, isLoading, signInWithGoogle } = useAuth();
 
-  // Redirect to dashboard if already signed in
   useEffect(() => {
     if (user && !isLoading) {
       navigate('/dashboard', { replace: true });
     }
   }, [user, isLoading, navigate]);
 
-  const features = [
-    {
-      icon: Calculator,
-      title: 'Instant Calculations',
-      description: 'Compare Enterprise vs Sdn Bhd taxes in seconds',
-    },
-    {
-      icon: ChartLineUp,
-      title: 'Save & Track',
-      description: 'Store your calculations and track changes over time',
-    },
-    {
-      icon: ShieldCheck,
-      title: 'Secure & Private',
-      description: 'Your data is encrypted and never shared',
-    },
-  ];
-
   return (
-    <div className="min-h-screen min-h-[100dvh] w-full flex bg-background">
-      {/* Left side - Auth form */}
-      <div className="flex-1 flex flex-col relative z-10">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-background relative overflow-hidden">
+      <PhosphorBackground />
+
+      {/* Main container */}
+      <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header */}
-        <header className="flex items-center justify-between p-4 sm:p-6">
+        <header className="flex items-center justify-between p-6 sm:p-8">
           <button
             onClick={() => navigate('/')}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -173,141 +157,128 @@ export default function AuthPage() {
             <ArrowLeft weight="bold" className="h-5 w-5" />
             <span className="text-sm font-medium">Back</span>
           </button>
-          <div className="lg:hidden">
-            <Logo size="sm" />
-          </div>
-          <div className="w-20" /> {/* Spacer for centering */}
+          <Logo size="sm" />
         </header>
 
-        {/* Main content */}
-        <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
+        {/* Main content - centered */}
+        <main className="flex-1 flex items-center justify-center px-6 py-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="w-full max-w-sm space-y-6"
+            transition={{ duration: 0.5, ease: smoothEase }}
+            className="w-full max-w-sm"
           >
-            {/* Welcome text */}
-            <div className="text-center space-y-2">
-              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
-                Welcome back
-              </h2>
-              <p className="text-muted-foreground">
-                Sign in to access your tax calculator
-              </p>
-            </div>
+            {/* Card */}
+            <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+              {/* Header */}
+              <div className="text-center mb-8">
+                <h1 className="font-display text-2xl font-bold tracking-tight mb-2">
+                  Welcome back, taxpayer
+                </h1>
+                <p className="text-muted-foreground text-sm">
+                  Don't worry, we won't tell LHDN about your secret spreadsheet addiction.
+                </p>
+              </div>
 
-            {/* Sign in button */}
-            <div className="space-y-4">
-              <Button
-                size="lg"
-                variant="outline"
+              {/* Google Sign In */}
+              <motion.button
                 onClick={signInWithGoogle}
                 disabled={isLoading}
-                className="w-full h-14 text-base font-medium rounded-xl border-2 hover:bg-muted/50 hover:border-primary/30 transition-all duration-300"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                className="w-full h-12 rounded-xl bg-background border border-border hover:border-foreground/20 hover:bg-muted/30 transition-all duration-200 flex items-center justify-center gap-3"
               >
                 {isLoading ? (
-                  <div className="flex items-center gap-3">
-                    <div className="h-5 w-5 border-2 border-muted-foreground/30 border-t-foreground rounded-full animate-spin" />
-                    <span>Signing in...</span>
-                  </div>
+                  <>
+                    <div className="h-4 w-4 border-2 border-muted-foreground/30 border-t-foreground rounded-full animate-spin" />
+                    <span className="text-sm font-medium">Signing in...</span>
+                  </>
                 ) : (
-                  <div className="flex items-center gap-3">
-                    <GoogleLogo weight="bold" className="h-5 w-5" />
-                    <span>Continue with Google</span>
-                  </div>
+                  <>
+                    <GoogleLogo className="h-5 w-5" />
+                    <span className="text-sm font-medium">Continue with Google</span>
+                  </>
                 )}
-              </Button>
+              </motion.button>
 
-              <p className="text-center text-xs text-muted-foreground">
-                By continuing, you agree to our{' '}
-                <a href="/terms" className="underline hover:text-foreground transition-colors">
-                  Terms of Service
+              {/* Divider */}
+              <div className="my-6 flex items-center gap-4">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-xs text-muted-foreground">what you get</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+
+              {/* Features */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center flex-shrink-0">
+                    <Calculator weight="duotone" className="h-4 w-4 text-foreground" />
+                  </div>
+                  <div>
+                    <span className="font-medium">Save calculations</span>
+                    <span className="text-muted-foreground"> — for when you forget everything</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center flex-shrink-0">
+                    <ChartLineUp weight="duotone" className="h-4 w-4 text-foreground" />
+                  </div>
+                  <div>
+                    <span className="font-medium">Track changes</span>
+                    <span className="text-muted-foreground"> — watch your savings grow (hopefully)</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center flex-shrink-0">
+                    <ShieldCheck weight="duotone" className="h-4 w-4 text-foreground" />
+                  </div>
+                  <div>
+                    <span className="font-medium">100% private</span>
+                    <span className="text-muted-foreground"> — your data stays between us</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Terms */}
+              <p className="mt-6 text-center text-xs text-muted-foreground">
+                By signing in, you agree to our{' '}
+                <a href="/terms" className="underline underline-offset-2 hover:text-foreground transition-colors">
+                  Terms
                 </a>{' '}
-                and{' '}
-                <a href="/privacy" className="underline hover:text-foreground transition-colors">
-                  Privacy Policy
+                &{' '}
+                <a href="/privacy" className="underline underline-offset-2 hover:text-foreground transition-colors">
+                  Privacy
                 </a>
+                .
+                <br />
+                <span className="opacity-70">No spam, we promise. We're too lazy for that.</span>
               </p>
             </div>
 
-            {/* Features - visible on mobile */}
-            <div className="lg:hidden pt-6 space-y-4">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + index * 0.1, duration: 0.4 }}
-                  className="flex items-start gap-3"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
-                    <feature.icon weight="duotone" className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-sm">{feature.title}</h3>
-                    <p className="text-xs text-muted-foreground">{feature.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            {/* Trust badge */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="mt-6 flex items-center justify-center gap-6 text-xs text-muted-foreground"
+            >
+              <span>YA 2024/2025</span>
+              <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+              <span>Forever Free</span>
+              <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+              <span>LHDN Rates</span>
+            </motion.div>
           </motion.div>
         </main>
 
         {/* Footer */}
-        <footer className="p-4 sm:p-6 text-center">
+        <footer className="p-6 sm:p-8 text-center">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} opentaxation.my. All rights reserved.
+            &copy; {new Date().getFullYear()} opentaxation.my — Built for Malaysian entrepreneurs who'd rather not do math.
           </p>
         </footer>
-      </div>
-
-      {/* Right side - Animated visual background */}
-      <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 relative">
-        <AnimatedBackground />
-
-        {/* Content overlay */}
-        <div className="relative z-10 flex flex-col justify-between p-8 lg:p-12 xl:p-16 w-full">
-          {/* Logo */}
-          <div className="flex justify-end">
-            <div className="bg-background/80 backdrop-blur-sm rounded-2xl px-5 py-3 border border-border/50">
-              <Logo size="lg" />
-            </div>
-          </div>
-
-          {/* Main content card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="max-w-xl ml-auto"
-          >
-            <div className="bg-background/80 backdrop-blur-sm rounded-3xl p-8 border border-border/50">
-              <h1 className="font-display text-3xl xl:text-4xl font-bold leading-tight mb-4">
-                Make smarter tax decisions for your Malaysian business
-              </h1>
-              <p className="text-base text-muted-foreground leading-relaxed">
-                Join thousands of business owners using our free calculator to optimize their tax structure.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Bottom stats pill */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex justify-end"
-          >
-            <div className="bg-background/80 backdrop-blur-sm rounded-full px-6 py-3 border border-border/50 flex items-center gap-5 text-sm font-medium">
-              <span>YA2025 Rates</span>
-              <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-              <span>100% Free</span>
-              <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-              <span>LHDN Compliant</span>
-            </div>
-          </motion.div>
-        </div>
       </div>
     </div>
   );

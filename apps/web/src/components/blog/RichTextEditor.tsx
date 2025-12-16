@@ -116,8 +116,7 @@ function ImageModal({
       onInsert(publicUrl);
       onClose();
       setUrl('');
-    } catch (err) {
-      console.error('Upload error:', err);
+    } catch {
       setError('Failed to upload. Try pasting a URL instead.');
     } finally {
       setIsUploading(false);

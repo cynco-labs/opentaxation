@@ -60,8 +60,7 @@ export default function ImageUpload({
         .getPublicUrl(fileName);
 
       onChange(publicUrl);
-    } catch (err) {
-      console.error('Upload error:', err);
+    } catch {
       setError('Failed to upload image. Try pasting a URL instead.');
     } finally {
       setIsUploading(false);

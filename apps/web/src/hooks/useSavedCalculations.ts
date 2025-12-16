@@ -116,7 +116,6 @@ export function useSavedCalculations() {
         .single();
 
       if (fetchError) {
-        console.error('Error fetching calculation:', fetchError);
         return null;
       }
 

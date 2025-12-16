@@ -47,13 +47,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await query.single();
 
       if (error && error.code !== 'PGRST116') {
-        // Log real errors, not "not found"
-        console.error('[AuthContext] Error checking blog admin:', error);
+        // Silently fail - blog admin check is not critical for app function
       }
 
       setIsBlogAdmin(!!data);
-    } catch (err) {
-      console.error('[AuthContext] Unexpected error checking blog admin:', err);
+    } catch {
       setIsBlogAdmin(false);
     }
   };
@@ -87,7 +85,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = async () => {
     if (!isSupabaseConfigured || !supabase) {
-      console.warn('Supabase not configured');
       return;
     }
 
@@ -99,7 +96,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (error) {
-      console.error('Error signing in with Google:', error);
       throw error;
     }
   };
@@ -109,7 +105,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.error('Error signing out:', error);
       throw error;
     }
   };

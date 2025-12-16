@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
+import { Outlet, NavLink, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserMenu } from '@/components/UserMenu';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { motion } from 'framer-motion';
-import { Calculator, ClockCounterClockwise, Gear, House, ArrowLeft, CalendarCheck, Article, Icon } from 'phosphor-react';
+import { ClockCounterClockwise, Gear, House, CalendarCheck, Article, Icon } from 'phosphor-react';
 import Logo from '@/components/Logo';
 
 interface NavItem {
@@ -24,7 +24,6 @@ const allNavItems: NavItem[] = [
 ];
 
 export default function DashboardLayout() {
-  const navigate = useNavigate();
   const { user, isLoading, isBlogAdmin } = useAuth();
 
   // Filter nav items based on admin status
@@ -37,7 +36,7 @@ export default function DashboardLayout() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="animate-pulse text-muted-foreground">Loading dashboard...</div>
       </div>
     );
   }
@@ -51,23 +50,20 @@ export default function DashboardLayout() {
     <div className="min-h-screen bg-background">
           {/* Header */}
           <header className="sticky top-0 z-50 border-b border-border/30 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
-            <div className="flex h-16 items-center justify-between px-6">
-              <div className="flex items-center gap-6">
-                <NavLink to="/">
+            <div className="flex h-14 items-center justify-between px-4 sm:px-6">
+              {/* Left: Logo + Dashboard badge */}
+              <div className="flex items-center gap-3">
+                <NavLink to="/" className="flex-shrink-0">
                   <Logo size="sm" />
                 </NavLink>
-                <span className="font-display text-sm text-muted-foreground">Dashboard</span>
+                <div className="hidden sm:block h-5 w-px bg-border" />
+                <span className="hidden sm:block text-sm text-muted-foreground">Dashboard</span>
               </div>
 
-              <div className="flex items-center gap-3">
+              {/* Right: Actions */}
+              <div className="flex items-center gap-2">
                 <ThemeToggle />
-                <button
-                  onClick={() => navigate('/')}
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors touch-target"
-                >
-                  <Calculator weight="duotone" className="h-4 w-4" />
-                  <span className="hidden sm:inline">Calculator</span>
-                </button>
+                <div className="h-5 w-px bg-border hidden sm:block" />
                 <UserMenu />
               </div>
             </div>
@@ -76,7 +72,7 @@ export default function DashboardLayout() {
           <div className="flex">
             {/* Sidebar */}
             <aside className="hidden md:flex w-64 flex-col border-r border-border/30 min-h-[calc(100vh-4rem)] bg-background">
-              <nav className="flex-1 p-4 space-y-1">
+              <nav className="flex-1 p-4 space-y-1" role="navigation" aria-label="Dashboard navigation">
                 {navItems.map(({ to, icon: Icon, label, end }) => (
                   <NavLink
                     key={to}
@@ -95,20 +91,14 @@ export default function DashboardLayout() {
                   </NavLink>
                 ))}
               </nav>
-
-              <div className="p-4 border-t border-border/30">
-                <button
-                  onClick={() => navigate('/')}
-                  className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted/50"
-                >
-                  <ArrowLeft weight="bold" className="h-4 w-4" />
-                  Back to Calculator
-                </button>
-              </div>
             </aside>
 
             {/* Mobile nav */}
-            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border/30 bg-background/95 backdrop-blur-xl p-2 pb-safe">
+            <nav
+              className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border/30 bg-background/95 backdrop-blur-xl p-2 pb-safe"
+              role="navigation"
+              aria-label="Dashboard navigation"
+            >
               <div className="flex justify-around">
                 {navItems.map(({ to, icon: Icon, label, end }) => (
                   <NavLink

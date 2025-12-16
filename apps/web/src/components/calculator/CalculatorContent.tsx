@@ -1,21 +1,30 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
   ArrowElbowDownRight,
-  User,
-  Buildings,
   Coins,
   Receipt,
   Wallet,
   ChartLineUp,
   CheckCircle,
-  CaretDown,
+  GithubLogo,
+  Star,
+  Command,
+  Buildings,
 } from 'phosphor-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserMenu } from '@/components/UserMenu';
-import { useState } from 'react';
+import SupportButton from '@/components/SupportButton';
+import {
+  TopographicBackground,
+  ComparisonVisual,
+  CrossoverVisualization,
+  FAQItem,
+  FloatingCalcCard,
+} from '@/components/landing';
+import { useState, useEffect, useCallback, memo } from 'react';
 
 interface CalculatorContentProps {
   onStart: () => void;
@@ -52,310 +61,8 @@ const staggerItem = {
 };
 
 // ============================================
-// DECORATIVE COMPONENTS (Performance optimized)
-// Using CSS animations instead of JS
-// ============================================
-
-// Topographic Map Background - Phosphor-inspired
-function TopographicBackground() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <svg
-        className="absolute w-full h-full opacity-[0.35]"
-        viewBox="0 0 1200 800"
-        fill="none"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        {/* Topographic contour lines */}
-        <path
-          d="M-100 400 Q 200 350, 400 380 T 800 360 T 1300 400"
-          className="stroke-border"
-          strokeWidth="1"
-          fill="none"
-        />
-        <path
-          d="M-100 450 Q 250 400, 500 420 T 900 400 T 1300 450"
-          className="stroke-border"
-          strokeWidth="1"
-          fill="none"
-        />
-        <path
-          d="M-100 500 Q 300 450, 550 470 T 950 450 T 1300 500"
-          className="stroke-border"
-          strokeWidth="1"
-          fill="none"
-        />
-        <path
-          d="M-100 550 Q 200 520, 450 540 T 850 520 T 1300 560"
-          className="stroke-border"
-          strokeWidth="1"
-          fill="none"
-        />
-        <path
-          d="M-100 300 Q 150 280, 350 300 T 700 280 T 1300 320"
-          className="stroke-border"
-          strokeWidth="1"
-          fill="none"
-        />
-
-        {/* Closed contour - like a hill/peak */}
-        <ellipse cx="900" cy="200" rx="120" ry="60" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="900" cy="200" rx="80" ry="40" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="900" cy="200" rx="40" ry="20" className="stroke-border" strokeWidth="1" fill="none" />
-
-        {/* Another contour cluster */}
-        <ellipse cx="200" cy="600" rx="100" ry="50" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="200" cy="600" rx="60" ry="30" className="stroke-border" strokeWidth="1" fill="none" />
-      </svg>
-
-      {/* Scattered tax-themed icons with labels */}
-      <div className="absolute top-[15%] left-[5%] flex flex-col items-center gap-1 opacity-40">
-        <Receipt weight="light" className="h-6 w-6 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">receipt-light</span>
-      </div>
-
-      <div className="absolute top-[60%] left-[8%] flex flex-col items-center gap-1 opacity-40">
-        <Wallet weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">wallet-light</span>
-      </div>
-
-      <div className="absolute top-[25%] right-[5%] flex flex-col items-center gap-1 opacity-40">
-        <Buildings weight="light" className="h-6 w-6 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">buildings-light</span>
-      </div>
-
-      <div className="absolute top-[70%] right-[10%] flex flex-col items-center gap-1 opacity-40">
-        <ChartLineUp weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">chart-line-up</span>
-      </div>
-
-      <div className="absolute bottom-[15%] left-[25%] flex flex-col items-center gap-1 opacity-40">
-        <Coins weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">coins-light</span>
-      </div>
-
-      <div className="absolute top-[45%] right-[3%] flex flex-col items-center gap-1 opacity-40">
-        <User weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">user-light</span>
-      </div>
-
-      {/* Place names - finance themed */}
-      <span
-        className="absolute top-[12%] right-[15%] text-[11px] text-muted-foreground/50 italic tracking-wide"
-        style={{ fontFamily: 'ui-serif, Georgia, serif' }}
-      >
-        Profit Peak
-      </span>
-      <span
-        className="absolute bottom-[25%] left-[15%] text-[11px] text-muted-foreground/50 italic tracking-wide"
-        style={{ fontFamily: 'ui-serif, Georgia, serif' }}
-      >
-        Tax Valley
-      </span>
-      <span
-        className="absolute top-[50%] left-[3%] text-[11px] text-muted-foreground/50 italic tracking-wide"
-        style={{ fontFamily: 'ui-serif, Georgia, serif' }}
-      >
-        Deduction Bay
-      </span>
-      <span
-        className="absolute bottom-[35%] right-[5%] text-[11px] text-muted-foreground/50 italic tracking-wide"
-        style={{ fontFamily: 'ui-serif, Georgia, serif' }}
-      >
-        Crossover Point
-      </span>
-      <span
-        className="absolute top-[35%] left-[12%] text-[11px] text-muted-foreground/50 italic tracking-wide"
-        style={{ fontFamily: 'ui-serif, Georgia, serif' }}
-      >
-        EPF Heights
-      </span>
-    </div>
-  );
-}
-
-// Floating Calculation Card - CSS animation for infinite float
-function FloatingCalcCard({
-  children,
-  className,
-  animationDelay = '0s',
-  accent = false,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  animationDelay?: string;
-  accent?: boolean;
-}) {
-  return (
-    <div
-      className={`absolute pointer-events-none select-none animate-float ${className}`}
-      style={{ animationDelay }}
-    >
-      <div className={`px-4 py-2.5 rounded-xl shadow-sm ${accent ? 'bg-amber/10 border border-amber/30' : 'bg-card border border-border'}`}>
-        <span className={`text-sm font-mono ${accent ? 'text-amber' : 'text-muted-foreground'}`}>{children}</span>
-      </div>
-    </div>
-  );
-}
-
-// Static Crossover Visualization - no scroll-linked animation
-function CrossoverVisualization() {
-  return (
-    <div className="relative w-full max-w-lg mx-auto h-56 my-8">
-      <svg
-        viewBox="0 0 400 180"
-        fill="none"
-        className="w-full h-full"
-        aria-hidden="true"
-      >
-        {/* Grid lines */}
-        {[0, 1, 2, 3, 4].map((i) => (
-          <line
-            key={`h-${i}`}
-            x1="50"
-            y1={30 + i * 30}
-            x2="370"
-            y2={30 + i * 30}
-            className="stroke-border/40"
-            strokeWidth="1"
-          />
-        ))}
-        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-          <line
-            key={`v-${i}`}
-            x1={50 + i * 53.3}
-            y1="30"
-            x2={50 + i * 53.3}
-            y2="150"
-            className="stroke-border/40"
-            strokeWidth="1"
-          />
-        ))}
-
-        {/* Enterprise line - solid */}
-        <path
-          d="M 50 140 C 120 130, 180 100, 210 90 S 300 60, 370 45"
-          className="stroke-foreground"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          fill="none"
-        />
-
-        {/* Sdn Bhd line - dashed */}
-        <path
-          d="M 50 45 C 100 55, 160 75, 210 90 S 300 115, 370 135"
-          className="stroke-muted-foreground"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeDasharray="6 4"
-          fill="none"
-        />
-
-        {/* Crossover point - amber accent */}
-        <circle cx="210" cy="90" r="12" className="fill-amber/20" />
-        <circle cx="210" cy="90" r="8" className="fill-background stroke-amber" strokeWidth="2" />
-        <circle cx="210" cy="90" r="3" className="fill-amber" />
-
-        {/* Labels */}
-        <text x="375" y="48" className="fill-foreground text-[10px] font-medium">Enterprise</text>
-        <text x="375" y="138" className="fill-muted-foreground text-[10px] font-medium">Sdn Bhd</text>
-        <text x="25" y="90" className="fill-muted-foreground/60 text-[9px]" textAnchor="middle" transform="rotate(-90, 25, 90)">Tax Burden</text>
-        <text x="210" y="172" className="fill-muted-foreground/60 text-[9px]" textAnchor="middle">Business Profit →</text>
-      </svg>
-
-      {/* Crossover label - amber accent */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2">
-        <div className="px-3 py-1.5 rounded-full bg-amber text-white text-xs font-medium shadow-sm">
-          Crossover Point
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Simple Balance Scale - CSS animation
-function BalanceScale() {
-  return (
-    <div className="relative w-48 h-32 mx-auto my-8">
-      <svg viewBox="0 0 200 120" fill="none" className="w-full h-full" aria-hidden="true">
-        {/* Base */}
-        <rect x="80" y="105" width="40" height="8" rx="2" className="fill-border" />
-        {/* Pillar */}
-        <rect x="96" y="45" width="8" height="60" rx="1" className="fill-foreground" />
-        {/* Fulcrum */}
-        <polygon points="100,45 90,55 110,55" className="fill-foreground" />
-
-        {/* Beam with CSS animation */}
-        <g className="origin-center animate-tilt" style={{ transformOrigin: '100px 45px' }}>
-          <rect x="25" y="42" width="150" height="6" rx="3" className="fill-foreground" />
-          <line x1="40" y1="48" x2="40" y2="70" className="stroke-foreground" strokeWidth="2" />
-          <path d="M 20 70 Q 40 85, 60 70" className="stroke-foreground fill-none" strokeWidth="2.5" strokeLinecap="round" />
-          <line x1="160" y1="48" x2="160" y2="70" className="stroke-foreground" strokeWidth="2" />
-          <path d="M 140 70 Q 160 85, 180 70" className="stroke-foreground fill-none" strokeWidth="2.5" strokeLinecap="round" />
-        </g>
-      </svg>
-
-      <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 text-[10px] text-muted-foreground">
-        <span>Enterprise</span>
-        <span>Sdn Bhd</span>
-      </div>
-    </div>
-  );
-}
-
-// ============================================
 // UI COMPONENTS
 // ============================================
-
-function FAQItem({
-  question,
-  answer,
-  isOpen,
-  onClick
-}: {
-  question: string;
-  answer: string;
-  isOpen: boolean;
-  onClick: () => void
-}) {
-  const answerId = `faq-answer-${question.slice(0, 20).replace(/\s+/g, '-').toLowerCase()}`;
-
-  return (
-    <div className="border-b border-border last:border-0">
-      <button
-        onClick={onClick}
-        aria-expanded={isOpen}
-        aria-controls={answerId}
-        className="w-full flex items-center justify-between gap-4 py-6 text-left group"
-      >
-        <span className="text-base font-medium text-foreground group-hover:text-foreground/70 transition-colors">
-          {question}
-        </span>
-        <CaretDown
-          weight="bold"
-          aria-hidden="true"
-          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-        />
-      </button>
-      <div
-        id={answerId}
-        role="region"
-        aria-hidden={!isOpen}
-        className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
-      >
-        <p className="pb-6 text-[15px] text-muted-foreground leading-relaxed">
-          {answer}
-        </p>
-      </div>
-    </div>
-  );
-}
 
 function PillButton({
   children,
@@ -381,6 +88,87 @@ function PillButton({
   );
 }
 
+// ============================================
+// HERO CTA BUTTON - Premium Command+K Style
+// ============================================
+function HeroCTA({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMac, setIsMac] = useState(true);
+
+  // Detect OS for keyboard shortcut display
+  useEffect(() => {
+    setIsMac(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
+  }, []);
+
+  // Handle Command+K / Ctrl+K keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        onClick();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClick]);
+
+  return (
+    <motion.button
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group relative inline-flex items-center gap-3 pl-6 pr-4 py-3.5 rounded-2xl bg-foreground text-background overflow-hidden"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+    >
+      {/* Animated gradient background on hover */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-foreground via-foreground/90 to-foreground"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+
+      {/* Shimmer effect */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent skew-x-12"
+        initial={{ x: '-100%' }}
+        animate={{ x: isHovered ? '200%' : '-100%' }}
+        transition={{ duration: 0.8, ease: 'easeInOut' }}
+      />
+
+      {/* Main content */}
+      <span className="relative text-[15px] font-medium tracking-wide">
+        {children}
+      </span>
+
+      {/* Keyboard shortcut badge */}
+      <div className="relative flex items-center gap-1 px-2 py-1 rounded-lg bg-background/15 border border-background/20">
+        {isMac ? (
+          <Command weight="bold" className="h-3 w-3" />
+        ) : (
+          <span className="text-[11px] font-medium">Ctrl</span>
+        )}
+        <span className="text-[11px] font-semibold">K</span>
+      </div>
+
+      {/* Subtle arrow that appears on hover */}
+      <motion.div
+        className="relative"
+        initial={{ opacity: 0, x: -4 }}
+        animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -4 }}
+        transition={{ duration: 0.2 }}
+      >
+        <ArrowRight weight="bold" className="h-4 w-4" />
+      </motion.div>
+
+      {/* Glow effect */}
+      <div className="absolute -inset-1 bg-foreground/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 -z-10" />
+    </motion.button>
+  );
+}
+
 function ArrowLink({ href, children, external = false }: { href: string; children: React.ReactNode; external?: boolean }) {
   return (
     <a
@@ -396,14 +184,98 @@ function ArrowLink({ href, children, external = false }: { href: string; childre
 }
 
 // ============================================
+// GITHUB STAR BADGE
+// ============================================
+
+function GitHubStarBadge() {
+  const [starCount, setStarCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Fetch star count from GitHub API
+    fetch('https://api.github.com/repos/hazlijohar95/opentaxation.my')
+      .then(res => res.json())
+      .then(data => {
+        if (data.stargazers_count !== undefined) {
+          setStarCount(data.stargazers_count);
+        }
+      })
+      .catch(() => {
+        // Silently fail - badge will just not show count
+      });
+  }, []);
+
+  return (
+    <motion.a
+      href="https://github.com/hazlijohar95/opentaxation.my"
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+      className="group inline-flex items-center gap-3 mb-8"
+    >
+      {/* Main badge container */}
+      <div className="relative inline-flex items-center">
+        {/* Glow effect on hover */}
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-foreground/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        {/* Badge */}
+        <div className="relative inline-flex items-center gap-2.5 pl-3 pr-4 py-2 rounded-full bg-background border border-border/60 shadow-sm group-hover:border-foreground/20 group-hover:shadow-md transition-all duration-300">
+          {/* GitHub icon with subtle animation */}
+          <div className="relative">
+            <GithubLogo
+              weight="fill"
+              className="h-5 w-5 text-foreground transition-transform duration-300 group-hover:scale-110"
+            />
+            {/* Subtle ring on hover */}
+            <div className="absolute inset-0 rounded-full border border-foreground/20 scale-150 opacity-0 group-hover:opacity-100 group-hover:scale-[1.8] transition-all duration-500" />
+          </div>
+
+          {/* Separator dot */}
+          <div className="w-1 h-1 rounded-full bg-border" />
+
+          {/* Star section */}
+          <div className="flex items-center gap-1.5">
+            <Star
+              weight="fill"
+              className="h-4 w-4 text-amber-500 transition-all duration-300 group-hover:text-amber-400 group-hover:scale-110"
+            />
+            <span className="text-sm font-medium text-foreground">
+              Star
+            </span>
+            {starCount !== null && (
+              <>
+                <div className="w-px h-3 bg-border mx-0.5" />
+                <span className="text-sm font-semibold text-foreground tabular-nums">
+                  {starCount}
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Animated sparkle on hover */}
+        <div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Star
+            weight="fill"
+            className="h-3 w-3 text-amber-400 animate-pulse"
+          />
+        </div>
+      </div>
+    </motion.a>
+  );
+}
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 
-export default function CalculatorContent({ onStart }: CalculatorContentProps) {
+const CalculatorContent = memo(function CalculatorContent({ onStart }: CalculatorContentProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, isLoading } = useAuth();
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const featureItems = [
     { icon: Wallet, textKey: "landingPage.know.keep" },
@@ -445,6 +317,9 @@ export default function CalculatorContent({ onStart }: CalculatorContentProps) {
         </FloatingCalcCard>
 
         <div className="relative z-10 container-content text-center py-20 sm:py-28 max-w-4xl">
+          {/* GitHub Star Badge */}
+          <GitHubStarBadge />
+
           <motion.h1
             variants={fadeUp}
             initial="hidden"
@@ -463,7 +338,7 @@ export default function CalculatorContent({ onStart }: CalculatorContentProps) {
             initial="hidden"
             animate="visible"
             custom={0.1}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-12"
+            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 text-balance"
           >
             {t('landingPage.hero.subtitle')}
           </motion.p>
@@ -476,13 +351,12 @@ export default function CalculatorContent({ onStart }: CalculatorContentProps) {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
           >
             {isLoading ? (
-              <div className="h-12 w-40 bg-muted animate-pulse rounded-full" />
+              <div className="h-14 w-48 bg-muted animate-pulse rounded-2xl" />
             ) : (
               <>
-                <PillButton onClick={onStart}>
-                  <span>{t('landingPage.hero.cta')}</span>
-                  <ArrowRight weight="bold" className="h-4 w-4" />
-                </PillButton>
+                <HeroCTA onClick={onStart}>
+                  {t('landingPage.hero.cta')}
+                </HeroCTA>
                 {user && (
                   <>
                     <PillButton variant="outline" onClick={() => navigate('/dashboard')}>
@@ -517,134 +391,17 @@ export default function CalculatorContent({ onStart }: CalculatorContentProps) {
         </div>
       </section>
 
-      {/* THE DECISION */}
+      {/* THE DECISION - Interactive Comparison */}
       <section className="py-20 sm:py-28 bg-background-secondary">
         <div className="container-content text-center">
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">The Question</p>
           <h2
-            className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal mb-4 text-foreground"
+            className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-foreground"
             style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             Which structure keeps more in your pocket?
           </h2>
-          <BalanceScale />
-        </div>
-      </section>
-
-      {/* COMPARISON CARDS - Beautiful Contrast Design */}
-      <section className="py-24 sm:py-32">
-        <div className="container-content">
-          <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-0 max-w-5xl mx-auto">
-
-            {/* VS Badge - Center */}
-            <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-              <div className="w-14 h-14 rounded-full bg-amber text-white flex items-center justify-center font-bold text-sm shadow-lg">
-                VS
-              </div>
-            </div>
-
-            {/* Enterprise Card - Light & Clean */}
-            <motion.div
-              variants={staggerItem}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="relative p-8 sm:p-10 lg:rounded-l-3xl lg:rounded-r-none rounded-3xl bg-card border border-border lg:border-r-0 overflow-hidden group"
-            >
-              {/* Decorative corner */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-muted/50 to-transparent" />
-
-              <div className="relative">
-                {/* Header */}
-                <div className="flex items-start gap-4 mb-8">
-                  <div className="w-14 h-14 rounded-2xl bg-foreground/5 border border-border flex items-center justify-center">
-                    <User weight="light" className="h-7 w-7 text-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl sm:text-3xl font-semibold text-foreground">{t('landingPage.enterprise.title')}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{t('landingPage.enterprise.subtitle')}</p>
-                  </div>
-                </div>
-
-                {/* Stats */}
-                <div className="space-y-5 mb-8">
-                  {[
-                    { label: t('landingPage.enterprise.taxRate'), value: t('landingPage.enterprise.taxRateValue') },
-                    { label: t('landingPage.enterprise.setupCost'), value: t('landingPage.enterprise.setupCostValue') },
-                    { label: t('landingPage.enterprise.compliance'), value: t('landingPage.enterprise.complianceValue') },
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">{item.label}</span>
-                      <span className="text-lg font-semibold text-foreground tabular-nums">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-gradient-to-r from-border via-border to-transparent mb-6" />
-
-                {/* Description */}
-                <p className="text-[15px] text-muted-foreground leading-relaxed">
-                  <span className="inline-block px-2 py-0.5 rounded-md bg-foreground/5 text-foreground font-medium text-sm mr-2">
-                    {t('landingPage.enterprise.highlight')}
-                  </span>
-                  {t('landingPage.enterprise.description')}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Sdn Bhd Card - Dark & Bold */}
-            <motion.div
-              variants={staggerItem}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="relative p-8 sm:p-10 lg:rounded-r-3xl lg:rounded-l-none rounded-3xl bg-foreground text-background overflow-hidden group"
-            >
-              {/* Decorative corner */}
-              <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-background/10 to-transparent" />
-              {/* Subtle pattern */}
-              <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '24px 24px' }} />
-
-              <div className="relative">
-                {/* Header */}
-                <div className="flex items-start gap-4 mb-8">
-                  <div className="w-14 h-14 rounded-2xl bg-background/10 border border-background/20 flex items-center justify-center">
-                    <Buildings weight="light" className="h-7 w-7 text-background" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl sm:text-3xl font-semibold">{t('landingPage.sdnbhd.title')}</h3>
-                    <p className="text-sm text-background/60 mt-1">{t('landingPage.sdnbhd.subtitle')}</p>
-                  </div>
-                </div>
-
-                {/* Stats */}
-                <div className="space-y-5 mb-8">
-                  {[
-                    { label: t('landingPage.sdnbhd.taxRate'), value: t('landingPage.sdnbhd.taxRateValue') },
-                    { label: t('landingPage.sdnbhd.setupCost'), value: t('landingPage.sdnbhd.setupCostValue') },
-                    { label: t('landingPage.sdnbhd.compliance'), value: t('landingPage.sdnbhd.complianceValue') },
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-center justify-between">
-                      <span className="text-sm text-background/60">{item.label}</span>
-                      <span className="text-lg font-semibold text-background tabular-nums">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-gradient-to-r from-transparent via-background/20 to-background/20 mb-6" />
-
-                {/* Description */}
-                <p className="text-[15px] text-background/70 leading-relaxed">
-                  <span className="inline-block px-2 py-0.5 rounded-md bg-amber text-white font-medium text-sm mr-2">
-                    {t('landingPage.sdnbhd.highlight')}
-                  </span>
-                  {t('landingPage.sdnbhd.description')}
-                </p>
-              </div>
-            </motion.div>
-          </div>
+          <ComparisonVisual />
         </div>
       </section>
 
@@ -660,7 +417,7 @@ export default function CalculatorContent({ onStart }: CalculatorContentProps) {
               {t('landingPage.magic.title')}{' '}
               <span className="italic">{t('landingPage.magic.range')}</span>
             </h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">
+            <p className="text-muted-foreground max-w-lg mx-auto text-balance">
               {t('landingPage.magic.below')} {t('landingPage.magic.above')}
             </p>
           </div>
@@ -778,19 +535,28 @@ export default function CalculatorContent({ onStart }: CalculatorContentProps) {
       {/* FAQ SECTION */}
       <section id="faq" className="py-24 sm:py-32">
         <div className="container-content max-w-3xl">
-          <div className="text-center mb-16">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
+              Common Questions
+            </p>
             <h2
-              className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-foreground"
+              className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-foreground mb-4"
               style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
             >
               {t('landingPage.faq.title')}
             </h2>
+            <p className="text-muted-foreground text-[15px] max-w-lg mx-auto text-balance">
+              Everything you need to know about Enterprise vs <span className="whitespace-nowrap">Sdn Bhd</span>
+            </p>
           </div>
 
-          <div className="bg-card rounded-2xl border border-border p-6 sm:p-10">
+          {/* FAQ Items - Card-style accordion */}
+          <div className="space-y-3">
             {faqItems.map((faq, idx) => (
               <FAQItem
                 key={idx}
+                index={idx}
                 question={t(faq.qKey)}
                 answer={t(faq.aKey)}
                 isOpen={openFAQ === idx}
@@ -798,49 +564,231 @@ export default function CalculatorContent({ onStart }: CalculatorContentProps) {
               />
             ))}
           </div>
+
+          {/* Bottom helper text */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            className="text-center text-sm text-muted-foreground mt-10"
+          >
+            Still have questions?{' '}
+            <a
+              href="mailto:hello@opentaxation.my"
+              className="text-foreground underline underline-offset-4 hover:text-foreground/70 transition-colors"
+            >
+              Get in touch
+            </a>
+          </motion.p>
         </div>
       </section>
 
-      {/* FINAL CTA */}
-      <section className="py-24 sm:py-32 bg-background-secondary">
-        <div className="container-content text-center max-w-2xl">
-          <h2
-            className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal mb-6 text-foreground"
+      {/* FINAL CTA - Stunning Visual Section */}
+      <section className="relative py-32 sm:py-40 bg-foreground text-background overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Floating circles - respects prefers-reduced-motion */}
+          <motion.div
+            className="absolute top-20 left-[10%] w-64 h-64 rounded-full bg-background/[0.03] blur-3xl"
+            animate={prefersReducedMotion ? {} : {
+              y: [0, -30, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-[15%] w-96 h-96 rounded-full bg-amber/[0.05] blur-3xl"
+            animate={prefersReducedMotion ? {} : {
+              y: [0, 20, 0],
+              scale: [1, 0.95, 1],
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-background/[0.02] blur-3xl"
+            animate={prefersReducedMotion ? {} : {
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          {/* Grid pattern overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)',
+              backgroundSize: '40px 40px',
+            }}
+          />
+        </div>
+
+        {/* Content */}
+        <div className="relative container-content text-center max-w-3xl">
+          {/* Decorative line */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="w-16 h-px bg-background/30 mx-auto mb-8"
+          />
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-xs uppercase tracking-[0.3em] text-background/50 mb-6"
+          >
+            Take the next step
+          </motion.p>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal mb-6 text-background"
             style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             Ready to find out?
-          </h2>
-          <p className="text-muted-foreground mb-10 text-lg">
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-background/60 mb-12 text-lg sm:text-xl max-w-xl mx-auto text-balance"
+          >
             Stop guessing. Get the numbers. Make the right decision.
-          </p>
-          <PillButton onClick={onStart}>
-            <span>{t('landingPage.hero.cta')}</span>
-            <ArrowRight weight="bold" className="h-4 w-4" />
-          </PillButton>
+          </motion.p>
+
+          {/* CTA Button - Inverted style for dark background */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <motion.button
+              onClick={onStart}
+              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-background text-foreground font-medium overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {/* Shimmer effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/10 to-transparent skew-x-12"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '200%' }}
+                transition={{ duration: 0.8 }}
+              />
+
+              <span className="relative text-[15px]">{t('landingPage.hero.cta')}</span>
+              <ArrowRight weight="bold" className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </motion.button>
+          </motion.div>
+
+          {/* Trust indicators */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="flex items-center justify-center gap-6 mt-12 text-sm text-background/40"
+          >
+            <span className="flex items-center gap-2">
+              <CheckCircle weight="fill" className="h-4 w-4 text-background/30" />
+              Free forever
+            </span>
+            <span className="w-1 h-1 rounded-full bg-background/20" />
+            <span className="flex items-center gap-2">
+              <CheckCircle weight="fill" className="h-4 w-4 text-background/30" />
+              No signup required
+            </span>
+            <span className="hidden sm:block w-1 h-1 rounded-full bg-background/20" />
+            <span className="hidden sm:flex items-center gap-2">
+              <CheckCircle weight="fill" className="h-4 w-4 text-background/30" />
+              YA 2024/2025 rates
+            </span>
+          </motion.div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="py-16 sm:py-20 border-t border-border">
+      {/* FOOTER - Clean & Modern */}
+      <footer className="py-16 sm:py-20 bg-background">
         <div className="container-content">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
-            <ArrowLink href="https://github.com/hazlijohar95/opentaxation.my" external>GitHub</ArrowLink>
-            <ArrowLink href="#features">Features</ArrowLink>
-            <ArrowLink href="#faq">FAQ</ArrowLink>
-            <ArrowLink href="#crossover">The Crossover</ArrowLink>
+          {/* Main footer content */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-12">
+            {/* Logo & tagline */}
+            <div className="flex flex-col gap-3">
+              <a href="/" className="inline-flex items-center gap-2.5 group">
+                {/* Mark - matches header Logo component */}
+                <div className="relative flex-shrink-0 w-6 h-6">
+                  <svg viewBox="0 0 24 24" fill="none" className="w-full h-full" aria-hidden="true">
+                    <path
+                      d="M12 3a9 9 0 1 0 6.36 2.64"
+                      className="stroke-foreground"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      fill="none"
+                    />
+                  </svg>
+                </div>
+                <span className="font-medium tracking-tight text-[17px] text-foreground">
+                  opentaxation<span className="text-muted-foreground">.my</span>
+                </span>
+              </a>
+              <p className="text-sm text-muted-foreground">
+                Open-source tax calculator for Malaysian businesses
+              </p>
+            </div>
+
+            {/* Navigation links */}
+            <div className="flex flex-wrap items-center gap-6 sm:gap-8">
+              {[
+                { href: "https://github.com/hazlijohar95/opentaxation.my", label: "GitHub", external: true },
+                { href: "#features", label: "Features" },
+                { href: "#faq", label: "FAQ" },
+                { href: "#crossover", label: "The Crossover" },
+              ].map((link) => (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors relative group"
+                  whileHover={{ y: -1 }}
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-foreground transition-all group-hover:w-full" />
+                </motion.a>
+              ))}
+              <SupportButton />
+            </div>
           </div>
 
-          <div className="pt-8 border-t border-border text-center space-y-4">
+          {/* Divider */}
+          <div className="h-px bg-border mb-8" />
+
+          {/* Bottom section */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
             <p
-              className="text-[15px] text-muted-foreground italic"
+              className="text-muted-foreground italic text-center sm:text-left max-w-2xl text-balance"
               style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
             >
               {t('landingPage.footer.disclaimer')}
             </p>
-            <p className="text-sm text-muted-foreground/60">{t('landingPage.footer.vibeCoded')}</p>
+            <p className="text-muted-foreground/60 whitespace-nowrap">
+              {t('landingPage.footer.vibeCoded')}
+            </p>
           </div>
         </div>
       </footer>
     </div>
   );
-}
+});
+
+export default CalculatorContent;

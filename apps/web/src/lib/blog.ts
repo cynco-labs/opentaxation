@@ -200,7 +200,6 @@ export async function getPosts(options: {
   const { data, count, error } = await query;
 
   if (error) {
-    console.error('Error fetching posts:', error);
     throw error;
   }
 
@@ -252,7 +251,6 @@ export async function getPostBySlug(
 
   if (error) {
     if (error.code === PGSQL_NOT_FOUND) return null;
-    console.error('Error fetching post:', error);
     throw error;
   }
 
@@ -291,7 +289,6 @@ export async function getRelatedPosts(
   const { data, error } = await query;
 
   if (error) {
-    console.error('Error fetching related posts:', error);
     return [];
   }
 
@@ -310,7 +307,7 @@ export async function incrementViewCount(slug: string): Promise<void> {
   });
 
   if (error) {
-    console.error('Error incrementing view count:', error);
+    // Silently fail - view count is not critical
   }
 }
 
@@ -330,7 +327,6 @@ export async function getCategories(): Promise<Category[]> {
     .order('sort_order', { ascending: true });
 
   if (error) {
-    console.error('Error fetching categories:', error);
     throw error;
   }
 
@@ -353,7 +349,6 @@ export async function getTags(): Promise<Tag[]> {
     .order('name', { ascending: true });
 
   if (error) {
-    console.error('Error fetching tags:', error);
     throw error;
   }
 
@@ -378,7 +373,6 @@ export async function getComments(postId: string): Promise<Comment[]> {
     .order('created_at', { ascending: true });
 
   if (error) {
-    console.error('Error fetching comments:', error);
     throw error;
   }
 
@@ -420,7 +414,6 @@ export async function addComment(
     .single();
 
   if (error) {
-    console.error('Error adding comment:', error);
     throw error;
   }
 
@@ -448,7 +441,7 @@ export async function isBookmarked(
     .single();
 
   if (error && error.code !== PGSQL_NOT_FOUND) {
-    console.error('Error checking bookmark:', error);
+    // Silently fail - bookmark check is not critical
   }
 
   return !!data;
@@ -505,7 +498,6 @@ export async function getBookmarkedPosts(
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching bookmarks:', error);
     throw error;
   }
 
@@ -533,7 +525,6 @@ export async function getAuthors(): Promise<Author[]> {
     .order('name', { ascending: true });
 
   if (error) {
-    console.error('Error fetching authors:', error);
     throw error;
   }
 
@@ -578,7 +569,6 @@ export async function getAdminPosts(options: {
   const { data, count, error } = await query;
 
   if (error) {
-    console.error('Error fetching admin posts:', error);
     throw error;
   }
 
@@ -612,7 +602,6 @@ export async function createPost(input: BlogPostInput): Promise<BlogPost> {
     .single();
 
   if (error) {
-    console.error('Error creating post:', error);
     throw error;
   }
 
@@ -628,7 +617,7 @@ export async function createPost(input: BlogPostInput): Promise<BlogPost> {
       .insert(tagInserts);
 
     if (tagError) {
-      console.error('Error adding tags:', tagError);
+      // Tag insertion failed but post was created - continue
     }
   }
 
@@ -658,7 +647,6 @@ export async function updatePost(
     .single();
 
   if (error) {
-    console.error('Error updating post:', error);
     throw error;
   }
 
@@ -691,7 +679,6 @@ export async function deletePost(id: string): Promise<void> {
   const { error } = await client.from('blog_posts').delete().eq('id', id);
 
   if (error) {
-    console.error('Error deleting post:', error);
     throw error;
   }
 }
@@ -711,7 +698,6 @@ export async function upsertCategory(
     .single();
 
   if (error) {
-    console.error('Error upserting category:', error);
     throw error;
   }
 
@@ -733,7 +719,6 @@ export async function upsertTag(
     .single();
 
   if (error) {
-    console.error('Error upserting tag:', error);
     throw error;
   }
 

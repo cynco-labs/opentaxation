@@ -240,3 +240,109 @@ test.describe('Tax Calculator - Input Validation', () => {
     await expect(page.locator('body')).toBeVisible();
   });
 });
+
+test.describe('Tax Calculator - Share Functionality', () => {
+  // Desktop only tests for share modal (mobile has different tab layout)
+  test.describe('Desktop Share Modal', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('share button opens share modal', async ({ page }) => {
+      await page.goto('/');
+
+      // Navigate to calculator and enter profit
+      await page.getByRole('button', { name: /calculate yours/i }).first().click();
+      const profitInput = page.locator('input[type="number"], input[placeholder*="150"]').first();
+      await expect(profitInput).toBeVisible({ timeout: 10000 });
+      await profitInput.fill('150000');
+
+      // Wait for results and scroll to find share button
+      await page.waitForTimeout(1000);
+
+      // Scroll down to see results section
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+      await page.waitForTimeout(500);
+
+      const shareButton = page.getByRole('button', { name: /share/i }).first();
+      await expect(shareButton).toBeVisible({ timeout: 10000 });
+
+      // Click share button
+      await shareButton.click();
+
+      // Verify share modal opens
+      await expect(page.getByRole('dialog')).toBeVisible();
+      await expect(page.getByText('Share Your Results')).toBeVisible();
+    });
+
+    test('share modal displays shareable link', async ({ page }) => {
+      await page.goto('/');
+
+      // Navigate to calculator and enter profit
+      await page.getByRole('button', { name: /calculate yours/i }).first().click();
+      const profitInput = page.locator('input[type="number"], input[placeholder*="150"]').first();
+      await expect(profitInput).toBeVisible({ timeout: 10000 });
+      await profitInput.fill('200000');
+
+      // Scroll to results
+      await page.waitForTimeout(1000);
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+      await page.waitForTimeout(500);
+
+      // Open share modal
+      await page.getByRole('button', { name: /share/i }).first().click();
+
+      // Verify share link input exists and contains encoded data
+      const linkInput = page.locator('input[readonly]').first();
+      await expect(linkInput).toBeVisible();
+      const linkValue = await linkInput.inputValue();
+      expect(linkValue).toContain('?calc=');
+    });
+
+    // Skip on mobile since clipboard API behaves differently
+    test.skip(({ browserName }) => browserName !== 'chromium', 'Clipboard feedback is browser-specific');
+    test('copy button works in share modal', async ({ page }) => {
+      await page.goto('/');
+
+      // Navigate to calculator and enter profit
+      await page.getByRole('button', { name: /calculate yours/i }).first().click();
+      const profitInput = page.locator('input[type="number"], input[placeholder*="150"]').first();
+      await expect(profitInput).toBeVisible({ timeout: 10000 });
+      await profitInput.fill('150000');
+
+      // Scroll to results and open share modal
+      await page.waitForTimeout(1000);
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+      await page.waitForTimeout(500);
+      await page.getByRole('button', { name: /share/i }).first().click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+
+      // Click copy button
+      const copyButton = page.getByRole('button', { name: /copy/i });
+      await expect(copyButton).toBeVisible();
+      await copyButton.click();
+
+      // Verify "Copied" feedback appears
+      await expect(page.getByText('Copied')).toBeVisible({ timeout: 5000 });
+    });
+  });
+
+  test.describe('Shared Link Loading', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('shared link auto-loads calculator with pre-filled values', async ({ page }) => {
+      // Create a share URL with encoded inputs (RM 150,000 profit)
+      const encodedInputs = 'eyJicCI6MTUwMDAwLCJvaSI6MCwibXMiOjgwMDAsImNjIjo1MDAwLCJhciI6MCwiYWEiOjAsImFlIjowLCJhYyI6MCwiZHMiOjAsImRwIjo3MCwiZm8iOjAsImltIjowLCJ0biI6MH0=';
+
+      // Navigate directly to shared URL
+      await page.goto(`/?calc=${encodedInputs}`);
+
+      // Wait for page to process the shared link and auto-show calculator
+      await page.waitForTimeout(3000);
+
+      // The calculator should be visible with pre-filled values
+      // Check that results are showing (indicates calculator loaded)
+      const pageContent = await page.content();
+      const hasCalculatorContent = pageContent.includes('Enterprise') || pageContent.includes('Sdn Bhd') || pageContent.includes('150,000');
+      expect(hasCalculatorContent).toBe(true);
+    });
+  });
+});
