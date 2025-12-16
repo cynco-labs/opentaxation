@@ -44,7 +44,14 @@
       "Bash(claude mcp add:*)",
       "mcp__figma__get_design_context",
       "mcp__figma__get_screenshot",
-      "mcp__figma__get_metadata"
+      "mcp__figma__get_metadata",
+      "WebFetch(domain:invoicely.gg)",
+      "Bash(lsof:*)",
+      "WebFetch(domain:phosphoricons.com)",
+      "Bash(npx playwright:*)",
+      "Bash(BASE_URL=http://localhost:3002 npx playwright test:*)",
+      "Bash(SKIP_SERVER=1 BASE_URL=http://localhost:3002 npx playwright test:*)",
+      "Bash(SKIP_SERVER=1 BASE_URL=http://localhost:3001 npx playwright test:*)"
     ],
     "deny": [],
     "ask": []

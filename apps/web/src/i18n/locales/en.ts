@@ -203,6 +203,9 @@ const en = {
   'crossover.yourProfit': 'Your Profit',
   'crossover.netCash': 'Net Cash',
   'crossover.profit': 'Profit',
+  'crossover.accessibleDesc': 'Line chart comparing Enterprise vs Sdn Bhd net cash at different profit levels. The crossover point where Sdn Bhd becomes more beneficial is approximately {{crossover}}.',
+  'crossover.accessibleDescNoCrossover': 'Line chart comparing Enterprise vs Sdn Bhd net cash at different profit levels. No crossover point found in the displayed range.',
+  'crossover.tableCaption': 'Comparison of net cash between Enterprise and Sdn Bhd at different profit levels',
 
   // Non-Tax Factors
   'nonTax.title': 'Beyond Tax',
@@ -404,12 +407,13 @@ const en = {
   'common.settings': 'Settings',
 
   // Landing Page (CalculatorContent)
-  'landingPage.hero.title': 'You earned it. But how much do you keep?',
-  'landingPage.hero.subtitle': 'Find out which business structure keeps more money in your pocket.',
+  'landingPage.hero.title1': 'You earned it.',
+  'landingPage.hero.title2': 'But how much do you keep?',
+  'landingPage.hero.subtitle': 'find out which business structure keeps more money in your pocket.',
   'landingPage.hero.cta': 'Calculate Yours',
   'landingPage.hero.dashboard': 'Dashboard',
   'landingPage.hero.free': 'Free. The truth might hurt.',
-  'landingPage.hero.socialProof': 'Trusted by 11 accountants. No complaints yet. v0.0.1',
+  'landingPage.hero.socialProof': 'Trusted by 11 accountants. No complaints yet. V0.0.01',
 
   // Enterprise Card
   'landingPage.enterprise.title': 'Enterprise',
@@ -417,17 +421,17 @@ const en = {
   'landingPage.enterprise.taxRate': 'Tax Rate',
   'landingPage.enterprise.taxRateValue': '0-30%',
   'landingPage.enterprise.setupCost': 'Setup Cost',
-  'landingPage.enterprise.setupCostValue': '~RM500',
+  'landingPage.enterprise.setupCostValue': 'RM30-60/yr',
   'landingPage.enterprise.compliance': 'Annual Compliance',
   'landingPage.enterprise.complianceValue': '~RM500-2k',
-  'landingPage.enterprise.description': 'No company secretary, no audits. But you still need bookkeeping and must file personal income tax (Form B).',
+  'landingPage.enterprise.description': 'No company secretary, no audits. Just SSM renewal (RM30-60), bookkeeping, and Form B filing.',
   'landingPage.enterprise.highlight': 'Simpler.',
 
   // Sdn Bhd Card
   'landingPage.sdnbhd.title': 'Sdn Bhd',
   'landingPage.sdnbhd.subtitle': 'Private Limited Company',
   'landingPage.sdnbhd.taxRate': 'Corporate Tax',
-  'landingPage.sdnbhd.taxRateValue': '15-24%',
+  'landingPage.sdnbhd.taxRateValue': '15/17/24%',
   'landingPage.sdnbhd.setupCost': 'Setup Cost',
   'landingPage.sdnbhd.setupCostValue': '~RM3,000',
   'landingPage.sdnbhd.compliance': 'Annual Compliance',

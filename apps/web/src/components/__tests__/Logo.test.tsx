@@ -5,19 +5,21 @@ import Logo from '../Logo';
 describe('Logo', () => {
   it('renders the logo text', () => {
     render(<Logo />);
-    expect(screen.getByText('open')).toBeInTheDocument();
-    expect(screen.getByText('taxation')).toBeInTheDocument();
+    // Logo now shows "opentaxation" as single word with ".my" suffix
+    expect(screen.getByText(/opentaxation/i)).toBeInTheDocument();
     expect(screen.getByText('.my')).toBeInTheDocument();
   });
 
   it('applies size classes correctly', () => {
     const { rerender, container } = render(<Logo size="sm" />);
-    // Default/sm uses text-lg sm:text-xl classes
-    expect(container.querySelector('a')).toHaveClass('text-lg');
+    // sm size uses text-[15px]
+    const textSpan = container.querySelector('span.font-medium');
+    expect(textSpan).toHaveClass('text-[15px]');
 
     rerender(<Logo size="lg" />);
-    // lg size uses text-3xl sm:text-4xl classes
-    expect(container.querySelector('a')).toHaveClass('text-3xl');
+    // lg size uses text-[22px]
+    const lgTextSpan = container.querySelector('span.font-medium');
+    expect(lgTextSpan).toHaveClass('text-[22px]');
   });
 });
 

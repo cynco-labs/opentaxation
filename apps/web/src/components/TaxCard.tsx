@@ -144,6 +144,8 @@ function TaxCard({
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsExpanded(!isExpanded)}
+                  aria-expanded={isExpanded}
+                  aria-label={isExpanded ? t('taxCard.hideDetails') : t('taxCard.showBreakdown')}
                   className="w-full flex items-center justify-center gap-2 text-xs text-muted-foreground hover:text-foreground min-h-[44px]"
                 >
                   {isExpanded ? (

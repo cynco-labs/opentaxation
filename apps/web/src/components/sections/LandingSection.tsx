@@ -1,12 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, CalendarBlank, List } from 'phosphor-react';
+import { Calculator, CalendarBlank, CaretDown, List } from 'phosphor-react';
 import Logo from '../Logo';
 import LegalFooter from '../pages/LegalFooter';
 import CalendarContent from '../calendar/CalendarContent';
 import CalculatorContent from '../calculator/CalculatorContent';
-import { LanguageToggle } from '../LanguageToggle';
 import { ThemeToggle } from '../ThemeToggle';
 import MobileMenu from '../mobile/MobileMenu';
 
@@ -20,6 +19,21 @@ export default function LandingSection({ onStart }: LandingSectionProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>('calculator');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownOpen]);
 
   return (
     <>
@@ -48,47 +62,76 @@ export default function LandingSection({ onStart }: LandingSectionProps) {
           <div className="hidden lg:flex items-center justify-between container-content py-4">
             <Logo size="md" className="flex-shrink-0" />
 
-            {/* Tab Navigation - Clean minimal style (Desktop only) */}
-            <nav className="flex items-center gap-1" role="tablist">
+            {/* Dropdown Navigation */}
+            <div className="relative" ref={dropdownRef}>
               <button
-                role="tab"
-                aria-selected={activeTab === 'calculator'}
-                onClick={() => setActiveTab('calculator')}
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeTab === 'calculator'
-                    ? 'text-foreground bg-muted/60'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
-                }`}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-foreground bg-muted/40 hover:bg-muted/60"
+                aria-expanded={dropdownOpen}
+                aria-haspopup="true"
               >
-                <Calculator
-                  weight={activeTab === 'calculator' ? 'fill' : 'duotone'}
-                  className="h-[18px] w-[18px]"
+                {activeTab === 'calculator' ? (
+                  <>
+                    <Calculator weight="fill" className="h-[18px] w-[18px]" />
+                    <span>{t('nav.calculator')}</span>
+                  </>
+                ) : (
+                  <>
+                    <CalendarBlank weight="fill" className="h-[18px] w-[18px]" />
+                    <span>{t('nav.calendar')}</span>
+                  </>
+                )}
+                <CaretDown
+                  weight="bold"
+                  className={`h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}
                 />
-                <span>{t('nav.calculator')}</span>
               </button>
-              <button
-                role="tab"
-                aria-selected={activeTab === 'calendar'}
-                onClick={() => setActiveTab('calendar')}
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeTab === 'calendar'
-                    ? 'text-foreground bg-muted/60'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
-                }`}
-              >
-                <CalendarBlank
-                  weight={activeTab === 'calendar' ? 'fill' : 'duotone'}
-                  className="h-[18px] w-[18px]"
-                />
-                <span>{t('nav.calendar')}</span>
-              </button>
-            </nav>
 
-            {/* Theme and Language Toggles (Desktop only) */}
-            <div className="flex items-center gap-1">
-              <ThemeToggle />
-              <LanguageToggle />
+              {/* Dropdown Menu */}
+              <AnimatePresence>
+                {dropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                    transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+                    className="absolute top-full left-0 mt-2 w-48 py-1.5 bg-card border border-border rounded-xl shadow-lg z-50"
+                  >
+                    <button
+                      onClick={() => { setActiveTab('calculator'); setDropdownOpen(false); }}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                        activeTab === 'calculator'
+                          ? 'text-foreground bg-muted/50'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                      }`}
+                    >
+                      <Calculator
+                        weight={activeTab === 'calculator' ? 'fill' : 'duotone'}
+                        className="h-[18px] w-[18px]"
+                      />
+                      {t('nav.calculator')}
+                    </button>
+                    <button
+                      onClick={() => { setActiveTab('calendar'); setDropdownOpen(false); }}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                        activeTab === 'calendar'
+                          ? 'text-foreground bg-muted/50'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                      }`}
+                    >
+                      <CalendarBlank
+                        weight={activeTab === 'calendar' ? 'fill' : 'duotone'}
+                        className="h-[18px] w-[18px]"
+                      />
+                      {t('nav.calendar')}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
+
+            {/* Theme Toggle (Desktop only) */}
+            <ThemeToggle />
           </div>
         </header>
 

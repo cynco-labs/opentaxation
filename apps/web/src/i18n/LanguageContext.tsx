@@ -1,39 +1,21 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import i18n from './index';
+import { createContext, useContext, ReactNode } from 'react';
 
-export type Language = 'en' | 'ms';
+export type Language = 'en';
 
 interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
 }
 
-const LanguageContext = createContext<LanguageContextType | null>(null);
-
-const STORAGE_KEY = 'preferred_language';
+const LanguageContext = createContext<LanguageContextType>({ language: 'en' });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(
-    () => (i18n.language as Language) || 'en'
-  );
-
-  const setLanguage = useCallback((lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem(STORAGE_KEY, lang);
-    i18n.changeLanguage(lang);
-  }, []);
-
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language: 'en' }}>
       {children}
     </LanguageContext.Provider>
   );
 }
 
 export function useLanguage() {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
+  return useContext(LanguageContext);
 }

@@ -26,71 +26,92 @@
     clip: auto;
     white-space: normal;
   }
+
+  /* GPU-accelerated floating animation */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* GPU-accelerated tilt animation for balance scale */
+  .animate-tilt {
+    animation: tilt 4s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes tilt {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+  }
 }
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --background-secondary: 0 0% 96%;
-    --foreground: 0 0% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 10%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 10%;
-    --destructive: 0 84% 60%;
+    /* Warm Phosphor-inspired palette */
+    --background: 40 33% 96%;          /* Warm cream #f7f4ef */
+    --background-secondary: 40 25% 93%; /* Slightly darker cream #f0ebe3 */
+    --foreground: 40 10% 15%;           /* Warm charcoal #2a2825 */
+    --card: 40 30% 98%;                 /* Warm white #fbfaf8 */
+    --card-foreground: 40 10% 15%;
+    --popover: 40 30% 98%;
+    --popover-foreground: 40 10% 15%;
+    --primary: 40 10% 20%;              /* Warm dark - olive tinted */
+    --primary-foreground: 40 30% 96%;
+    --secondary: 40 20% 92%;
+    --secondary-foreground: 40 10% 20%;
+    --muted: 40 15% 92%;
+    --muted-foreground: 40 8% 45%;      /* Warm gray */
+    --accent: 40 20% 92%;
+    --accent-foreground: 40 10% 20%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 221 83% 53%;
-    --radius: 0.5rem;
-    /* Primary brand blue (#3B82F6) */
-    --blue: 221 83% 53%;
-    --blue-foreground: 0 0% 100%;
-    /* Extended blue palette */
-    --blue-light: 221 80% 65%;
-    --blue-lighter: 221 70% 80%;
-    --blue-dark: 221 83% 45%;
+    --border: 40 15% 85%;               /* Warm border */
+    --input: 40 15% 88%;
+    --ring: 40 10% 30%;
+    --radius: 0.75rem;
+    /* Accent colors - warm amber/gold tones (Phosphor-inspired) */
+    --amber: 38 92% 50%;                /* Rich amber #f59e0b */
+    --amber-light: 45 93% 58%;          /* Warm gold #eab308 */
+    --sand: 35 30% 75%;                 /* Sandy accent */
+    --warm-brown: 25 30% 35%;           /* Warm brown accent */
     /* Surface for code blocks */
-    --surface-dark: 0 0% 12%;
+    --surface-dark: 40 15% 12%;
   }
 
-  /* Dark mode - Clean neutral greys (calm and easy on eyes) */
+  /* Dark mode - Warm charcoal tones */
   .dark {
-    --background: 0 0% 7%;
-    --background-secondary: 0 0% 10%;
-    --foreground: 0 0% 90%;
-    --card: 0 0% 9%;
-    --card-foreground: 0 0% 90%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 90%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 90%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 0 0% 14%;
-    --accent-foreground: 0 0% 90%;
+    --background: 40 8% 8%;             /* Warm dark #151413 */
+    --background-secondary: 40 8% 11%;  /* Slightly lighter #1c1b19 */
+    --foreground: 40 15% 88%;           /* Warm off-white #e3e0db */
+    --card: 40 8% 10%;
+    --card-foreground: 40 15% 88%;
+    --popover: 40 8% 10%;
+    --popover-foreground: 40 15% 88%;
+    --primary: 40 20% 85%;              /* Warm light for dark mode */
+    --primary-foreground: 40 8% 10%;
+    --secondary: 40 8% 15%;
+    --secondary-foreground: 40 15% 85%;
+    --muted: 40 6% 15%;
+    --muted-foreground: 40 8% 55%;
+    --accent: 40 8% 15%;
+    --accent-foreground: 40 15% 85%;
     --destructive: 0 63% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 217 91% 60%;
-    /* Dark mode - blue adjusted for dark backgrounds */
-    --blue: 217 91% 60%;
-    --blue-light: 217 85% 68%;
-    --blue-lighter: 217 75% 75%;
-    --blue-dark: 217 91% 50%;
+    --border: 40 6% 20%;
+    --input: 40 6% 20%;
+    --ring: 40 15% 70%;
+    /* Dark mode accents */
+    --olive: 75 20% 50%;
+    --olive-light: 75 18% 60%;
+    --sand: 35 20% 50%;
+    --terracotta: 15 40% 55%;
     /* Surface for code blocks */
-    --surface-dark: 0 0% 5%;
+    --surface-dark: 40 8% 6%;
   }
 
   html.dark {

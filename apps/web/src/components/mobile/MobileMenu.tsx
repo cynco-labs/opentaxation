@@ -1,8 +1,7 @@
 import { memo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sun, Moon, Translate } from 'phosphor-react';
+import { X, Sun, Moon } from 'phosphor-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useLanguage } from '@/i18n/LanguageContext';
 import { useTranslation } from 'react-i18next';
 
 interface MobileMenuProps {
@@ -13,7 +12,6 @@ interface MobileMenuProps {
 function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const { t } = useTranslation();
   const { resolvedTheme, setTheme } = useTheme();
-  const { language, setLanguage } = useLanguage();
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -121,36 +119,6 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                       className="h-5 w-5"
                     />
                     {t('settings.dark', 'Dark')}
-                  </button>
-                </div>
-              </div>
-
-              {/* Language selection */}
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Translate weight="duotone" className="h-4 w-4" />
-                  {t('settings.language', 'Language')}
-                </label>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setLanguage('en')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      language === 'en'
-                        ? 'bg-foreground text-background shadow-lg'
-                        : 'bg-muted/50 text-muted-foreground hover:bg-muted border border-border/30'
-                    }`}
-                  >
-                    English
-                  </button>
-                  <button
-                    onClick={() => setLanguage('ms')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
-                      language === 'ms'
-                        ? 'bg-foreground text-background shadow-lg'
-                        : 'bg-muted/50 text-muted-foreground hover:bg-muted border border-border/30'
-                    }`}
-                  >
-                    Bahasa Melayu
                   </button>
                 </div>
               </div>
