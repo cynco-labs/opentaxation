@@ -23,9 +23,17 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['Instrument Serif', 'Georgia', 'serif'],
-        heading: ['Instrument Serif', 'Georgia', 'serif'],
+        /* System font stack - fast, native, clean (like invoicely.gg) */
+        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        heading: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      letterSpacing: {
+        'tighter': '-0.035em',
+        'tight': '-0.025em',
+        'snug': '-0.011em',
+        'normal': '0',
+        'wide': '0.025em',
       },
       colors: {
         border: "hsl(var(--border))",
