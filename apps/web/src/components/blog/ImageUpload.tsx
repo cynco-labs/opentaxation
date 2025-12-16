@@ -17,7 +17,6 @@ export default function ImageUpload({
   bucket = 'blog-images',
   folder = 'posts',
   aspectRatio = 'aspect-video',
-  placeholder = 'Upload an image or paste URL',
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);

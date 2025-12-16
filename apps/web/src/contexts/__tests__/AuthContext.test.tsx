@@ -7,7 +7,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 // Use vi.hoisted to define mocks that will be available during vi.mock hoisting
-const { mockSession, mockSubscription, mockGetSession, mockOnAuthStateChange, mockSignInWithOAuth, mockSignOut, mockFrom } = vi.hoisted(() => {
+const { mockSubscription, mockGetSession, mockOnAuthStateChange, mockSignInWithOAuth, mockSignOut, mockFrom } = vi.hoisted(() => {
   const mockSession = {
     user: { id: 'test-user-id', email: 'test@example.com' },
     access_token: 'mock-token',
@@ -38,7 +38,7 @@ const { mockSession, mockSubscription, mockGetSession, mockOnAuthStateChange, mo
     })),
   }));
 
-  return { mockSession, mockSubscription, mockGetSession, mockOnAuthStateChange, mockSignInWithOAuth, mockSignOut, mockFrom };
+  return { mockSubscription, mockGetSession, mockOnAuthStateChange, mockSignInWithOAuth, mockSignOut, mockFrom };
 });
 
 vi.mock('@/lib/supabase', () => ({

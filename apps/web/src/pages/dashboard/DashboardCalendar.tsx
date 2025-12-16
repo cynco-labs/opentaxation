@@ -1,14 +1,10 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  CalendarCheck,
   Bell,
   BellRinging,
   Export,
   GoogleLogo,
-  Clock,
-  Check,
-  X,
   CaretDown,
   CaretUp,
   Warning,
@@ -18,7 +14,7 @@ import {
   UsersThree,
   Briefcase,
 } from 'phosphor-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';

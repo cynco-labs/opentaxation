@@ -10,7 +10,6 @@ import {
   PencilSimple,
   Trash,
   CaretDown,
-  Image as ImageIcon,
   X,
   Calendar,
   User,
@@ -24,7 +23,6 @@ import {
   Category,
   Tag,
   Author,
-  getPostBySlug,
   createPost,
   updatePost,
   deletePost,
@@ -88,12 +86,7 @@ export default function BlogAdminEdit() {
   const { isBlogAdmin, isLoading: authLoading } = useAuth();
   const isNew = id === 'new';
 
-  // Redirect if not a blog admin
-  if (!authLoading && !isBlogAdmin) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  // Form state
+  // Form state - all hooks must be called before any conditional returns
   const [formData, setFormData] = useState<BlogPostInput>({
     slug: '',
     locale: 'en',
@@ -132,6 +125,22 @@ export default function BlogAdminEdit() {
       loadPost(id);
     }
   }, [id, isNew]);
+
+  // Sanitize content for preview to prevent XSS attacks
+  const sanitizedPreviewContent = useMemo(() => {
+    if (!formData.content) return '';
+    const contentWithIds = addIdsToHeadings(formData.content);
+    return DOMPurify.sanitize(contentWithIds, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code', 'pre', 'blockquote', 'img', 'figure', 'figcaption', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'hr'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'title', 'width', 'height', 'style'],
+      ALLOW_DATA_ATTR: false,
+    });
+  }, [formData.content]);
+
+  // Redirect if not a blog admin - after all hooks
+  if (!authLoading && !isBlogAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const loadMetadata = async () => {
     try {
@@ -264,17 +273,6 @@ export default function BlogAdminEdit() {
       setFormData({ ...formData, tag_ids: [...currentTags, tagId] });
     }
   };
-
-  // Sanitize content for preview to prevent XSS attacks
-  const sanitizedPreviewContent = useMemo(() => {
-    if (!formData.content) return '';
-    const contentWithIds = addIdsToHeadings(formData.content);
-    return DOMPurify.sanitize(contentWithIds, {
-      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code', 'pre', 'blockquote', 'img', 'figure', 'figcaption', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'hr'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'title', 'width', 'height', 'style'],
-      ALLOW_DATA_ATTR: false,
-    });
-  }, [formData.content]);
 
   if (isLoading) {
     return (

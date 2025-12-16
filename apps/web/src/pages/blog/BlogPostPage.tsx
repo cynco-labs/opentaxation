@@ -133,6 +133,23 @@ export default function BlogPostPage() {
     whatsapp: `https://wa.me/?text=${encodeURIComponent(`${shareTitle} ${shareUrl}`)}`,
   };
 
+  // Process content to add IDs to headings and sanitize for XSS protection
+  // Must be called before any conditional returns to comply with Rules of Hooks
+  const processedContent = useMemo(() => {
+    if (!article?.content) return '';
+    const contentWithIds = addIdsToHeadings(article.content);
+    return DOMPurify.sanitize(contentWithIds, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code', 'pre', 'blockquote', 'img', 'figure', 'figcaption', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'hr'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'title', 'width', 'height', 'style'],
+      ALLOW_DATA_ATTR: false,
+    });
+  }, [article?.content]);
+
+  const hasTableOfContents = useMemo(
+    () => article?.content ? extractHeadings(article.content).length >= 2 : false,
+    [article?.content]
+  );
+
   // Loading state
   if (isLoading) {
     return (
@@ -193,20 +210,6 @@ export default function BlogPostPage() {
   const authorBio = article.author
     ? getLocalizedField(article.author, 'bio', locale)
     : null;
-
-  // Process content to add IDs to headings and sanitize for XSS protection
-  const processedContent = useMemo(() => {
-    const contentWithIds = addIdsToHeadings(article.content);
-    return DOMPurify.sanitize(contentWithIds, {
-      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code', 'pre', 'blockquote', 'img', 'figure', 'figcaption', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'hr'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'title', 'width', 'height', 'style'],
-      ALLOW_DATA_ATTR: false,
-    });
-  }, [article.content]);
-  const hasTableOfContents = useMemo(
-    () => extractHeadings(article.content).length >= 2,
-    [article.content]
-  );
 
   return (
     <>

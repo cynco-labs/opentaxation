@@ -101,7 +101,7 @@ describe('useErrorToast', () => {
   });
 
   it('dismisses error before auto-dismiss timeout', () => {
-    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
+    vi.spyOn(global, 'clearTimeout');
 
     const { result } = renderHook(() => useErrorToast());
 
@@ -112,7 +112,7 @@ describe('useErrorToast', () => {
     // Immediately dismiss
     act(() => {
       // Access internal state through rendering
-      const container = result.current.ErrorToastContainer();
+      result.current.ErrorToastContainer();
       // The dismiss happens through the container UI
     });
 

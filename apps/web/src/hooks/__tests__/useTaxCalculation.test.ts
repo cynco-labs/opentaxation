@@ -2,7 +2,7 @@
  * Unit Tests for useTaxCalculation Hook
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useTaxCalculation } from '../useTaxCalculation';
 import type { TaxCalculationInputs } from '@tax-engine/core';
@@ -26,6 +26,7 @@ describe('useTaxCalculation', () => {
   });
 
   it('returns null when businessProfit is undefined', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const inputs = { ...baseInputs, businessProfit: undefined as any };
     const { result } = renderHook(() => useTaxCalculation(inputs));
 

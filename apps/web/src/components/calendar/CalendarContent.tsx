@@ -5,7 +5,6 @@ import {
   Buildings,
   UsersThree,
   Briefcase,
-  CalendarCheck,
   Calendar,
   Clock,
   Warning,
@@ -14,7 +13,6 @@ import {
   Receipt,
   FileText,
   Wallet,
-  ChartLineUp,
   Alarm,
   Flag,
 } from 'phosphor-react';

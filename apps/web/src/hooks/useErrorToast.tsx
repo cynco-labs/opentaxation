@@ -23,9 +23,10 @@ export function useErrorToast() {
 
   // Cleanup all pending timeouts on unmount to prevent memory leaks
   useEffect(() => {
+    const refs = timeoutRefs.current;
     return () => {
-      timeoutRefs.current.forEach((timeoutId) => clearTimeout(timeoutId));
-      timeoutRefs.current.clear();
+      refs.forEach((timeoutId) => clearTimeout(timeoutId));
+      refs.clear();
     };
   }, []);
 

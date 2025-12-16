@@ -21,6 +21,7 @@ function generateSlug(text: string): string {
     .trim();
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function extractHeadings(html: string): TocItem[] {
   const headings: TocItem[] = [];
   const regex = /<h([1-3])[^>]*>([^<]+)<\/h[1-3]>/gi;
@@ -51,6 +52,7 @@ export function extractHeadings(html: string): TocItem[] {
   return headings;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function addIdsToHeadings(html: string): string {
   const usedSlugs = new Set<string>();
 

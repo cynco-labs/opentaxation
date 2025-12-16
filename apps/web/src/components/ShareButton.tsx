@@ -22,7 +22,6 @@ interface ShareButtonProps {
 }
 
 export default function ShareButton({
-  inputs,
   comparison,
   generateShareableLink,
   className = '',

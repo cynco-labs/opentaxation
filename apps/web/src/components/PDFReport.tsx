@@ -5,7 +5,7 @@ import {
   View,
 } from '@react-pdf/renderer';
 import type { TaxCalculationInputs, ComparisonResult, WaterfallStep, TaxBracketBreakdown } from '@tax-engine/core';
-import { colors, styles } from './pdf/pdfStyles';
+import { styles } from './pdf/pdfStyles';
 
 interface PDFReportProps {
   inputs: TaxCalculationInputs;

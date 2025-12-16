@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
-  ArrowElbowDownRight,
   Coins,
   Receipt,
   Wallet,
@@ -24,7 +23,7 @@ import {
   FAQItem,
   FloatingCalcCard,
 } from '@/components/landing';
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 interface CalculatorContentProps {
   onStart: () => void;
@@ -43,22 +42,6 @@ const fadeUp = {
   }),
 };
 
-const stagger = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.05, delayChildren: 0.1 },
-  },
-};
-
-const staggerItem = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: smoothEase },
-  },
-};
 
 // ============================================
 // UI COMPONENTS
@@ -169,19 +152,6 @@ function HeroCTA({ onClick, children }: { onClick: () => void; children: React.R
   );
 }
 
-function ArrowLink({ href, children, external = false }: { href: string; children: React.ReactNode; external?: boolean }) {
-  return (
-    <a
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      className="inline-flex items-center gap-2 text-[15px] text-foreground hover:text-muted-foreground transition-colors group"
-    >
-      <ArrowElbowDownRight weight="regular" className="h-4 w-4 text-muted-foreground" />
-      <span className="group-hover:underline underline-offset-4">{children}</span>
-    </a>
-  );
-}
 
 // ============================================
 // GITHUB STAR BADGE
@@ -501,7 +471,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
 
             {/* Two-column checklist */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
-              {featureItems.map((item, idx) => (
+              {featureItems.map((item) => (
                 <div
                   key={item.textKey}
                   className="flex items-start gap-4 group"

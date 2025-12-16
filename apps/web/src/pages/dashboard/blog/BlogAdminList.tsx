@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Plus,
@@ -35,7 +35,6 @@ const statusLabels: Record<PostStatus, string> = {
 };
 
 export default function BlogAdminList() {
-  const navigate = useNavigate();
   const { isBlogAdmin, isLoading: authLoading } = useAuth();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta | null>(null);
@@ -46,15 +45,6 @@ export default function BlogAdminList() {
   const [localeFilter, setLocaleFilter] = useState<Locale | ''>('');
   const [showFilters, setShowFilters] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  // Redirect if not a blog admin
-  if (!authLoading && !isBlogAdmin) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  useEffect(() => {
-    loadPosts();
-  }, [page, statusFilter, localeFilter]);
 
   const loadPosts = async () => {
     setIsLoading(true);
@@ -74,6 +64,16 @@ export default function BlogAdminList() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, statusFilter, localeFilter]);
+
+  // Redirect if not a blog admin - after all hooks
+  if (!authLoading && !isBlogAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) return;

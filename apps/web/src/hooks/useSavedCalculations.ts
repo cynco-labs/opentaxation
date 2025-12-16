@@ -38,7 +38,8 @@ export function useSavedCalculations() {
     } finally {
       setIsLoading(false);
     }
-  }, [supabase, user]);
+     
+  }, [user]);
 
   // Initial fetch
   useEffect(() => {
@@ -79,7 +80,8 @@ export function useSavedCalculations() {
 
       return typedData;
     },
-    [supabase, user],
+     
+    [user],
   );
 
   // Delete a calculation
@@ -100,7 +102,8 @@ export function useSavedCalculations() {
       // Update local state
       setCalculations((prev) => prev?.filter((calc) => calc.id !== id) ?? null);
     },
-    [supabase, user],
+     
+    [user],
   );
 
   // Get a single calculation by ID
@@ -121,7 +124,8 @@ export function useSavedCalculations() {
 
       return parseSavedCalculation(data);
     },
-    [supabase, user],
+     
+    [user],
   );
 
   // Update a calculation
@@ -158,7 +162,8 @@ export function useSavedCalculations() {
 
       return typedData;
     },
-    [supabase, user],
+     
+    [user],
   );
 
   return {

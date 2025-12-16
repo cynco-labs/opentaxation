@@ -103,6 +103,7 @@ function ensureSupabase() {
 
 /** Transform raw post data with relations to BlogPost type */
 function transformPost(post: PostWithRelations): BlogPost {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { author_id, category_id, scheduled_for, tags, ...rest } = post;
   return {
     ...rest,
@@ -114,6 +115,7 @@ function transformPost(post: PostWithRelations): BlogPost {
 
 /** Transform post without tags */
 function transformPostWithoutTags(post: PostRow & { author: AuthorRow | null; category: CategoryRow | null }): BlogPost {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { author_id, category_id, scheduled_for, ...rest } = post;
   return {
     ...rest,
