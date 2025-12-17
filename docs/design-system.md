@@ -60,6 +60,15 @@
 | Warning | `destructive/30` | `from-destructive/5 to-destructive/10` | Alerts, caveats |
 | Neutral | `border/50` | `card` | Default state |
 
+### Semantic Colors (E-Invoicing / Status)
+
+| State | Background | Text | Usage |
+|-------|------------|------|-------|
+| Exempt / Success | `emerald-500/10` | `emerald-600` (light) / `emerald-400` (dark) | Exempt status, completed items |
+| Urgent (≤30 days) | `bg-amber-500` | `text-white` | Approaching deadline |
+| Critical (≤14 days) | `bg-red-500` | `text-white` | Immediate action required |
+| Completed | `emerald-500/5` | `emerald-500` | Checked/done state |
+
 ### Feature Icon Colors
 
 | Category | Color | Tailwind Class |
@@ -245,3 +254,38 @@ transition-all duration-300
 - ARIA labels on icon buttons
 - Proper heading hierarchy
 - Touch targets meet 44-48px minimum
+
+---
+
+## Mobile-Native Patterns
+
+### Touch Optimization
+
+| Property | Value | Tailwind |
+|----------|-------|----------|
+| Touch target (minimum) | 44px | `min-h-[44px]` |
+| Touch manipulation | Disable double-tap zoom | `touch-manipulation` |
+| Active state | Replace hover on mobile | `active:bg-muted/50` |
+| Scroll behavior | Native momentum | `overscroll-contain` |
+
+### Safe Areas
+
+```css
+.safe-area-top { padding-top: env(safe-area-inset-top, 0px); }
+.safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+```
+
+### Dynamic Viewport
+
+```css
+min-height: 100dvh; /* Use dvh for mobile browsers */
+```
+
+### Bottom Sheets (Modal)
+
+| Property | Value |
+|----------|-------|
+| Backdrop | `bg-black/50 backdrop-blur-sm` |
+| Container | `rounded-t-2xl max-h-[80vh]` |
+| Handle | `w-9 h-1 rounded-full bg-border` |
+| Animation | `spring: damping 28, stiffness 280` |

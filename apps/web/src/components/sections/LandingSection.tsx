@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, CalendarBlank, CaretDown, List, SignOut } from 'phosphor-react';
+import { Calculator, CalendarBlank, CaretDown, List, SignOut, Receipt } from 'phosphor-react';
 import Logo from '../Logo';
 import LegalFooter from '../pages/LegalFooter';
 import CalendarContent from '../calendar/CalendarContent';
@@ -215,8 +216,15 @@ export default function LandingSection({ onStart }: LandingSectionProps) {
               </button>
             </div>
 
-            {/* Theme Toggle & Login (Desktop only) */}
+            {/* E-Invoicing, Theme Toggle & Login (Desktop only) */}
             <div className="flex items-center gap-2">
+              <Link
+                to="/e-invoicing"
+                className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              >
+                <Receipt weight="duotone" className="h-4 w-4" />
+                <span>E-Invoicing</span>
+              </Link>
               <ThemeToggle />
               <GoogleLoginButton />
             </div>

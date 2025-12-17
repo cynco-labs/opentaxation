@@ -1,6 +1,7 @@
 import { memo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sun, Moon } from 'phosphor-react';
+import { Link } from 'react-router-dom';
+import { X, Sun, Moon, Receipt, ArrowSquareOut } from 'phosphor-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 
@@ -85,6 +86,29 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
             {/* Menu content */}
             <div className="px-6 pb-8 space-y-6">
+              {/* Quick Links */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-muted-foreground">
+                  Quick Links
+                </label>
+                <Link
+                  to="/e-invoicing"
+                  onClick={onClose}
+                  className="flex items-center justify-between py-3 px-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 transition-all active:scale-[0.98]"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center">
+                      <Receipt weight="fill" className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">E-Invoicing Hub</div>
+                      <div className="text-xs text-muted-foreground">Learn about MyInvois compliance</div>
+                    </div>
+                  </div>
+                  <ArrowSquareOut weight="bold" className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </Link>
+              </div>
+
               {/* Theme selection */}
               <div className="space-y-3">
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">

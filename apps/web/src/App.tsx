@@ -27,6 +27,9 @@ const BlogPostPage = lazy(() => import('./pages/blog/BlogPostPage'));
 const BlogAdminList = lazy(() => import('./pages/dashboard/blog/BlogAdminList'));
 const BlogAdminEdit = lazy(() => import('./pages/dashboard/blog/BlogAdminEdit'));
 
+// E-Invoicing hub
+const EInvoicingHub = lazy(() => import('./pages/einvoicing/EInvoicingHub'));
+
 // Loading fallback for lazy routes
 function RouteLoading() {
   return (
@@ -57,6 +60,9 @@ function AppRoutes() {
         {/* Blog routes */}
         <Route path="/blog" element={<BlogListPage />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
+
+        {/* E-Invoicing hub */}
+        <Route path="/e-invoicing" element={<EInvoicingHub />} />
 
         {/* Dashboard routes (protected) */}
         <Route path="/dashboard" element={<DashboardLayout />}>

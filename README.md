@@ -72,6 +72,7 @@
 | Mobile Responsive | :white_check_mark: | Works everywhere |
 | Save Calculations | :white_check_mark: | Cloud sync (requires account) |
 | Tax Calendar | :white_check_mark: | Never miss a deadline (requires account) |
+| **E-Invoicing Hub** | :white_check_mark: | **Compliance checker, timeline, industry guides** |
 | Partner Referrals | :hourglass_flowing_sand: | Coming soon |
 | Tax News & Updates | :hourglass_flowing_sand: | Stay informed on policy changes |
 
@@ -143,6 +144,9 @@ opentaxation.my/
 |       +-- src/
 |           +-- components/     # UI Components (shadcn/ui)
 |           +-- pages/          # Route pages
+|           |   +-- einvoicing/ # E-Invoicing Hub
+|           |       +-- EInvoicingHub.tsx
+|           |       +-- data/   # Phase, industry, FAQ data
 |           +-- hooks/          # Custom React hooks
 |           +-- contexts/       # Auth, Theme providers
 |           +-- lib/            # Utilities, Supabase client
@@ -237,14 +241,14 @@ opentaxation.my/
 ## Roadmap
 
 ```
-v1.0 (Current)                   v1.1 (Now)                      v2.0 (Future)
+v1.0                             v1.1 (Current)                  v2.0 (Future)
      |                                |                               |
      |                                |                               |
      +-- Core calculator              +-- Zakat integration           +-- Tax news & updates
      +-- EPF integration              +-- Tax calendar                +-- What-if scenarios
      +-- PDF export                   +-- Mobile redesign             +-- Multi-year planning
-     +-- PWA ready                    +-- Partner referrals           +-- Case study library
-     +-- Crossover chart              +-- Lead capture                +-- Accountant directory
+     +-- PWA ready                    +-- E-Invoicing Hub             +-- Case study library
+     +-- Crossover chart              +-- Partner referrals           +-- Accountant directory
 ```
 
 ---
