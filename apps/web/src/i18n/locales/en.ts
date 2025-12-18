@@ -26,8 +26,8 @@ const en = {
   'inputs.profit.both': 'both',
   'inputs.profit.sideBySide': 'business structures side-by-side.',
   'inputs.profit.typicalRange': 'Typical range: RM50k - RM500k for small businesses',
-  'inputs.otherIncome.label': 'Any other personal income?',
-  'inputs.otherIncome.helper': 'Rental, investments, etc. Added to your total taxable income.',
+  'inputs.otherIncome.label': 'Other personal income',
+  'inputs.otherIncome.helper': 'Rental, freelance, investments, etc. Applied to both Enterprise & Sdn Bhd calculations.',
 
   // Target mode
   'inputs.target.label': 'How much do you want to take home monthly?',
@@ -42,9 +42,14 @@ const en = {
   'inputs.sdnbhd.tip': "As a Sdn Bhd director, you pay yourself a salary (which is tax-deductible for the company). The remaining profit can be taken as dividends.",
   'inputs.salary.label': 'How much salary would you pay yourself?',
   'inputs.salary.helper': 'Higher salary = more EPF savings but more personal tax',
-  'inputs.compliance.label': 'Expected compliance costs',
-  'inputs.compliance.helper': 'Secretary fees, tax filing, bookkeeping. Typical: RM5k-10k/year',
-  'inputs.dividend.label': 'How much profit to take as dividends?',
+  'inputs.salary.tooltip': 'As a Sdn Bhd director, you pay yourself a salary which is tax-deductible for the company. This builds EPF retirement savings but increases personal income tax.',
+  'inputs.salary.warning': 'Annual salary (RM{{annualSalary}}) exceeds business profit (RM{{profit}}). Salary will be capped at available funds.',
+  'inputs.compliance.label': 'Annual compliance costs',
+  'inputs.compliance.helper': 'Accounting, SSM fees, company secretary. Typical: RM5k-10k/year',
+  'inputs.compliance.tooltip': 'Sdn Bhd requires annual audits (if not exempt), SSM filings, company secretary, and proper accounting. Enterprise only needs basic bookkeeping.',
+  'inputs.dividend.label': 'Dividend distribution',
+  'inputs.dividend.helper': '% of remaining profit (after salary & costs) to pay as dividends. 100% = take all',
+  'inputs.dividend.tooltip': 'Dividends are tax-free for individuals (except 2% surcharge on amounts above RM100k from YA2025). Setting this below 100% means keeping profits in the company.',
   'inputs.dividend.takingAll': 'Taking all profits out (most common)',
   'inputs.dividend.keepingAll': 'Keeping all profits in the company for growth',
   'inputs.dividend.partial': 'Taking {{percent}}%, keeping {{keep}}% for growth',
@@ -131,12 +136,19 @@ const en = {
   'inputs.notes.dividendTax.content': 'Starting YA 2025, individual shareholders receiving dividends above RM100,000 per year pay a 2% tax on the excess.\n\nExample: RM150,000 in dividends\n• First RM100,000: Tax-free\n• Next RM50,000: 2% = RM1,000 tax\n\nThis changes the math for high-profit businesses - retaining earnings in the company or adjusting salary split may be more optimal now.',
 
   // Results Section
+  'results.title': 'Results',
   'results.header.title': 'Your Results',
   'results.header.subtitle': 'Enterprise vs Sdn Bhd comparison',
   'results.enterprise': 'Enterprise',
   'results.sdnbhd': 'Sdn Bhd',
   'results.empty.title': 'Enter your numbers',
   'results.empty.subtitle': 'Results appear automatically',
+  'results.enterProfit': 'Enter your business profit',
+  'results.enterProfitHint': 'Results will appear as you type',
+
+  // Mobile Layout
+  'mobile.tapToCollapse': 'Tap to collapse',
+  'mobile.tapToExpand': 'Tap to expand inputs',
   'results.share': 'Share',
   'results.signIn': 'Sign in',
   'results.signInPrompt': 'to save calculations & access your dashboard',
@@ -410,7 +422,7 @@ const en = {
   'landingPage.hero.cta': 'Calculate Yours',
   'landingPage.hero.dashboard': 'Dashboard',
   'landingPage.hero.free': 'Free. The truth might hurt.',
-  'landingPage.hero.socialProof': 'Trusted by 11 accountants. No complaints yet. V0.0.01',
+  'landingPage.hero.socialProof': 'Trusted by 11 accountants. No complaints yet. v0.01',
 
   // Enterprise Card
   'landingPage.enterprise.title': 'Enterprise',

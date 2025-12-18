@@ -212,7 +212,6 @@ export function checkBasicExemption(
   hasAffiliatesAboveThreshold: boolean
 ): ExemptionCheckResult {
   const warnings: string[] = [];
-  const recommendations: string[] = [];
 
   // Check if it's an exempt person type
   const exemptPersonTypes = ['government', 'statutory-body', 'local-authority', 'diplomatic'];

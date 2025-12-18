@@ -1,4 +1,4 @@
-import type { PersonalReliefs, ZakatCalculationMethod } from '@tax-engine/config';
+import type { PersonalReliefs, ZakatCalculationMethod, SharedCapGroup } from '@tax-engine/config';
 
 /**
  * Input types for tax calculations
@@ -23,6 +23,81 @@ export interface ZakatInput {
   method?: ZakatCalculationMethod;
 }
 
+// ============================================================================
+// Relief Claim Types (for Extended Relief Optimizer)
+// ============================================================================
+
+/**
+ * Single relief claim entry
+ * For per-unit reliefs (children), quantity multiplies the amount
+ */
+export interface ReliefClaimEntry {
+  /** Amount claimed for this relief */
+  amount: number;
+  /** For per-unit reliefs: number of units (e.g., children) */
+  quantity?: number;
+}
+
+/**
+ * All relief claims keyed by relief ID
+ * Example: { 'lifestyle_books': { amount: 500 }, 'child_under18': { amount: 2000, quantity: 2 } }
+ */
+export type ReliefClaimValues = Record<string, ReliefClaimEntry>;
+
+/**
+ * Result of shared cap group calculation
+ */
+export interface SharedCapUsage {
+  /** Shared cap group identifier */
+  group: SharedCapGroup;
+  /** Label for display */
+  label: string;
+  /** Total amount used across all reliefs in this group */
+  used: number;
+  /** Maximum allowed for this group */
+  limit: number;
+  /** Percentage used (0-100+) */
+  percentUsed: number;
+  /** Whether the cap has been exceeded */
+  exceeded: boolean;
+  /** Relief IDs contributing to this cap */
+  reliefIds: string[];
+}
+
+/**
+ * Item that was capped due to individual or shared limits
+ */
+export interface CappedItem {
+  /** Relief ID */
+  id: string;
+  /** Relief name */
+  name: string;
+  /** Amount user tried to claim */
+  claimed: number;
+  /** Amount actually allowed after caps */
+  allowed: number;
+  /** Reason for capping */
+  reason: 'individual_limit' | 'shared_cap';
+}
+
+/**
+ * Result of relief optimization calculation
+ */
+export interface ReliefOptimizationResult {
+  /** Total relief amount after all caps applied */
+  total: number;
+  /** Breakdown by relief ID: actual amount allowed */
+  breakdown: Record<string, number>;
+  /** Items that were capped */
+  cappedItems: CappedItem[];
+  /** Shared cap group usage for UI */
+  groupUsage: SharedCapUsage[];
+  /** Basic relief amount (always RM9,000) */
+  basicRelief: number;
+  /** Sum of all other reliefs after caps */
+  additionalReliefs: number;
+}
+
 export interface TaxCalculationInputs {
   businessProfit: number;
   otherIncome: number;
@@ -35,6 +110,8 @@ export interface TaxCalculationInputs {
     employees: number;
   };
   reliefs?: PersonalReliefs;
+  /** Extended relief claims (for Relief Optimizer) */
+  extendedReliefs?: ReliefClaimValues;
   applyYa2025DividendSurcharge?: boolean; // Whether to apply YA 2025 dividend surcharge
   dividendDistributionPercent?: number; // Percentage of post-tax profit to distribute as dividends (0-100, default 100)
   hasForeignOwnership?: boolean; // Whether company has ≥20% foreign ownership (disqualifies SME rates)

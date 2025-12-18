@@ -1,7 +1,7 @@
 import { memo, useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { DotsThree, ArrowCounterClockwise, House, SignOut, SignIn, UserCircle } from 'phosphor-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { DotsThree, ArrowCounterClockwise, House, SignOut, SignIn, UserCircle, CalendarCheck, Receipt } from 'phosphor-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface MobileHeaderProps {
@@ -10,6 +10,7 @@ interface MobileHeaderProps {
 }
 
 function MobileHeader({ title = 'Tax Calculator', onClearInputs }: MobileHeaderProps) {
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const isSignedIn = !!user;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -54,14 +55,31 @@ function MobileHeader({ title = 'Tax Calculator', onClearInputs }: MobileHeaderP
     setIsMenuOpen(false);
   };
 
+  // Common tool navigation items
+  const toolItems = [
+    {
+      id: 'home',
+      label: 'All Tools',
+      icon: House,
+      action: () => navigate('/'),
+    },
+    {
+      id: 'calendar',
+      label: 'Tax Calendar',
+      icon: CalendarCheck,
+      action: () => navigate('/calendar'),
+    },
+    {
+      id: 'einvoicing',
+      label: 'E-Invoicing',
+      icon: Receipt,
+      action: () => navigate('/e-invoicing'),
+    },
+  ];
+
   const menuItems = isSignedIn
     ? [
-        {
-          id: 'dashboard',
-          label: 'Dashboard',
-          icon: House,
-          action: () => window.location.href = '/dashboard',
-        },
+        ...toolItems,
         ...(onClearInputs
           ? [
               {
@@ -81,12 +99,7 @@ function MobileHeader({ title = 'Tax Calculator', onClearInputs }: MobileHeaderP
         },
       ]
     : [
-        {
-          id: 'signin',
-          label: 'Sign In',
-          icon: SignIn,
-          action: () => window.location.href = '/login',
-        },
+        ...toolItems,
         ...(onClearInputs
           ? [
               {
@@ -97,6 +110,12 @@ function MobileHeader({ title = 'Tax Calculator', onClearInputs }: MobileHeaderP
               },
             ]
           : []),
+        {
+          id: 'signin',
+          label: 'Sign In',
+          icon: SignIn,
+          action: () => navigate('/login'),
+        },
       ];
 
   return (

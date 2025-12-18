@@ -1,11 +1,13 @@
 import { calculatePersonalTax } from './calculatePersonalTax';
+import { calculateReliefOptimization } from './calculateReliefOptimization';
 import {
   getPersonalTaxBracketBreakdown,
   calculateZakatGrossIncome,
   calculateIndividualZakatRebate,
   meetsNisabThreshold,
+  calculatePersonalTaxFromBrackets,
 } from '@tax-engine/config';
-import type { TaxCalculationInputs, SolePropScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult } from '../types';
+import type { TaxCalculationInputs, SolePropScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult, ReliefClaimValues } from '../types';
 
 /**
  * Calculate Sole Proprietorship / Enterprise scenario
@@ -34,9 +36,9 @@ import type { TaxCalculationInputs, SolePropScenarioResult, WaterfallStep, TaxBr
  * @returns Complete Sole Prop scenario results with tax breakdown
  */
 export function calculateSolePropScenario(
-  inputs: Pick<TaxCalculationInputs, 'businessProfit' | 'otherIncome' | 'reliefs' | 'zakat'>
+  inputs: Pick<TaxCalculationInputs, 'businessProfit' | 'otherIncome' | 'reliefs' | 'extendedReliefs' | 'zakat'>
 ): SolePropScenarioResult {
-  const { businessProfit, otherIncome = 0, reliefs, zakat } = inputs;
+  const { businessProfit, otherIncome = 0, reliefs, extendedReliefs, zakat } = inputs;
 
   // Input validation and sanitization
   if (!isFinite(businessProfit) || businessProfit < 0) {
@@ -49,8 +51,30 @@ export function calculateSolePropScenario(
   // Total income = business profit + other income
   const totalIncome = businessProfit + otherIncome;
 
-  // Calculate personal tax on total income
-  const personalTaxResult = calculatePersonalTax(totalIncome, reliefs);
+  // Determine total reliefs: use extended reliefs if available, otherwise legacy reliefs
+  const hasExtendedReliefs = extendedReliefs && Object.keys(extendedReliefs).length > 0;
+  let totalReliefsAmount: number;
+
+  if (hasExtendedReliefs) {
+    // Calculate reliefs from extended optimizer
+    const optimizationResult = calculateReliefOptimization(extendedReliefs);
+    totalReliefsAmount = optimizationResult.total;
+  } else {
+    // Fall back to legacy reliefs calculation
+    totalReliefsAmount = reliefs
+      ? Object.values(reliefs).reduce((sum: number, v) => sum + (typeof v === 'number' ? v : 0), 0)
+      : 24000; // Default: basic (9000) + EPF (7000) + medical (8000)
+  }
+
+  // Calculate personal tax on total income with the determined relief total
+  const taxableIncome = Math.max(0, totalIncome - totalReliefsAmount);
+  const taxAmount = calculatePersonalTaxFromBrackets(taxableIncome);
+  const personalTaxResult = {
+    tax: taxAmount,
+    totalReliefs: totalReliefsAmount,
+    taxableIncome,
+    effectiveRate: totalIncome > 0 ? taxAmount / totalIncome : 0,
+  };
 
   // Store the tax before any zakat rebate
   const taxBeforeZakat = personalTaxResult.tax;

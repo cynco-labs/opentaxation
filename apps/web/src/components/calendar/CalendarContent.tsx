@@ -9,6 +9,9 @@ import {
   Warning,
   CaretDown,
   CaretRight,
+  CalendarCheck,
+  Bell,
+  CheckCircle,
 } from 'phosphor-react';
 import {
   type EntityType,
@@ -19,61 +22,45 @@ import {
 
 const smoothEase = [0.25, 0.1, 0.25, 1];
 
-const entityIcons: Record<EntityType, typeof User> = {
-  Individual: User,
-  Company: Buildings,
-  Employer: UsersThree,
-  Partnership: Briefcase,
-};
-
-const entityDescriptions: Record<EntityType, { title: string; subtitle: string; joke: string }> = {
+const entityConfig: Record<EntityType, {
+  icon: typeof User;
+  title: string;
+  subtitle: string;
+  color: string;
+  bgColor: string;
+}> = {
   Individual: {
+    icon: User,
     title: 'Individual',
     subtitle: 'Personal income tax',
-    joke: 'Yes, you have to file too',
+    color: '#722F37',
+    bgColor: '#722F37',
   },
   Company: {
+    icon: Buildings,
     title: 'Company',
     subtitle: 'Corporate tax (Sdn Bhd)',
-    joke: 'The price of being official',
+    color: '#5B8A72',
+    bgColor: '#5B8A72',
   },
   Employer: {
+    icon: UsersThree,
     title: 'Employer',
     subtitle: 'Employee tax forms',
-    joke: 'HR\'s favorite season',
+    color: '#C4A484',
+    bgColor: '#C4A484',
   },
   Partnership: {
+    icon: Briefcase,
     title: 'Partnership',
     subtitle: 'Partnership filing',
-    joke: 'Sharing the burden',
+    color: '#8B7B6B',
+    bgColor: '#8B7B6B',
   },
 };
 
-// Subtle background with contour lines
-function SubtleBackground() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none hidden sm:block">
-      <svg
-        className="absolute w-full h-full opacity-[0.12]"
-        viewBox="0 0 1200 800"
-        fill="none"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <path d="M-100 350 Q 200 300, 400 330 T 800 310 T 1300 360" className="stroke-foreground/40" strokeWidth="0.75" fill="none" />
-        <path d="M-100 400 Q 250 350, 500 380 T 900 360 T 1300 410" className="stroke-foreground/30" strokeWidth="0.75" fill="none" />
-        <path d="M-100 450 Q 300 400, 550 430 T 950 400 T 1300 460" className="stroke-foreground/25" strokeWidth="0.75" fill="none" />
-        <path d="M-100 280 Q 150 260, 350 280 T 700 260 T 1300 300" className="stroke-foreground/20" strokeWidth="0.75" fill="none" />
-        <path d="M-100 200 Q 180 170, 380 190 T 750 170 T 1300 210" className="stroke-foreground/15" strokeWidth="0.75" fill="none" />
-        <ellipse cx="1000" cy="120" rx="80" ry="40" className="stroke-foreground/15" strokeWidth="0.5" fill="none" />
-        <ellipse cx="1000" cy="120" rx="40" ry="20" className="stroke-foreground/10" strokeWidth="0.5" fill="none" />
-        <ellipse cx="100" cy="650" rx="60" ry="30" className="stroke-foreground/15" strokeWidth="0.5" fill="none" />
-      </svg>
-    </div>
-  );
-}
-
-// Entity selector card
-function EntityCard({
+// Entity selector pill
+function EntityPill({
   entity,
   isSelected,
   onSelect,
@@ -84,8 +71,8 @@ function EntityCard({
   onSelect: () => void;
   index: number;
 }) {
-  const Icon = entityIcons[entity];
-  const info = entityDescriptions[entity];
+  const config = entityConfig[entity];
+  const Icon = config.icon;
 
   return (
     <motion.button
@@ -93,34 +80,30 @@ function EntityCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 + index * 0.05, duration: 0.4, ease: smoothEase }}
       onClick={onSelect}
-      className={`group p-5 rounded-xl border text-left transition-all duration-200 ${
+      className={`group flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-200 ${
         isSelected
-          ? 'border-foreground bg-foreground text-background'
-          : 'border-border bg-card hover:border-foreground/30 hover:bg-muted/30'
+          ? 'border-transparent text-white shadow-lg'
+          : 'border-[#E8DDD0] bg-white/50 hover:bg-white hover:border-[#D4C4B0]'
       }`}
+      style={isSelected ? { backgroundColor: config.bgColor } : {}}
     >
-      <div className="space-y-3">
-        <div
-          className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
-            isSelected ? 'bg-background/20' : 'bg-muted/50'
-          }`}
-        >
-          <Icon
-            weight={isSelected ? 'fill' : 'duotone'}
-            className={`h-5 w-5 ${isSelected ? 'text-background' : 'text-foreground'}`}
-          />
-        </div>
-        <div>
-          <p className={`font-semibold ${isSelected ? 'text-background' : 'text-foreground'}`}>
-            {info.title}
-          </p>
-          <p className={`text-sm ${isSelected ? 'text-background/70' : 'text-muted-foreground'}`}>
-            {info.subtitle}
-          </p>
-          <p className={`text-xs mt-1 ${isSelected ? 'text-background/50' : 'text-muted-foreground/70'}`}>
-            {info.joke}
-          </p>
-        </div>
+      <div
+        className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
+          isSelected ? 'bg-white/20' : 'bg-[#F5EDE3]'
+        }`}
+      >
+        <Icon
+          weight={isSelected ? 'fill' : 'duotone'}
+          className={`h-4 w-4 ${isSelected ? 'text-white' : 'text-[#4A3728]'}`}
+        />
+      </div>
+      <div className="text-left">
+        <p className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-[#4A3728]'}`}>
+          {config.title}
+        </p>
+        <p className={`text-xs ${isSelected ? 'text-white/70' : 'text-[#8B7B6B]'}`}>
+          {config.subtitle}
+        </p>
       </div>
     </motion.button>
   );
@@ -129,6 +112,11 @@ function EntityCard({
 // Deadline card
 function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: number }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const entityColor = entityConfig[deadline.entityType]?.color || '#722F37';
+
+  // Check if deadline is upcoming (within 60 days)
+  const isUpcoming = deadline.monthNumber === new Date().getMonth() + 1 ||
+    deadline.monthNumber === new Date().getMonth() + 2;
 
   return (
     <motion.div
@@ -138,25 +126,43 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
     >
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className={`w-full text-left p-5 rounded-xl border transition-all duration-200 ${
+        className={`w-full text-left p-5 rounded-2xl border transition-all duration-200 ${
           isExpanded
-            ? 'bg-card border-foreground/20 shadow-sm'
-            : 'bg-card/50 border-border hover:border-foreground/20 hover:bg-card'
+            ? 'bg-white border-[#D4C4B0] shadow-sm'
+            : 'bg-white/50 border-[#E8DDD0] hover:bg-white hover:border-[#D4C4B0]'
         }`}
       >
         <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 space-y-1">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-sm font-semibold px-2.5 py-1 bg-muted rounded-md">
-                {deadline.formCode}
-              </span>
-              <span className="text-xs text-muted-foreground">{deadline.frequency}</span>
+          <div className="flex items-start gap-4">
+            {/* Entity indicator */}
+            <div
+              className="w-1 h-12 rounded-full flex-shrink-0"
+              style={{ backgroundColor: entityColor }}
+            />
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span
+                  className="font-mono text-sm font-semibold px-2.5 py-1 rounded-lg"
+                  style={{ backgroundColor: `${entityColor}15`, color: entityColor }}
+                >
+                  {deadline.formCode}
+                </span>
+                <span className="text-xs text-[#8B7B6B] bg-[#F5EDE3] px-2 py-0.5 rounded-full">
+                  {deadline.frequency}
+                </span>
+                {isUpcoming && (
+                  <span className="flex items-center gap-1 text-xs text-[#E5A84B] bg-[#E5A84B]/10 px-2 py-0.5 rounded-full">
+                    <Bell weight="fill" className="w-3 h-3" />
+                    Soon
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-[#4A3728]">{deadline.description}</p>
             </div>
-            <p className="text-sm text-foreground">{deadline.description}</p>
           </div>
           <div className="text-right flex-shrink-0">
-            <p className="font-semibold text-foreground">{deadline.dueDate}</p>
-            <p className="text-xs text-muted-foreground">{deadline.month}</p>
+            <p className="font-semibold text-[#4A3728]">{deadline.dueDate}</p>
+            <p className="text-xs text-[#8B7B6B]">{deadline.month}</p>
           </div>
         </div>
 
@@ -169,9 +175,9 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
               transition={{ duration: 0.2 }}
               className="overflow-hidden"
             >
-              <div className="mt-4 pt-4 border-t border-border">
-                <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <Warning weight="fill" className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div className="mt-4 pt-4 border-t border-[#E8DDD0] ml-5">
+                <div className="flex items-start gap-2 text-sm text-[#6B5B4F] bg-[#E5A84B]/10 p-3 rounded-xl">
+                  <Warning weight="fill" className="h-4 w-4 text-[#E5A84B] flex-shrink-0 mt-0.5" />
                   <span>{deadline.notes}</span>
                 </div>
               </div>
@@ -180,7 +186,7 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
         </AnimatePresence>
 
         {deadline.notes && (
-          <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
+          <div className="mt-3 ml-5 flex items-center gap-1 text-xs text-[#8B7B6B]">
             <CaretDown
               weight="bold"
               className={`h-3 w-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -193,7 +199,7 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
   );
 }
 
-// Month timeline
+// Visual month timeline
 function MonthTimeline({ deadlines }: { deadlines: TaxDeadline[] }) {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const currentMonth = new Date().getMonth();
@@ -201,21 +207,57 @@ function MonthTimeline({ deadlines }: { deadlines: TaxDeadline[] }) {
   return (
     <div className="flex items-center gap-1 overflow-x-auto pb-2 scrollbar-none">
       {months.map((month, idx) => {
-        const hasDeadlines = deadlines.some((d) => d.monthNumber === idx + 1);
+        const monthDeadlines = deadlines.filter((d) => d.monthNumber === idx + 1);
+        const hasDeadlines = monthDeadlines.length > 0;
         const isCurrent = idx === currentMonth;
+        const isPast = idx < currentMonth;
 
         return (
           <div
             key={month}
-            className={`flex flex-col items-center px-2 py-2 rounded-lg transition-colors ${
-              isCurrent ? 'bg-foreground text-background' : hasDeadlines ? 'bg-muted/50' : ''
+            className={`relative flex flex-col items-center px-3 py-2 rounded-xl transition-all min-w-[52px] ${
+              isCurrent
+                ? 'bg-[#722F37] text-white'
+                : hasDeadlines
+                ? 'bg-[#F5EDE3]'
+                : ''
             }`}
           >
-            <span className={`text-xs font-medium ${!isCurrent && !hasDeadlines ? 'text-muted-foreground/50' : ''}`}>
+            <span
+              className={`text-xs font-medium ${
+                isCurrent
+                  ? 'text-white'
+                  : isPast
+                  ? 'text-[#8B7B6B]/50'
+                  : hasDeadlines
+                  ? 'text-[#4A3728]'
+                  : 'text-[#8B7B6B]/50'
+              }`}
+            >
               {month}
             </span>
-            {hasDeadlines && !isCurrent && (
-              <div className="w-1.5 h-1.5 rounded-full bg-foreground/50 mt-1" />
+            {hasDeadlines && (
+              <div className="flex gap-0.5 mt-1">
+                {monthDeadlines.slice(0, 3).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      isCurrent ? 'bg-white/60' : 'bg-[#722F37]/40'
+                    }`}
+                  />
+                ))}
+                {monthDeadlines.length > 3 && (
+                  <span className={`text-[8px] ml-0.5 ${isCurrent ? 'text-white/60' : 'text-[#722F37]/60'}`}>
+                    +{monthDeadlines.length - 3}
+                  </span>
+                )}
+              </div>
+            )}
+            {isPast && hasDeadlines && (
+              <CheckCircle
+                weight="fill"
+                className="absolute -top-1 -right-1 w-4 h-4 text-[#5B8A72] bg-[#FAF7F2] rounded-full"
+              />
             )}
           </div>
         );
@@ -236,16 +278,20 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full text-left p-5 rounded-xl border transition-all duration-200 ${
-          isOpen ? 'bg-card border-foreground/20' : 'bg-transparent border-border hover:bg-card/50'
+        className={`w-full text-left p-5 rounded-2xl border transition-all duration-200 ${
+          isOpen
+            ? 'bg-white border-[#D4C4B0]'
+            : 'bg-white/30 border-[#E8DDD0] hover:bg-white/60 hover:border-[#D4C4B0]'
         }`}
       >
         <div className="flex items-start gap-4">
-          <span className="text-xs font-mono text-muted-foreground mt-1">
+          <span
+            className="text-xs font-mono px-2 py-1 rounded-lg bg-[#722F37]/10 text-[#722F37]"
+          >
             {String(index + 1).padStart(2, '0')}
           </span>
           <div className="flex-1">
-            <p className="font-medium text-foreground">{question}</p>
+            <p className="font-medium text-[#4A3728]">{question}</p>
             <AnimatePresence>
               {isOpen && (
                 <motion.p
@@ -253,7 +299,7 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="text-sm text-muted-foreground mt-3 leading-relaxed overflow-hidden"
+                  className="text-sm text-[#6B5B4F] mt-3 leading-relaxed overflow-hidden"
                 >
                   {answer}
                 </motion.p>
@@ -262,7 +308,7 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
           </div>
           <CaretDown
             weight="bold"
-            className={`h-4 w-4 text-muted-foreground transition-transform flex-shrink-0 ${
+            className={`h-4 w-4 text-[#8B7B6B] transition-transform flex-shrink-0 ${
               isOpen ? 'rotate-180' : ''
             }`}
           />
@@ -301,10 +347,8 @@ export default function CalendarContent() {
   ];
 
   return (
-    <div className="h-full overflow-y-auto overscroll-contain relative bg-background">
-      <SubtleBackground />
-
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 pb-safe">
+    <div className="min-h-full bg-[#FAF7F2]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 pb-24">
         {/* Hero */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -312,20 +356,18 @@ export default function CalendarContent() {
           transition={{ duration: 0.5, ease: smoothEase }}
           className="text-center space-y-5"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/50 border border-border rounded-full text-xs font-medium text-muted-foreground">
-            <Clock weight="fill" className="h-3.5 w-3.5" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 border border-[#E8DDD0] rounded-full text-xs font-medium text-[#6B5B4F]">
+            <Clock weight="fill" className="h-3.5 w-3.5 text-[#E5A84B]" />
             YA 2024/2025 Deadlines
           </div>
 
-          <h1
-            className="text-3xl sm:text-4xl md:text-[2.75rem] font-normal leading-tight tracking-tight text-foreground"
-            style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
-          >
-            Tax deadlines that won't<br />
-            <span className="text-muted-foreground">sneak up on you</span>
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] font-normal leading-tight tracking-tight text-[#4A3728]">
+            Tax deadlines that won't
+            <br />
+            <span className="text-[#722F37] italic">sneak up on you</span>
           </h1>
 
-          <p className="text-muted-foreground max-w-md mx-auto text-[15px]">
+          <p className="text-[#6B5B4F] max-w-md mx-auto text-[15px]">
             Because "I forgot" doesn't work on LHDN. All Malaysian tax filing deadlines in one place.
           </p>
         </motion.div>
@@ -335,41 +377,45 @@ export default function CalendarContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15, duration: 0.5 }}
-          className="flex items-center justify-center gap-8 text-center"
+          className="flex items-center justify-center gap-6 sm:gap-10"
         >
-          <div>
-            <p className="text-2xl font-bold">{getAllDeadlinesSorted().length}</p>
-            <p className="text-xs text-muted-foreground">Deadlines tracked</p>
-          </div>
-          <div className="w-px h-8 bg-border" />
-          <div>
-            <p className="text-2xl font-bold">4</p>
-            <p className="text-xs text-muted-foreground">Entity types</p>
-          </div>
-          <div className="w-px h-8 bg-border" />
-          <div>
-            <p className="text-2xl font-bold">0</p>
-            <p className="text-xs text-muted-foreground">Excuses accepted</p>
-          </div>
+          {[
+            { value: getAllDeadlinesSorted().length, label: 'Deadlines tracked' },
+            { value: '4', label: 'Entity types' },
+            { value: '0', label: 'Excuses accepted' },
+          ].map((stat, i) => (
+            <div key={i} className="text-center">
+              <p
+                className="font-serif text-2xl sm:text-3xl font-normal text-[#4A3728]"
+              >
+                {stat.value}
+              </p>
+              <p className="text-xs text-[#8B7B6B]">{stat.label}</p>
+            </div>
+          ))}
         </motion.div>
 
         {/* Entity Selector */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold">I'm filing as...</h2>
+            <h2
+              className="font-serif text-lg font-normal text-[#4A3728]"
+            >
+              I'm filing as...
+            </h2>
             {selectedEntity && (
               <button
                 onClick={() => setSelectedEntity(null)}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-[#722F37] hover:text-[#5A252C] font-medium transition-colors"
               >
-                Show all
+                Show all →
               </button>
             )}
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {entities.map((entity, index) => (
-              <EntityCard
+              <EntityPill
                 key={entity}
                 entity={entity}
                 isSelected={selectedEntity === entity}
@@ -385,18 +431,24 @@ export default function CalendarContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.25, duration: 0.5 }}
-          className="bg-card border border-border rounded-xl p-4"
+          className="bg-white/60 border border-[#E8DDD0] rounded-2xl p-4"
         >
+          <div className="flex items-center gap-2 mb-3">
+            <CalendarCheck weight="duotone" className="h-4 w-4 text-[#722F37]" />
+            <span className="text-sm font-medium text-[#4A3728]">Year at a glance</span>
+          </div>
           <MonthTimeline deadlines={displayedDeadlines} />
         </motion.div>
 
         {/* Deadlines */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold">
-              {selectedEntity ? `${entityDescriptions[selectedEntity].title} deadlines` : 'All deadlines'}
+            <h2
+              className="font-serif text-lg font-normal text-[#4A3728]"
+            >
+              {selectedEntity ? `${entityConfig[selectedEntity].title} deadlines` : 'All deadlines'}
             </h2>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-[#8B7B6B] bg-[#F5EDE3] px-3 py-1 rounded-full">
               {displayedDeadlines.length} {displayedDeadlines.length === 1 ? 'deadline' : 'deadlines'}
             </span>
           </div>
@@ -418,8 +470,12 @@ export default function CalendarContent() {
 
         {/* FAQ */}
         <div className="space-y-4">
-          <h2 className="font-semibold">Common questions</h2>
-          <p className="text-sm text-muted-foreground -mt-2">
+          <h2
+            className="font-serif text-lg font-normal text-[#4A3728]"
+          >
+            Common questions
+          </h2>
+          <p className="text-sm text-[#8B7B6B] -mt-2">
             The stuff you're too embarrassed to ask your accountant.
           </p>
           <div className="space-y-2">
@@ -429,25 +485,30 @@ export default function CalendarContent() {
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Footer CTA */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-center pt-6 pb-8 space-y-4"
+          className="bg-[#722F37] rounded-3xl p-8 text-center"
         >
+          <h3
+            className="font-serif text-xl font-normal text-white mb-2"
+          >
+            Need official information?
+          </h3>
+          <p className="text-white/70 text-sm mb-6">
+            Deadlines accurate as of YA 2024/2025. When in doubt, check with LHDN.
+          </p>
           <a
             href="https://www.hasil.gov.my"
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#E5A84B] text-[#4A3728] font-medium rounded-full hover:bg-[#D9A045] transition-colors"
           >
-            Official LHDN website
-            <CaretRight weight="bold" className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            Visit LHDN Website
+            <CaretRight weight="bold" className="h-4 w-4" />
           </a>
-          <p className="text-xs text-muted-foreground/70">
-            Deadlines accurate as of YA 2024/2025. When in doubt, check with LHDN. We're just here to help you not panic.
-          </p>
         </motion.div>
       </div>
     </div>

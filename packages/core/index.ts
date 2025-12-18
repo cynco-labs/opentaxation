@@ -12,4 +12,5 @@ export * from './tax/calculateCorporateTax';
 export * from './tax/calculateSolePropScenario';
 export * from './tax/calculateSdnBhdScenario';
 export * from './tax/compareScenarios';
+export * from './tax/calculateReliefOptimization';
 

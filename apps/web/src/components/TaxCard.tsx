@@ -76,7 +76,7 @@ function TaxCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className={`h-full border-border/50 shadow-sm sm:hover:shadow-lg sm:hover:-translate-y-0.5 transition-all duration-200 sm:hover:border-primary/20 ${hasWarning ? 'border-amber-500/50' : ''} ${className}`}>
+      <Card className={`h-full ${hasWarning ? 'border-amber-500/50' : ''} ${className}`}>
         {hasWarning && warningText && (
           <div className="bg-destructive/5 border-b border-destructive/20 px-3 sm:px-4 py-2">
             <div className="flex items-center gap-2">

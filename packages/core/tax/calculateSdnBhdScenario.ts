@@ -12,10 +12,12 @@ import {
   calculateBusinessZakatDeduction,
   meetsNisabThreshold,
   ZAKAT_RATE,
+  calculatePersonalTaxFromBrackets,
   type PersonalReliefs,
 } from '@tax-engine/config';
 import { calculateCorporateTax } from './calculateCorporateTax';
 import { calculatePersonalTax } from './calculatePersonalTax';
+import { calculateReliefOptimization } from './calculateReliefOptimization';
 import type { TaxCalculationInputs, SdnBhdScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult } from '../types';
 
 /**
@@ -54,7 +56,7 @@ import type { TaxCalculationInputs, SdnBhdScenarioResult, WaterfallStep, TaxBrac
  */
 export function calculateSdnBhdScenario(
   inputs: Required<Pick<TaxCalculationInputs, 'businessProfit' | 'monthlySalary' | 'otherIncome' | 'complianceCosts'>> &
-    Pick<TaxCalculationInputs, 'auditCost' | 'auditCriteria' | 'reliefs' | 'applyYa2025DividendSurcharge' | 'dividendDistributionPercent' | 'zakat'>
+    Pick<TaxCalculationInputs, 'auditCost' | 'auditCriteria' | 'reliefs' | 'extendedReliefs' | 'applyYa2025DividendSurcharge' | 'dividendDistributionPercent' | 'zakat'>
 ): SdnBhdScenarioResult {
   const {
     businessProfit,
@@ -64,6 +66,7 @@ export function calculateSdnBhdScenario(
     auditCost = 0,
     auditCriteria,
     reliefs,
+    extendedReliefs,
     applyYa2025DividendSurcharge = false,
     dividendDistributionPercent = 100, // Default to 100% distribution
     zakat,
@@ -168,17 +171,43 @@ export function calculateSdnBhdScenario(
   // EPF relief is capped at RM7,000 per Malaysian tax law
   const actualEpfRelief = Math.min(employeeEPF, RELIEF_LIMITS.epfAndLifeInsurance);
 
-  // Merge user-provided reliefs with calculated EPF relief
-  // The calculated EPF relief replaces the default/user-provided value for accuracy
-  const effectiveReliefs: PersonalReliefs = reliefs
-    ? { ...reliefs, epfAndLifeInsurance: actualEpfRelief }
-    : { basic: RELIEF_LIMITS.basic, epfAndLifeInsurance: actualEpfRelief, medical: RELIEF_LIMITS.medical };
-
   // Personal tax on salary + other income
   // In Malaysia, personal tax is calculated on gross income, with EPF claimed as relief
   const totalPersonalIncome = annualSalary + otherIncome;
-  const personalTaxResult = calculatePersonalTax(totalPersonalIncome, effectiveReliefs);
-  const personalTax = personalTaxResult.tax;
+
+  // Determine total personal reliefs: use extended reliefs if available
+  const hasExtendedReliefs = extendedReliefs && Object.keys(extendedReliefs).length > 0;
+  let totalReliefsAmount: number;
+  let effectiveReliefs: PersonalReliefs;
+
+  if (hasExtendedReliefs) {
+    // Calculate reliefs from extended optimizer, but override EPF with actual contribution
+    const extendedWithEpf = {
+      ...extendedReliefs,
+      epf: { amount: actualEpfRelief }, // Override EPF with actual contribution
+    };
+    const optimizationResult = calculateReliefOptimization(extendedWithEpf);
+    totalReliefsAmount = optimizationResult.total;
+    // Create effectiveReliefs for backward compatibility
+    effectiveReliefs = { basic: RELIEF_LIMITS.basic, epfAndLifeInsurance: actualEpfRelief, medical: 0 };
+  } else {
+    // Merge user-provided reliefs with calculated EPF relief
+    // The calculated EPF relief replaces the default/user-provided value for accuracy
+    effectiveReliefs = reliefs
+      ? { ...reliefs, epfAndLifeInsurance: actualEpfRelief }
+      : { basic: RELIEF_LIMITS.basic, epfAndLifeInsurance: actualEpfRelief, medical: RELIEF_LIMITS.medical };
+    totalReliefsAmount = Object.values(effectiveReliefs).reduce((sum: number, v) => sum + (typeof v === 'number' ? v : 0), 0);
+  }
+
+  // Calculate personal tax with determined reliefs
+  const taxableIncome = Math.max(0, totalPersonalIncome - totalReliefsAmount);
+  const personalTax = calculatePersonalTaxFromBrackets(taxableIncome);
+  const personalTaxResult = {
+    tax: personalTax,
+    totalReliefs: totalReliefsAmount,
+    taxableIncome,
+    effectiveRate: totalPersonalIncome > 0 ? personalTax / totalPersonalIncome : 0,
+  };
 
   // Total cash from salary and other income after EPF and tax
   // EPF is deducted from gross salary, then tax is paid from remaining income

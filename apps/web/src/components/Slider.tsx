@@ -70,7 +70,7 @@ export default function Slider({
             </p>
           )}
         </div>
-        <div className="px-3 py-1.5 rounded-md bg-foreground/5 border border-foreground/10 flex-shrink-0 max-w-[120px]" aria-live="polite" aria-atomic="true">
+        <div className="px-3 py-1.5 rounded-lg bg-foreground/5 border border-foreground/10 flex-shrink-0 max-w-[120px]" aria-live="polite" aria-atomic="true">
           <span className="font-numbers text-xs sm:text-sm font-semibold text-foreground truncate block">
             {displayValue}
           </span>

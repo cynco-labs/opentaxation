@@ -1,105 +1,131 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent } from '@/components/ui/card';
-import { Lightbulb, CaretDown, CaretUp } from 'phosphor-react';
+import { Lightbulb, CaretDown, X } from 'phosphor-react';
 
 const NOTES = [
   {
     id: 'salary',
-    icon: '💰',
     titleKey: 'inputs.notes.salary.title',
-    summaryKey: 'inputs.notes.salary.summary',
     contentKey: 'inputs.notes.salary.content',
   },
   {
     id: 'sdnbhd-salary',
-    icon: '🏢',
     titleKey: 'inputs.notes.sdnbhdSalary.title',
-    summaryKey: 'inputs.notes.sdnbhdSalary.summary',
     contentKey: 'inputs.notes.sdnbhdSalary.content',
   },
   {
     id: 'epf',
-    icon: '🏦',
     titleKey: 'inputs.notes.epf.title',
-    summaryKey: 'inputs.notes.epf.summary',
     contentKey: 'inputs.notes.epf.content',
   },
   {
     id: 'compliance',
-    icon: '📋',
     titleKey: 'inputs.notes.compliance.title',
-    summaryKey: 'inputs.notes.compliance.summary',
     contentKey: 'inputs.notes.compliance.content',
   },
   {
     id: 'dividend-tax',
-    icon: '📊',
     titleKey: 'inputs.notes.dividendTax.title',
-    summaryKey: 'inputs.notes.dividendTax.summary',
     contentKey: 'inputs.notes.dividendTax.content',
   },
 ];
 
 export default function EducationalNotes() {
   const { t } = useTranslation();
-  const [expandedNote, setExpandedNote] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedNote, setSelectedNote] = useState<string | null>(null);
 
   return (
-    <Card className="border-border/50 shadow-sm overflow-hidden">
-      <CardContent className="p-5 sm:p-5 space-y-4">
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <Lightbulb weight="duotone" className="h-4 w-4 text-primary" />
-          <span className="text-xs font-semibold uppercase tracking-wide">{t('inputs.notes.title')}</span>
-        </div>
+    <div className="relative">
+      {/* Collapsed state - minimal pill button */}
+      {!isExpanded && (
+        <motion.button
+          type="button"
+          onClick={() => setIsExpanded(true)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-muted/50 hover:bg-muted/70 border border-border/30 transition-colors group"
+        >
+          <Lightbulb weight="duotone" className="h-4 w-4 text-amber-500" />
+          <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+            {t('inputs.notes.title')}
+          </span>
+          <CaretDown weight="bold" className="h-3.5 w-3.5 text-muted-foreground" />
+        </motion.button>
+      )}
 
-        <div className="space-y-3">
-          {NOTES.map((note) => (
-            <div
-              key={note.id}
-              className="rounded-xl border border-border/50 bg-card overflow-hidden transition-all duration-200 hover:border-primary/30 hover:shadow-sm"
-            >
-              <button
-                type="button"
-                onClick={() => setExpandedNote(expandedNote === note.id ? null : note.id)}
-                className="w-full flex items-start gap-3 p-4 text-left touch-target"
-              >
-                <span className="text-xl flex-shrink-0 mt-0.5">{note.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-foreground">{t(note.titleKey)}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{t(note.summaryKey)}</div>
+      {/* Expanded state - compact list */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="rounded-xl border border-border/50 bg-card overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border/30 bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <Lightbulb weight="duotone" className="h-4 w-4 text-amber-500" />
+                  <span className="text-sm font-medium text-foreground">{t('inputs.notes.title')}</span>
                 </div>
-                <div className="flex-shrink-0 mt-1">
-                  {expandedNote === note.id ? (
-                    <CaretUp weight="bold" className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <CaretDown weight="bold" className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </div>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    setSelectedNote(null);
+                  }}
+                  className="p-1.5 rounded-lg hover:bg-muted transition-colors"
+                >
+                  <X weight="bold" className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </div>
 
-              <AnimatePresence>
-                {expandedNote === note.id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-4 pb-4 pt-0">
-                      <div className="pl-9 text-sm text-muted-foreground leading-relaxed whitespace-pre-line border-t border-border/30 pt-4">
-                        {t(note.contentKey)}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Notes list */}
+              <div className="divide-y divide-border/30">
+                {NOTES.map((note) => (
+                  <div key={note.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedNote(selectedNote === note.id ? null : note.id)}
+                      className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-muted/30 transition-colors"
+                    >
+                      <span className="text-sm text-foreground">{t(note.titleKey)}</span>
+                      <motion.div
+                        animate={{ rotate: selectedNote === note.id ? 180 : 0 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        <CaretDown weight="bold" className="h-3.5 w-3.5 text-muted-foreground" />
+                      </motion.div>
+                    </button>
+
+                    <AnimatePresence>
+                      {selectedNote === note.id && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-4 pb-4 pt-1">
+                            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                              {t(note.contentKey)}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

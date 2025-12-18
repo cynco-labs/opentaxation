@@ -282,7 +282,6 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             animate="visible"
             custom={0}
             className="font-serif text-[1.75rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.75rem] font-normal leading-[1.15] tracking-tight text-foreground mb-5 sm:mb-6"
-            style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             {t('landingPage.hero.title1')}
             <br />
@@ -353,7 +352,6 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">The Question</p>
           <h2
             className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-foreground"
-            style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             Which structure keeps more in your pocket?
           </h2>
@@ -368,8 +366,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">The Insight</p>
             <h2
               className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal mb-3 text-foreground"
-              style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
-            >
+              >
               {t('landingPage.magic.title')}{' '}
               <span className="italic">{t('landingPage.magic.range')}</span>
             </h2>
@@ -388,8 +385,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           <div className="text-center mb-8 sm:mb-12">
             <h2
               className="font-serif text-xl sm:text-2xl md:text-3xl font-normal mb-3 text-foreground"
-              style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
-            >
+              >
               {t('landingPage.truth.title')}
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground">{t('landingPage.truth.subtitle')}</p>
@@ -398,7 +394,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {/* Large feature card */}
-            <div className="md:row-span-2 p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-foreground text-background relative overflow-hidden">
+            <div className="md:row-span-2 p-6 sm:p-8 rounded-2xl bg-foreground text-background relative overflow-hidden">
               <div className="absolute top-4 right-4 text-[60px] sm:text-[80px] font-bold leading-none text-background/5 select-none">
                 01
               </div>
@@ -412,7 +408,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             </div>
 
             {/* Muted accent card */}
-            <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-muted/50 border border-border relative overflow-hidden">
+            <div className="p-5 sm:p-6 rounded-2xl bg-muted/50 border border-border relative overflow-hidden">
               <div className="absolute top-3 right-3 text-[50px] sm:text-[60px] font-bold leading-none text-foreground/5 select-none">
                 02
               </div>
@@ -426,7 +422,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             </div>
 
             {/* Simple card */}
-            <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border relative overflow-hidden">
+            <div className="p-5 sm:p-6 rounded-2xl bg-card border border-border relative overflow-hidden">
               <div className="absolute top-3 right-3 text-[50px] sm:text-[60px] font-bold leading-none text-foreground/5 select-none">
                 03
               </div>
@@ -449,8 +445,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             <div className="text-center mb-8 sm:mb-10">
               <h2
                 className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-foreground"
-                style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
-              >
+                  >
                 {t('landingPage.know.title')}
               </h2>
             </div>
@@ -496,8 +491,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             </p>
             <h2
               className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-foreground mb-3"
-              style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
-            >
+              >
               {t('landingPage.faq.title')}
             </h2>
             <p className="text-sm text-muted-foreground max-w-md mx-auto text-balance">
@@ -542,7 +536,6 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
 
           <h2
             className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal mb-4 sm:mb-5 text-background"
-            style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
           >
             Ready to find out?
           </h2>
@@ -628,8 +621,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           <div className="pt-6 border-t border-border">
             <p
               className="text-xs text-muted-foreground/70 italic text-center sm:text-left max-w-xl text-balance"
-              style={{ fontFamily: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' }}
-            >
+              >
               {t('landingPage.footer.disclaimer')}
             </p>
           </div>

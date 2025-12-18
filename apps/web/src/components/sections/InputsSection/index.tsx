@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowCounterClockwise, CalendarCheck } from 'phosphor-react';
 import Logo from '@/components/Logo';
 import ReliefsSection from '@/components/ReliefsSection';
+import ReliefOptimizer from '@/components/relief-optimizer';
 import { getDefaultReliefs } from '@tax-engine/config';
 
 import ProfitInputSection from './ProfitInputSection';
@@ -119,6 +120,15 @@ function InputsSection({
               }}
             />
 
+            {/* Educational Notes - positioned early for visibility */}
+            <motion.div
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.06, duration: 0.3 }}
+            >
+              <EducationalNotes />
+            </motion.div>
+
             {/* Step 3: Audit check */}
             <AuditSection
               inputs={inputs}
@@ -137,10 +147,17 @@ function InputsSection({
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.3 }}
             >
-              <ReliefsSection
-                reliefs={inputs.reliefs || getDefaultReliefs()}
-                onChange={callbacks.onReliefsChange}
-              />
+              {callbacks.onExtendedReliefsChange ? (
+                <ReliefOptimizer
+                  claims={inputs.extendedReliefs || {}}
+                  onChange={callbacks.onExtendedReliefsChange}
+                />
+              ) : (
+                <ReliefsSection
+                  reliefs={inputs.reliefs || getDefaultReliefs()}
+                  onChange={callbacks.onReliefsChange}
+                />
+              )}
             </motion.div>
 
             {/* Step 5: Zakat */}
@@ -151,16 +168,6 @@ function InputsSection({
               />
             )}
           </div>
-
-          {/* Educational Notes Section */}
-          <motion.div
-            initial={{ y: 10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.12, duration: 0.3 }}
-            className="px-5 sm:px-5 lg:px-8 py-6 pb-safe"
-          >
-            <EducationalNotes />
-          </motion.div>
         </div>
       </div>
     </motion.div>

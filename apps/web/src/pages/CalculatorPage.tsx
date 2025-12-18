@@ -1,18 +1,16 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { isAuditExempt, getDefaultReliefs, calculateRequiredIncomeForNetCash, calculateTotalReliefs, type PersonalReliefs } from '@tax-engine/config';
 import { type TaxCalculationInputs, type InputMode, type ZakatInput, type ReliefClaimValues, getTotalReliefsFromExtended } from '@tax-engine/core';
-import { useTaxCalculation } from '../hooks/useTaxCalculation';
-import { useErrorToast } from '../hooks/useErrorToast';
-import { useTaxInputsStorage, type StoredInputs } from '../hooks/useLocalStorage';
-import { useShareableLink } from '../hooks/useShareableLink';
-import { useIsMobile } from '../hooks/useMediaQuery';
-import LandingSection from '../components/sections/LandingSection';
-import InputsSection, { type InputCallbacks } from '../components/sections/InputsSection';
-import ResultsSection from '../components/sections/ResultsSection';
-import { MobileUnifiedLayout } from '../components/mobile';
-import LegalFooter from '../components/pages/LegalFooter';
+import { useTaxCalculation } from '@/hooks/useTaxCalculation';
+import { useErrorToast } from '@/hooks/useErrorToast';
+import { useTaxInputsStorage, type StoredInputs } from '@/hooks/useLocalStorage';
+import { useShareableLink } from '@/hooks/useShareableLink';
+import { useIsMobile } from '@/hooks/useMediaQuery';
+import InputsSection, { type InputCallbacks } from '@/components/sections/InputsSection';
+import ResultsSection from '@/components/sections/ResultsSection';
+import { MobileUnifiedLayout } from '@/components/mobile';
 
 // Default values for tax inputs
 const DEFAULT_INPUTS: StoredInputs = {
@@ -28,16 +26,13 @@ const DEFAULT_INPUTS: StoredInputs = {
   dividendDistributionPercent: 100,
   hasForeignOwnership: false,
   inputMode: 'profit',
-  targetNetIncome: 10000, // Monthly target take-home
-  extendedReliefs: {}, // Extended relief optimizer claims
+  targetNetIncome: 10000,
+  extendedReliefs: {},
 };
 
-export default function SinglePageApp() {
+export default function CalculatorPage() {
   const { user } = useAuth();
-  const [showApp, setShowApp] = useState(false);
   const isSignedIn = !!user;
-
-  // Mobile layout state
   const isMobile = useIsMobile();
 
   // Use localStorage persistence for all inputs
@@ -48,13 +43,10 @@ export default function SinglePageApp() {
 
   // Handler for loading shared inputs from URL
   const handleLoadSharedInputs = useCallback((sharedInputs: Partial<StoredInputs>) => {
-    // Update all inputs with shared values (preserving any missing as current values)
     updateAllInputs({
       ...storedInputs,
       ...sharedInputs,
     });
-    // Auto-show app when loading from shared link
-    setShowApp(true);
   }, [updateAllInputs, storedInputs]);
 
   // Shareable link functionality
@@ -83,8 +75,7 @@ export default function SinglePageApp() {
     setReliefs(getDefaultReliefs());
   }, [clearInputs]);
 
-  // Create callbacks object for InputsSection (Callback Object Pattern)
-  // This reduces prop drilling from 20+ individual props to a single callbacks object
+  // Create callbacks object for InputsSection
   const inputCallbacks: InputCallbacks = useMemo(() => ({
     onBusinessProfitChange: setBusinessProfit,
     onOtherIncomeChange: setOtherIncome,
@@ -110,8 +101,7 @@ export default function SinglePageApp() {
     setHasForeignOwnership, handleClearInputs, setInputMode, setTargetNetIncome, setZakat,
   ]);
 
-  // Calculate derived state during render (not in Effects)
-  // Per React best practices: https://react.dev/learn/you-might-not-need-an-effect
+  // Calculate derived state
   const auditRequired = !isAuditExempt({
     revenue: storedInputs.auditRevenue,
     totalAssets: storedInputs.auditAssets,
@@ -119,27 +109,23 @@ export default function SinglePageApp() {
   });
 
   // Calculate total reliefs for reverse calculation
-  // Use extended reliefs if available, otherwise use legacy reliefs
   const hasExtendedReliefs = storedInputs.extendedReliefs && Object.keys(storedInputs.extendedReliefs).length > 0;
   const totalReliefs = hasExtendedReliefs
     ? getTotalReliefsFromExtended(storedInputs.extendedReliefs!)
     : calculateTotalReliefs(reliefs);
 
   // Calculate required income for target mode
-  // Target is monthly, so multiply by 12 for annual
   const annualTargetNetIncome = (storedInputs.targetNetIncome || 10000) * 12;
   const requiredGrossIncome = storedInputs.inputMode === 'target'
     ? calculateRequiredIncomeForNetCash(annualTargetNetIncome, totalReliefs)
     : 0;
 
   // Calculate effective business profit based on input mode
-  // In target mode: required gross income - other income = required business profit
   const effectiveBusinessProfit = storedInputs.inputMode === 'target'
     ? Math.max(0, requiredGrossIncome - storedInputs.otherIncome)
     : storedInputs.businessProfit;
 
-  // Create inputs object during render - this is fine since it's used immediately
-  // The useTaxCalculation hook will properly memoize based on primitive values
+  // Create inputs object
   const inputs: TaxCalculationInputs = {
     businessProfit: effectiveBusinessProfit,
     otherIncome: storedInputs.otherIncome,
@@ -164,47 +150,28 @@ export default function SinglePageApp() {
   const comparison = useTaxCalculation(inputs);
   const { ErrorToastContainer } = useErrorToast();
 
-  // Automatically show app when user signs in
-  useEffect(() => {
-    if (isSignedIn && !showApp) {
-      setShowApp(true);
-    }
-  }, [isSignedIn, showApp]);
-
-  if (!showApp) {
-    return (
-      <>
-        <ErrorToastContainer />
-        <LandingSection onStart={() => setShowApp(true)} />
-      </>
-    );
-  }
-
-  // App Page - Single viewport, left to right, no scrolling
   return (
     <>
       <ErrorToastContainer />
       <a
         href="#inputs-heading"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:rounded-md"
       >
         Skip to inputs
       </a>
       <a
         href="#results-heading"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-16 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-16 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-foreground focus:text-background focus:rounded-md"
       >
         Skip to results
       </a>
       <AnimatePresence mode="wait">
         {isMobile ? (
-          // Mobile: Unified layout with collapsible inputs and always-visible results
           <motion.div
-            key="app-mobile"
+            key="calc-mobile"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
             className="safe-area-insets"
           >
             <MobileUnifiedLayout
@@ -231,14 +198,12 @@ export default function SinglePageApp() {
             />
           </motion.div>
         ) : (
-          // Desktop: Side-by-side layout
           <motion.div
-            key="app-desktop"
+            key="calc-desktop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="h-screen w-full overflow-hidden bg-background flex flex-row safe-area-insets"
+            className="h-[calc(100vh-3.5rem)] w-full overflow-hidden bg-background flex flex-row"
           >
             <InputsSection
               inputs={inputs}
@@ -255,7 +220,6 @@ export default function SinglePageApp() {
           </motion.div>
         )}
       </AnimatePresence>
-      {showApp && <LegalFooter />}
     </>
   );
 }

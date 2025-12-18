@@ -34,10 +34,22 @@ export default function SdnBhdSettingsSection({
                 min={0}
                 max={20000}
                 step={500}
+                tooltip={t('inputs.salary.tooltip')}
               />
               <p className="text-xs text-muted-foreground pl-1">
                 {t('inputs.salary.helper')}
               </p>
+              {(inputs.monthlySalary || 0) * 12 > (inputs.businessProfit || 0) && inputs.businessProfit > 0 && (
+                <p className="text-xs text-amber-600 dark:text-amber-500 pl-1 flex items-start gap-1.5">
+                  <span className="flex-shrink-0">⚠️</span>
+                  <span>
+                    {t('inputs.salary.warning', {
+                      annualSalary: ((inputs.monthlySalary || 0) * 12).toLocaleString('en-MY'),
+                      profit: (inputs.businessProfit || 0).toLocaleString('en-MY'),
+                    })}
+                  </span>
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -48,6 +60,7 @@ export default function SdnBhdSettingsSection({
                 min={3000}
                 max={15000}
                 step={500}
+                tooltip={t('inputs.compliance.tooltip')}
               />
               <p className="text-xs text-muted-foreground pl-1">
                 {t('inputs.compliance.helper')}
@@ -64,8 +77,12 @@ export default function SdnBhdSettingsSection({
                 step={10}
                 prefix=""
                 formatValue={(v) => `${v}%`}
+                tooltip={t('inputs.dividend.tooltip')}
               />
               <p className="text-xs text-muted-foreground pl-1">
+                {t('inputs.dividend.helper')}
+              </p>
+              <p className="text-xs text-muted-foreground/80 pl-1 italic">
                 {inputs.dividendDistributionPercent === 100
                   ? t('inputs.dividend.takingAll')
                   : inputs.dividendDistributionPercent === 0

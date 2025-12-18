@@ -1,23 +1,33 @@
 import { useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { TooltipProvider } from './components/ui/tooltip';
 import { PWAInstallPrompt } from './components/PWAInstallPrompt';
-import SinglePageApp from './pages/SinglePageApp';
 import { trackPageView } from './lib/analytics';
 
-// Lazy load non-critical routes
+// Layout
+import AppShell from './components/layout/AppShell';
+
+// Main pages (not lazy - core experience)
+import LandingHub from './pages/LandingHub';
+import CalculatorPage from './pages/CalculatorPage';
+
+// Lazy load other routes
 const AuthPage = lazy(() => import('./pages/AuthPage'));
 const PrivacyPolicy = lazy(() => import('./components/pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./components/pages/TermsOfService'));
 const Disclaimer = lazy(() => import('./components/pages/Disclaimer'));
-const DashboardLayout = lazy(() => import('./pages/dashboard/DashboardLayout'));
-const DashboardOverview = lazy(() => import('./pages/dashboard/DashboardOverview'));
+const DocsPage = lazy(() => import('./pages/DocsPage'));
+const PartnersPage = lazy(() => import('./pages/PartnersPage'));
+
+// Tools (lazy loaded)
 const DashboardCalendar = lazy(() => import('./pages/dashboard/DashboardCalendar'));
+const EInvoicingHub = lazy(() => import('./pages/einvoicing/EInvoicingHub'));
+
+// User pages (lazy loaded)
 const SavedCalculations = lazy(() => import('./pages/dashboard/SavedCalculations'));
 const DashboardSettings = lazy(() => import('./pages/dashboard/DashboardSettings'));
-const PartnersPage = lazy(() => import('./pages/PartnersPage'));
 
 // Blog routes
 const BlogListPage = lazy(() => import('./pages/blog/BlogListPage'));
@@ -27,8 +37,6 @@ const BlogPostPage = lazy(() => import('./pages/blog/BlogPostPage'));
 const BlogAdminList = lazy(() => import('./pages/dashboard/blog/BlogAdminList'));
 const BlogAdminEdit = lazy(() => import('./pages/dashboard/blog/BlogAdminEdit'));
 
-// E-Invoicing hub
-const EInvoicingHub = lazy(() => import('./pages/einvoicing/EInvoicingHub'));
 
 // Loading fallback for lazy routes
 function RouteLoading() {
@@ -49,30 +57,49 @@ function AppRoutes() {
   return (
     <Suspense fallback={<RouteLoading />}>
       <Routes>
-        <Route path="/" element={<SinglePageApp />} />
-        <Route path="/login" element={<AuthPage />} />
-        <Route path="/signup" element={<AuthPage />} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="/disclaimer" element={<Disclaimer />} />
-        <Route path="/partners" element={<PartnersPage />} />
+        {/* Main app with persistent navigation */}
+        <Route element={<AppShell />}>
+          {/* Landing hub */}
+          <Route index element={<LandingHub />} />
 
-        {/* Blog routes */}
-        <Route path="/blog" element={<BlogListPage />} />
-        <Route path="/blog/:slug" element={<BlogPostPage />} />
-
-        {/* E-Invoicing hub */}
-        <Route path="/e-invoicing" element={<EInvoicingHub />} />
-
-        {/* Dashboard routes (protected) */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardOverview />} />
+          {/* Tools that use standard layout */}
           <Route path="calendar" element={<DashboardCalendar />} />
-          <Route path="calculations" element={<SavedCalculations />} />
+          <Route path="e-invoicing" element={<EInvoicingHub />} />
+
+          {/* User pages */}
+          <Route path="saved" element={<SavedCalculations />} />
           <Route path="settings" element={<DashboardSettings />} />
-          <Route path="blog" element={<BlogAdminList />} />
-          <Route path="blog/:id" element={<BlogAdminEdit />} />
+
+          {/* Blog admin (protected) */}
+          <Route path="admin/blog" element={<BlogAdminList />} />
+          <Route path="admin/blog/:id" element={<BlogAdminEdit />} />
         </Route>
+
+        {/* Calculator has its own optimized layout */}
+        <Route path="calculator" element={<CalculatorPage />} />
+
+        {/* Auth pages (outside AppShell) */}
+        <Route path="login" element={<AuthPage />} />
+        <Route path="signup" element={<AuthPage />} />
+
+        {/* Legal & info pages (outside AppShell) */}
+        <Route path="privacy" element={<PrivacyPolicy />} />
+        <Route path="terms" element={<TermsOfService />} />
+        <Route path="disclaimer" element={<Disclaimer />} />
+        <Route path="docs" element={<DocsPage />} />
+
+        {/* Partners page */}
+        <Route path="partners" element={<PartnersPage />} />
+
+        {/* Blog (public, outside AppShell for SEO) */}
+        <Route path="blog" element={<BlogListPage />} />
+        <Route path="blog/:slug" element={<BlogPostPage />} />
+
+        {/* Legacy redirects - dashboard routes redirect to new paths */}
+        <Route path="dashboard" element={<Navigate to="/" replace />} />
+        <Route path="dashboard/calendar" element={<Navigate to="/calendar" replace />} />
+        <Route path="dashboard/calculations" element={<Navigate to="/saved" replace />} />
+        <Route path="dashboard/settings" element={<Navigate to="/settings" replace />} />
       </Routes>
     </Suspense>
   );
@@ -92,4 +119,3 @@ function App() {
 }
 
 export default App;
-

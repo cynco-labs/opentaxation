@@ -25,6 +25,12 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
     ? `${reliefs.basic || 0}-${reliefs.epfAndLifeInsurance || 0}-${reliefs.medical || 0}-${reliefs.spouse || 0}-${reliefs.children || 0}-${reliefs.education || 0}`
     : '';
 
+  // Create a stable key for extended reliefs
+  const extendedReliefs = inputs.extendedReliefs;
+  const extendedReliefsKey = extendedReliefs
+    ? JSON.stringify(extendedReliefs)
+    : '';
+
   return useMemo(() => {
     if (!inputs.businessProfit && inputs.businessProfit !== 0) {
       return null;
@@ -34,6 +40,7 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
       businessProfit: inputs.businessProfit,
       otherIncome: inputs.otherIncome || 0,
       reliefs: inputs.reliefs,
+      extendedReliefs: inputs.extendedReliefs,
       zakat: inputs.zakat,
     });
 
@@ -45,6 +52,7 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
       auditCost: inputs.auditCost,
       auditCriteria: inputs.auditCriteria,
       reliefs: inputs.reliefs,
+      extendedReliefs: inputs.extendedReliefs,
       applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
       dividendDistributionPercent: inputs.dividendDistributionPercent,
       zakat: inputs.zakat,
@@ -62,6 +70,7 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
     inputs.auditCriteria?.totalAssets,
     inputs.auditCriteria?.employees,
     reliefsKey, // Use serialized reliefs instead of object reference
+    extendedReliefsKey, // Use serialized extended reliefs
     inputs.applyYa2025DividendSurcharge,
     inputs.dividendDistributionPercent,
     inputs.zakat?.enabled,

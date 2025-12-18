@@ -1,5 +1,5 @@
 import type { PersonalReliefs } from '@tax-engine/config';
-import type { TaxCalculationInputs, InputMode, ZakatInput } from '@tax-engine/core';
+import type { TaxCalculationInputs, InputMode, ZakatInput, ReliefClaimValues } from '@tax-engine/core';
 
 /** Callback functions for InputsSection */
 export interface InputCallbacks {
@@ -12,6 +12,8 @@ export interface InputCallbacks {
   onAuditEmployeesChange: (value: number) => void;
   onAuditCostChange: (value: number) => void;
   onReliefsChange: (reliefs: PersonalReliefs) => void;
+  /** Callback for extended relief optimizer claims */
+  onExtendedReliefsChange?: (claims: ReliefClaimValues) => void;
   onApplyYa2025DividendSurchargeChange: (value: boolean) => void;
   onDividendDistributionPercentChange: (value: number) => void;
   onForeignOwnershipChange: (value: boolean) => void;

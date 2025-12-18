@@ -23,10 +23,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        /* System font stack - fast, native, clean (like invoicely.gg) */
+        /* Open Ledger design system fonts */
         sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        display: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        heading: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        serif: ['ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
       },
       letterSpacing: {
         'tighter': '-0.035em',

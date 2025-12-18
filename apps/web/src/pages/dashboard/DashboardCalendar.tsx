@@ -1,32 +1,26 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Bell,
-  BellRinging,
+  CalendarCheck,
+  Clock,
   Export,
-  GoogleLogo,
-  CaretDown,
-  CaretUp,
-  Warning,
-  Info,
   User,
   Buildings,
   UsersThree,
   Briefcase,
-  CalendarCheck,
+  Info,
+  Bell,
+  CheckCircle,
 } from 'phosphor-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import {
   type EntityType,
   type TaxDeadline,
   taxDeadlines,
   entityTypeInfo,
 } from '@/data/taxDeadlines';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 // Icons for entity types
 const entityIcons: Record<EntityType, typeof User> = {
@@ -36,9 +30,43 @@ const entityIcons: Record<EntityType, typeof User> = {
   Partnership: Briefcase,
 };
 
-// Helper to calculate days until a deadline
-function getDaysUntilDeadline(deadline: TaxDeadline): number | null {
-  // Parse dates like "30 April", "31 March", etc.
+// Entity colors
+const entityColors: Record<EntityType, string> = {
+  Individual: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+  Company: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
+  Employer: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+  Partnership: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+};
+
+const entityDotColors: Record<EntityType, string> = {
+  Individual: 'bg-blue-500',
+  Company: 'bg-purple-500',
+  Employer: 'bg-amber-500',
+  Partnership: 'bg-emerald-500',
+};
+
+// Months data
+const MONTHS = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+const FULL_MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+// Get deadlines for a specific month
+function getDeadlinesForMonth(month: number, entityFilter: EntityType | null): TaxDeadline[] {
+  return taxDeadlines.filter(d => {
+    const matchesMonth = d.monthNumber === month;
+    const matchesEntity = !entityFilter || d.entityType === entityFilter;
+    return matchesMonth && matchesEntity;
+  });
+}
+
+// Parse deadline date to get days until
+function getDaysUntil(deadline: TaxDeadline): number | null {
   const dueDateStr = deadline.dueDate;
   const monthMatch = dueDateStr.match(/(\d+)\s+(\w+)/);
 
@@ -56,69 +84,29 @@ function getDaysUntilDeadline(deadline: TaxDeadline): number | null {
 
   const now = new Date();
   const currentYear = now.getFullYear();
-
-  // Create deadline date for this year
   let deadlineDate = new Date(currentYear, month, day);
 
-  // If deadline has passed this year, use next year
   if (deadlineDate < now) {
     deadlineDate = new Date(currentYear + 1, month, day);
   }
 
   const diffTime = deadlineDate.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  return diffDays;
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
-// Get urgency status
-function getUrgencyStatus(days: number | null): 'overdue' | 'urgent' | 'soon' | 'normal' {
-  if (days === null) return 'normal';
-  if (days < 0) return 'overdue';
-  if (days <= 7) return 'urgent';
-  if (days <= 30) return 'soon';
-  return 'normal';
+// Get next upcoming deadlines
+function getUpcomingDeadlines(count: number = 3): (TaxDeadline & { daysUntil: number })[] {
+  const withDays = taxDeadlines
+    .map(d => ({ ...d, daysUntil: getDaysUntil(d) }))
+    .filter(d => d.daysUntil !== null && d.daysUntil >= 0) as (TaxDeadline & { daysUntil: number })[];
+
+  return withDays.sort((a, b) => a.daysUntil - b.daysUntil).slice(0, count);
 }
 
-// Format deadline date for next occurrence
-function getNextDeadlineDate(deadline: TaxDeadline): string {
-  const dueDateStr = deadline.dueDate;
-  const monthMatch = dueDateStr.match(/(\d+)\s+(\w+)/);
-
-  if (!monthMatch) return dueDateStr;
-
-  const day = parseInt(monthMatch[1]);
-  const monthName = monthMatch[2];
-  const months: Record<string, number> = {
-    January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
-    July: 6, August: 7, September: 8, October: 9, November: 10, December: 11,
-  };
-
-  const month = months[monthName];
-  if (month === undefined) return dueDateStr;
-
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  let deadlineDate = new Date(currentYear, month, day);
-
-  if (deadlineDate < now) {
-    deadlineDate = new Date(currentYear + 1, month, day);
-  }
-
-  return deadlineDate.toLocaleDateString('en-MY', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
-}
-
-// Generate ICS file content
+// Generate ICS file
 function generateICSContent(deadlines: TaxDeadline[]): string {
   const now = new Date();
-  const formatDate = (date: Date) => {
-    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-  };
+  const formatDate = (date: Date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
   let icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
@@ -131,7 +119,6 @@ X-WR-CALNAME:Malaysian Tax Deadlines
   deadlines.forEach((deadline) => {
     const dueDateStr = deadline.dueDate;
     const monthMatch = dueDateStr.match(/(\d+)\s+(\w+)/);
-
     if (!monthMatch) return;
 
     const day = parseInt(monthMatch[1]);
@@ -146,14 +133,9 @@ X-WR-CALNAME:Malaysian Tax Deadlines
 
     const currentYear = now.getFullYear();
     let deadlineDate = new Date(currentYear, month, day);
-
     if (deadlineDate < now) {
       deadlineDate = new Date(currentYear + 1, month, day);
     }
-
-    // Create reminder 7 days before
-    const reminderDate = new Date(deadlineDate);
-    reminderDate.setDate(reminderDate.getDate() - 7);
 
     const uid = `${deadline.id}-${deadlineDate.getFullYear()}@opentaxation.my`;
 
@@ -184,7 +166,6 @@ END:VEVENT
   return icsContent;
 }
 
-// Download ICS file
 function downloadICS(deadlines: TaxDeadline[]) {
   const icsContent = generateICSContent(deadlines);
   const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
@@ -198,389 +179,365 @@ function downloadICS(deadlines: TaxDeadline[]) {
   URL.revokeObjectURL(url);
 }
 
-// Generate Google Calendar URL
-function getGoogleCalendarUrl(deadline: TaxDeadline): string {
-  const dueDateStr = deadline.dueDate;
-  const monthMatch = dueDateStr.match(/(\d+)\s+(\w+)/);
-
-  if (!monthMatch) return '#';
-
-  const day = parseInt(monthMatch[1]);
-  const monthName = monthMatch[2];
-  const months: Record<string, number> = {
-    January: 0, February: 1, March: 2, April: 3, May: 4, June: 5,
-    July: 6, August: 7, September: 8, October: 9, November: 10, December: 11,
-  };
-
-  const month = months[monthName];
-  if (month === undefined) return '#';
-
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  let deadlineDate = new Date(currentYear, month, day);
-
-  if (deadlineDate < now) {
-    deadlineDate = new Date(currentYear + 1, month, day);
-  }
-
-  const dateStr = deadlineDate.toISOString().split('T')[0].replace(/-/g, '');
-  const title = encodeURIComponent(`${deadline.formCode} - Tax Filing Deadline`);
-  const details = encodeURIComponent(`${deadline.description}${deadline.notes ? '\n\nNote: ' + deadline.notes : ''}\n\nSource: opentaxation.my`);
-
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateStr}/${dateStr}&details=${details}`;
-}
-
-interface DeadlineCardProps {
-  deadline: TaxDeadline;
-  isReminderEnabled: boolean;
-  onToggleReminder: (id: string) => void;
-}
-
-function DeadlineCard({ deadline, isReminderEnabled, onToggleReminder }: DeadlineCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const daysUntil = getDaysUntilDeadline(deadline);
-  const urgency = getUrgencyStatus(daysUntil);
-  const nextDate = getNextDeadlineDate(deadline);
-  const Icon = entityIcons[deadline.entityType];
-
-  const urgencyColors = {
-    overdue: 'bg-destructive/10 border-destructive/30 text-destructive',
-    urgent: 'bg-amber/10 border-amber/30 text-amber-600 dark:text-amber-400',
-    soon: 'bg-primary/10 border-primary/30 text-primary',
-    normal: 'bg-muted/50 border-border text-muted-foreground',
-  };
-
-  const countdownColors = {
-    overdue: 'text-destructive',
-    urgent: 'text-amber-600 dark:text-amber-400',
-    soon: 'text-primary',
-    normal: 'text-foreground',
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-      layout
-    >
-      <Card className={`transition-all duration-200 ${urgency === 'urgent' || urgency === 'overdue' ? 'border-l-4 border-l-amber' : ''}`}>
-        <CardContent className="p-3 sm:p-4 md:p-5">
-          <div className="flex items-start gap-2.5 sm:gap-4">
-            {/* Entity Icon */}
-            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${urgencyColors[urgency]}`}>
-              <Icon weight="duotone" className="h-4 w-4 sm:h-5 sm:w-5" />
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2 sm:gap-3">
-                <div className="space-y-1 min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                    <span className="font-mono text-xs sm:text-sm font-semibold bg-foreground/5 px-1.5 sm:px-2 py-0.5 rounded">
-                      {deadline.formCode}
-                    </span>
-                    <Badge variant="outline" className="text-[10px] sm:text-xs">
-                      {deadline.entityType}
-                    </Badge>
-                    <Badge variant="secondary" className="text-[10px] sm:text-xs hidden sm:inline-flex">
-                      {deadline.frequency}
-                    </Badge>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
-                    {deadline.description}
-                  </p>
-                </div>
-
-                {/* Countdown */}
-                <div className="text-right flex-shrink-0">
-                  {daysUntil !== null ? (
-                    <div className="space-y-0.5 sm:space-y-1">
-                      <div className={`text-lg sm:text-2xl font-bold font-numbers ${countdownColors[urgency]}`}>
-                        {daysUntil < 0 ? 'Overdue' : daysUntil === 0 ? 'Today!' : `${daysUntil}d`}
-                      </div>
-                      <div className="text-[10px] sm:text-xs text-muted-foreground">
-                        {nextDate}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-[10px] sm:text-xs text-muted-foreground">
-                      {deadline.dueDate}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Expandable section */}
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-border/50 space-y-3 sm:space-y-4">
-                      {deadline.notes && (
-                        <div className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground">
-                          <Info weight="fill" className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5" />
-                          <span>{deadline.notes}</span>
-                        </div>
-                      )}
-
-                      {/* Actions */}
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                        <div className="flex items-center gap-2">
-                          <Switch
-                            id={`reminder-${deadline.id}`}
-                            checked={isReminderEnabled}
-                            onCheckedChange={() => onToggleReminder(deadline.id)}
-                          />
-                          <Label htmlFor={`reminder-${deadline.id}`} className="text-xs sm:text-sm cursor-pointer">
-                            {isReminderEnabled ? (
-                              <span className="flex items-center gap-1.5 text-foreground">
-                                <BellRinging weight="fill" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                Reminder on
-                              </span>
-                            ) : (
-                              <span className="flex items-center gap-1.5 text-muted-foreground">
-                                <Bell weight="regular" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                Set reminder
-                              </span>
-                            )}
-                          </Label>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <a
-                            href={getGoogleCalendarUrl(deadline)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-medium rounded-lg bg-muted active:bg-muted/70 sm:hover:bg-muted/80 transition-colors min-h-[36px]"
-                          >
-                            <GoogleLogo weight="bold" className="h-3.5 w-3.5" />
-                            Add to Google
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Expand button */}
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setIsExpanded(!isExpanded);
-                  }
-                }}
-                aria-expanded={isExpanded}
-                aria-label={isExpanded ? 'Show less options' : 'Show more options'}
-                className="mt-2 sm:mt-3 flex items-center gap-1 text-[11px] sm:text-xs text-muted-foreground hover:text-foreground transition-colors min-h-[32px] sm:min-h-[36px]"
-              >
-                {isExpanded ? (
-                  <>
-                    <CaretUp weight="bold" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                    Less
-                  </>
-                ) : (
-                  <>
-                    <CaretDown weight="bold" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                    More options
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-}
-
 export default function DashboardCalendar() {
   const [selectedEntity, setSelectedEntity] = useState<EntityType | null>(null);
-  const [enabledReminders, setEnabledReminders] = useLocalStorage<string[]>('tax-reminders', []);
-  const [showUpcomingOnly, setShowUpcomingOnly] = useState(true);
+  const [expandedMonth, setExpandedMonth] = useState<number | null>(null);
+  const currentMonth = new Date().getMonth() + 1;
 
-  // Filter and sort deadlines
-  const filteredDeadlines = useMemo(() => {
-    let deadlines = [...taxDeadlines];
+  const upcomingDeadlines = useMemo(() => getUpcomingDeadlines(3), []);
 
-    // Filter by entity type
-    if (selectedEntity) {
-      deadlines = deadlines.filter(d => d.entityType === selectedEntity);
-    }
+  // Count deadlines per month for the selected filter
+  const deadlinesPerMonth = useMemo(() => {
+    return MONTHS.map((_, idx) => getDeadlinesForMonth(idx + 1, selectedEntity));
+  }, [selectedEntity]);
 
-    // Add days until for sorting
-    const withDays = deadlines.map(d => ({
-      ...d,
-      daysUntil: getDaysUntilDeadline(d),
-    }));
-
-    // Filter upcoming only (within 90 days)
-    if (showUpcomingOnly) {
-      return withDays
-        .filter(d => d.daysUntil !== null && d.daysUntil >= 0 && d.daysUntil <= 90)
-        .sort((a, b) => (a.daysUntil ?? 999) - (b.daysUntil ?? 999));
-    }
-
-    // Sort by days until
-    return withDays.sort((a, b) => (a.daysUntil ?? 999) - (b.daysUntil ?? 999));
-  }, [selectedEntity, showUpcomingOnly]);
-
-  // Upcoming urgent count
-  const urgentCount = filteredDeadlines.filter(d => {
-    const urgency = getUrgencyStatus(d.daysUntil);
-    return urgency === 'urgent' || urgency === 'overdue';
-  }).length;
-
-  const toggleReminder = (id: string) => {
-    setEnabledReminders(prev =>
-      prev.includes(id)
-        ? prev.filter(r => r !== id)
-        : [...prev, id]
-    );
-  };
-
-  const exportDeadlines = showUpcomingOnly
-    ? filteredDeadlines
-    : taxDeadlines.filter(d => !selectedEntity || d.entityType === selectedEntity);
+  // Total deadlines
+  const totalFiltered = useMemo(() => {
+    if (!selectedEntity) return taxDeadlines.length;
+    return taxDeadlines.filter(d => d.entityType === selectedEntity).length;
+  }, [selectedEntity]);
 
   return (
-    <div className="space-y-5 sm:space-y-6 max-w-4xl">
-      {/* Header */}
-      <div className="space-y-1">
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2">
-          <CalendarCheck weight="duotone" className="h-5 w-5 sm:h-7 sm:w-7" />
-          Tax Calendar
-        </h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
-          Track Malaysian tax deadlines and never miss a filing date
-        </p>
+    <div className="space-y-6 sm:space-y-8 max-w-5xl mx-auto">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 via-background to-primary/10 border border-border/50 p-6 sm:p-8">
+        <div className="relative z-10">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-primary/10">
+                  <CalendarCheck weight="duotone" className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Tax Calendar</h1>
+                  <p className="text-sm text-muted-foreground">Malaysian tax filing deadlines at a glance</p>
+                </div>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => downloadICS(selectedEntity ? taxDeadlines.filter(d => d.entityType === selectedEntity) : taxDeadlines)}
+              className="hidden sm:flex items-center gap-2"
+            >
+              <Export weight="bold" className="h-4 w-4" />
+              Export All
+            </Button>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-6">
+            <div className="bg-background/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-border/30">
+              <p className="text-2xl sm:text-3xl font-bold font-numbers">{totalFiltered}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Total Deadlines</p>
+            </div>
+            <div className="bg-background/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-border/30">
+              <p className="text-2xl sm:text-3xl font-bold font-numbers text-amber-600 dark:text-amber-400">
+                {upcomingDeadlines.length > 0 ? upcomingDeadlines[0].daysUntil : '—'}
+              </p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Days to Next</p>
+            </div>
+            <div className="bg-background/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-border/30">
+              <p className="text-2xl sm:text-3xl font-bold font-numbers">{Object.keys(entityTypeInfo).length}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Entity Types</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Background decoration */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       </div>
 
-      {/* Urgent Alert */}
-      {urgentCount > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-        >
-          <Card className="border-amber-500/30 bg-amber-500/5">
-            <CardContent className="p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
-              <Warning weight="fill" className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-sm sm:text-base text-amber-700 dark:text-amber-400">
-                  {urgentCount} deadline{urgentCount > 1 ? 's' : ''} due within 7 days
-                </p>
-                <p className="text-xs sm:text-sm text-amber-600/80 dark:text-amber-400/80">
-                  Make sure to file on time to avoid penalties
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+      {/* Upcoming Deadlines */}
+      {upcomingDeadlines.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Clock weight="duotone" className="h-5 w-5 text-muted-foreground" />
+            <h2 className="font-semibold">Coming Up Next</h2>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-3">
+            {upcomingDeadlines.map((deadline, idx) => {
+              const Icon = entityIcons[deadline.entityType];
+              const isUrgent = deadline.daysUntil <= 30;
+              return (
+                <motion.div
+                  key={deadline.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <Card className={`h-full ${isUrgent ? 'border-amber-500/30 bg-amber-500/5' : ''}`}>
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className={`p-2 rounded-lg ${entityColors[deadline.entityType]}`}>
+                          <Icon weight="duotone" className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
+                            {isUrgent && (
+                              <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-500/30">
+                                Soon
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                            {deadline.description}
+                          </p>
+                          <p className="text-sm font-medium mt-2">
+                            {deadline.daysUntil === 0 ? 'Today!' : `${deadline.daysUntil} days`}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       )}
 
-      {/* Controls */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-        {/* Entity Filter */}
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
-          <button
-            onClick={() => setSelectedEntity(null)}
-            className={`px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors min-h-[36px] sm:min-h-[40px] ${
-              selectedEntity === null
-                ? 'bg-foreground text-background'
-                : 'bg-muted text-muted-foreground active:bg-muted/80'
-            }`}
-          >
-            All
-          </button>
+      {/* Entity Filter */}
+      <div className="space-y-3">
+        <h2 className="font-semibold flex items-center gap-2">
+          <span>Filter by Type</span>
+          {selectedEntity && (
+            <button
+              onClick={() => setSelectedEntity(null)}
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              (Clear)
+            </button>
+          )}
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           {(Object.keys(entityTypeInfo) as EntityType[]).map((entity) => {
             const Icon = entityIcons[entity];
+            const isSelected = selectedEntity === entity;
+            const info = entityTypeInfo[entity];
+            const count = taxDeadlines.filter(d => d.entityType === entity).length;
+
             return (
               <button
                 key={entity}
-                onClick={() => setSelectedEntity(entity)}
-                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors min-h-[36px] sm:min-h-[40px] ${
-                  selectedEntity === entity
-                    ? 'bg-foreground text-background'
-                    : 'bg-muted text-muted-foreground active:bg-muted/80'
+                onClick={() => setSelectedEntity(isSelected ? null : entity)}
+                className={`relative p-3 sm:p-4 rounded-xl border text-left transition-all ${
+                  isSelected
+                    ? `${entityColors[entity]} border-current`
+                    : 'bg-card border-border/50 hover:border-border'
                 }`}
               >
-                <Icon weight={selectedEntity === entity ? 'fill' : 'regular'} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden xs:inline">{entity}</span>
+                <div className="flex items-start gap-2.5">
+                  <div className={`p-1.5 rounded-lg ${isSelected ? 'bg-current/10' : 'bg-muted'}`}>
+                    <Icon weight={isSelected ? 'fill' : 'duotone'} className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm">{info.label}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{count} deadlines</p>
+                  </div>
+                </div>
+                {isSelected && (
+                  <motion.div
+                    layoutId="entity-check"
+                    className="absolute top-2 right-2"
+                  >
+                    <CheckCircle weight="fill" className="h-4 w-4" />
+                  </motion.div>
+                )}
               </button>
             );
           })}
         </div>
-
-        {/* Export Button */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => downloadICS(exportDeadlines)}
-          className="flex items-center gap-2 min-h-[40px] sm:min-h-[36px] w-full sm:w-auto justify-center"
-        >
-          <Export weight="bold" className="h-4 w-4" />
-          Export to Calendar
-        </Button>
       </div>
 
-      {/* Toggle upcoming only */}
-      <div className="flex items-center gap-2">
-        <Switch
-          id="upcoming-only"
-          checked={showUpcomingOnly}
-          onCheckedChange={setShowUpcomingOnly}
-        />
-        <Label htmlFor="upcoming-only" className="text-xs sm:text-sm cursor-pointer">
-          Show upcoming only (next 90 days)
-        </Label>
+      {/* Year Timeline */}
+      <div className="space-y-3">
+        <h2 className="font-semibold">Year at a Glance</h2>
+        <Card>
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-12 gap-2 sm:gap-3">
+              {MONTHS.map((month, idx) => {
+                const monthNum = idx + 1;
+                const deadlines = deadlinesPerMonth[idx];
+                const hasDeadlines = deadlines.length > 0;
+                const isCurrentMonth = monthNum === currentMonth;
+                const isExpanded = expandedMonth === monthNum;
+
+                return (
+                  <motion.button
+                    key={month}
+                    onClick={() => setExpandedMonth(isExpanded ? null : monthNum)}
+                    className={`relative p-2 sm:p-3 rounded-xl text-center transition-all ${
+                      isExpanded
+                        ? 'bg-primary text-primary-foreground ring-2 ring-primary ring-offset-2 ring-offset-background'
+                        : isCurrentMonth
+                        ? 'bg-primary/10 border border-primary/30'
+                        : hasDeadlines
+                        ? 'bg-muted hover:bg-muted/80'
+                        : 'bg-muted/30 hover:bg-muted/50'
+                    }`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <p className={`text-xs font-medium ${isExpanded ? '' : isCurrentMonth ? 'text-primary' : ''}`}>
+                      {month}
+                    </p>
+                    {hasDeadlines && (
+                      <div className="flex justify-center gap-0.5 mt-1.5">
+                        {deadlines.slice(0, 3).map((d, i) => (
+                          <div
+                            key={i}
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              isExpanded ? 'bg-primary-foreground' : entityDotColors[d.entityType]
+                            }`}
+                          />
+                        ))}
+                        {deadlines.length > 3 && (
+                          <span className={`text-[8px] ml-0.5 ${isExpanded ? '' : 'text-muted-foreground'}`}>
+                            +{deadlines.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Expanded Month Details */}
+            <AnimatePresence>
+              {expandedMonth && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="pt-4 mt-4 border-t border-border/50">
+                    <h3 className="font-medium text-sm mb-3">
+                      {FULL_MONTHS[expandedMonth - 1]} Deadlines
+                    </h3>
+                    {deadlinesPerMonth[expandedMonth - 1].length > 0 ? (
+                      <div className="space-y-2">
+                        {deadlinesPerMonth[expandedMonth - 1].map((deadline) => {
+                          const Icon = entityIcons[deadline.entityType];
+                          return (
+                            <div
+                              key={deadline.id}
+                              className="flex items-start gap-3 p-3 rounded-lg bg-muted/50"
+                            >
+                              <div className={`p-1.5 rounded-lg ${entityColors[deadline.entityType]}`}>
+                                <Icon weight="duotone" className="h-4 w-4" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
+                                  <Badge variant="outline" className="text-[10px]">{deadline.entityType}</Badge>
+                                  <span className="text-xs text-muted-foreground">{deadline.dueDate}</span>
+                                </div>
+                                <p className="text-sm text-muted-foreground mt-1">{deadline.description}</p>
+                                {deadline.notes && (
+                                  <p className="text-xs text-muted-foreground/70 mt-1 flex items-start gap-1">
+                                    <Info weight="fill" className="h-3 w-3 flex-shrink-0 mt-0.5" />
+                                    {deadline.notes}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground text-center py-4">
+                        No deadlines in {FULL_MONTHS[expandedMonth - 1]}
+                        {selectedEntity ? ` for ${selectedEntity}` : ''}
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Deadlines List */}
-      <div className="space-y-2.5 sm:space-y-3">
-        {filteredDeadlines.length === 0 ? (
-          <Card className="border-dashed">
-            <CardContent className="p-6 sm:p-8 text-center">
-              <CalendarCheck weight="duotone" className="h-10 w-10 sm:h-12 sm:w-12 mx-auto text-muted-foreground/50 mb-3 sm:mb-4" />
-              <p className="text-sm sm:text-base text-muted-foreground">
-                {showUpcomingOnly
-                  ? 'No upcoming deadlines in the next 90 days'
-                  : 'No deadlines found for the selected filter'}
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          filteredDeadlines.map((deadline) => (
-            <DeadlineCard
-              key={deadline.id}
-              deadline={deadline}
-              isReminderEnabled={enabledReminders.includes(deadline.id)}
-              onToggleReminder={toggleReminder}
-            />
-          ))
-        )}
+      {/* All Deadlines List */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold">All Deadlines</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => downloadICS(selectedEntity ? taxDeadlines.filter(d => d.entityType === selectedEntity) : taxDeadlines)}
+            className="sm:hidden text-xs"
+          >
+            <Export weight="bold" className="h-4 w-4 mr-1.5" />
+            Export
+          </Button>
+        </div>
+        <div className="space-y-2">
+          {(selectedEntity ? taxDeadlines.filter(d => d.entityType === selectedEntity) : taxDeadlines)
+            .sort((a, b) => a.monthNumber - b.monthNumber)
+            .map((deadline, idx) => {
+              const Icon = entityIcons[deadline.entityType];
+              return (
+                <motion.div
+                  key={deadline.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.03 }}
+                >
+                  <Card className="group">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex items-start gap-3">
+                        <div className={`p-2 rounded-lg ${entityColors[deadline.entityType]} transition-transform group-hover:scale-110`}>
+                          <Icon weight="duotone" className="h-4 w-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
+                                <Badge variant="outline" className="text-[10px]">{deadline.entityType}</Badge>
+                                <Badge variant="secondary" className="text-[10px]">{deadline.frequency}</Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground mt-1">{deadline.description}</p>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-sm font-medium">{deadline.dueDate}</p>
+                            </div>
+                          </div>
+                          {deadline.notes && (
+                            <p className="text-xs text-muted-foreground/70 mt-2 flex items-start gap-1.5 pt-2 border-t border-border/30">
+                              <Info weight="fill" className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
+                              {deadline.notes}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+        </div>
       </div>
 
-      {/* Info Footer */}
-      <Card className="bg-muted/30">
-        <CardContent className="p-3 sm:p-4">
-          <div className="flex items-start gap-2 sm:gap-3">
-            <Info weight="fill" className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-            <div className="space-y-1 text-xs sm:text-sm text-muted-foreground">
+      {/* Footer Info */}
+      <Card className="bg-muted/30 border-dashed">
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex items-start gap-3">
+            <Bell weight="duotone" className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+            <div className="space-y-1.5 text-sm text-muted-foreground">
+              <p className="font-medium text-foreground">Never miss a deadline</p>
               <p>
-                Deadlines are based on LHDN (Lembaga Hasil Dalam Negeri Malaysia) guidelines.
-                Some deadlines may vary based on your specific business circumstances.
+                Export these deadlines to your calendar app (Google Calendar, Apple Calendar, Outlook)
+                to receive automatic reminders 7 days and 1 day before each due date.
               </p>
-              <p>
-                <strong>Tip:</strong> Export to your calendar app to get automatic reminders 7 days and 1 day before each deadline.
+              <p className="text-xs">
+                Deadlines based on LHDN guidelines. Some may vary based on your specific circumstances.
               </p>
             </div>
           </div>

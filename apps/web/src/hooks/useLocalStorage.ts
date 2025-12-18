@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { InputMode, ZakatInput } from '@tax-engine/core';
+import type { InputMode, ZakatInput, ReliefClaimValues } from '@tax-engine/core';
 
 /**
  * Hook to persist state to localStorage with automatic serialization/deserialization
@@ -80,6 +80,8 @@ export interface StoredInputs {
   targetNetIncome: number; // Monthly target take-home
   // Zakat settings
   zakat?: ZakatInput;
+  // Extended relief optimizer claims
+  extendedReliefs?: ReliefClaimValues;
 }
 
 const COMBINED_STORAGE_KEY = 'taxCalc_allInputs';

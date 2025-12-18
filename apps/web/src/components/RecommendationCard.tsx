@@ -25,11 +25,11 @@ export default function RecommendationCard({ comparison }: RecommendationCardPro
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className={`border-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 ${
+      <Card className={`shadow-lg ${
         hasWarnings ? 'border-destructive/30 bg-gradient-to-br from-destructive/5 to-destructive/10' :
-        isSdnBhdBetter ? 'border-emerald-500/40 bg-gradient-to-br from-emerald-500/5 to-emerald-500/10' :
-        isSolePropBetter ? 'border-blue-500/40 bg-gradient-to-br from-blue-500/5 to-blue-500/10' :
-        'border-border/50 bg-card'
+        isSdnBhdBetter ? 'border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-emerald-500/10' :
+        isSolePropBetter ? 'border-blue-500/30 bg-gradient-to-br from-blue-500/5 to-blue-500/10' :
+        ''
       }`}>
         {/* Warnings Banner */}
         {hasWarnings && (

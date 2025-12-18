@@ -160,6 +160,31 @@
     scroll-behavior: smooth;
     /* Prevent bounce scrolling on iOS */
     overscroll-behavior: none;
+    /* Better text rendering on mobile */
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Ensure buttons and links have proper touch behavior */
+  button, a, [role="button"] {
+    touch-action: manipulation;
+  }
+
+  /* Prevent user selection on interactive elements for native feel */
+  button, [role="button"], .touch-manipulation {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Ensure inputs don't zoom on iOS */
+  input, select, textarea {
+    font-size: 16px;
+  }
+
+  @media (min-width: 640px) {
+    input, select, textarea {
+      font-size: inherit;
+    }
   }
   
   /* Safe area insets support */
