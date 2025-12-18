@@ -286,8 +286,8 @@ export default function EInvoicingHub() {
                                 ? 'bg-[#5B8A72] text-white'
                                 : 'bg-[#722F37] text-white'
                               : isHovered && !result
-                                ? 'bg-white border-2 border-[#D4C4B0]'
-                                : 'bg-white/60 border-2 border-[#E8DDD0] hover:bg-white hover:border-[#D4C4B0]'
+                                ? 'bg-white border-2 border-[#D4C4B0] text-[#4A3728]'
+                                : 'bg-white border-2 border-[#E8DDD0] text-[#4A3728] hover:bg-white hover:border-[#D4C4B0]'
                           )}
                         >
                           <span className="hidden sm:inline">{tier.label}</span>

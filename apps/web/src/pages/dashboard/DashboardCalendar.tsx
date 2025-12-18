@@ -12,9 +12,6 @@ import {
   Bell,
   CheckCircle,
 } from 'phosphor-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   type EntityType,
   type TaxDeadline,
@@ -30,19 +27,19 @@ const entityIcons: Record<EntityType, typeof User> = {
   Partnership: Briefcase,
 };
 
-// Entity colors
-const entityColors: Record<EntityType, string> = {
-  Individual: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
-  Company: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
-  Employer: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
-  Partnership: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+// Entity colors - Open Ledger design system
+const entityColors: Record<EntityType, { bg: string; text: string; border: string }> = {
+  Individual: { bg: 'bg-[#722F37]/10', text: 'text-[#722F37]', border: 'border-[#722F37]/20' },
+  Company: { bg: 'bg-[#5B8A72]/10', text: 'text-[#5B8A72]', border: 'border-[#5B8A72]/20' },
+  Employer: { bg: 'bg-[#E5A84B]/10', text: 'text-[#E5A84B]', border: 'border-[#E5A84B]/20' },
+  Partnership: { bg: 'bg-[#8B7B6B]/10', text: 'text-[#8B7B6B]', border: 'border-[#8B7B6B]/20' },
 };
 
 const entityDotColors: Record<EntityType, string> = {
-  Individual: 'bg-blue-500',
-  Company: 'bg-purple-500',
-  Employer: 'bg-amber-500',
-  Partnership: 'bg-emerald-500',
+  Individual: 'bg-[#722F37]',
+  Company: 'bg-[#5B8A72]',
+  Employer: 'bg-[#E5A84B]',
+  Partnership: 'bg-[#8B7B6B]',
 };
 
 // Months data
@@ -200,64 +197,63 @@ export default function DashboardCalendar() {
   return (
     <div className="space-y-6 sm:space-y-8 max-w-5xl mx-auto">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 via-background to-primary/10 border border-border/50 p-6 sm:p-8">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#722F37]/5 via-[#FAF7F2] to-[#722F37]/10 border border-[#E8D5C4] p-6 sm:p-8">
         <div className="relative z-10">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-primary/10">
-                  <CalendarCheck weight="duotone" className="h-6 w-6 text-primary" />
+                <div className="p-2.5 rounded-xl bg-[#722F37]/10">
+                  <CalendarCheck weight="duotone" className="h-6 w-6 text-[#722F37]" />
                 </div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Tax Calendar</h1>
-                  <p className="text-sm text-muted-foreground">Malaysian tax filing deadlines at a glance</p>
+                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#4A3728]">Tax Calendar</h1>
+                  <p className="text-sm text-[#6B5B4F]">Malaysian tax filing deadlines at a glance</p>
                 </div>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
+            <button
               onClick={() => downloadICS(selectedEntity ? taxDeadlines.filter(d => d.entityType === selectedEntity) : taxDeadlines)}
-              className="hidden sm:flex items-center gap-2"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E8D5C4] bg-white text-sm font-medium text-[#4A3728] hover:bg-[#F5EDE3] transition-colors"
             >
               <Export weight="bold" className="h-4 w-4" />
               Export All
-            </Button>
+            </button>
           </div>
 
           {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-6">
-            <div className="bg-background/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-border/30">
-              <p className="text-2xl sm:text-3xl font-bold font-numbers">{totalFiltered}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">Total Deadlines</p>
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-[#E8D5C4]/30">
+              <p className="text-2xl sm:text-3xl font-bold text-[#4A3728]">{totalFiltered}</p>
+              <p className="text-xs sm:text-sm text-[#6B5B4F]">Total Deadlines</p>
             </div>
-            <div className="bg-background/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-border/30">
-              <p className="text-2xl sm:text-3xl font-bold font-numbers text-amber-600 dark:text-amber-400">
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-[#E8D5C4]/30">
+              <p className="text-2xl sm:text-3xl font-bold text-[#E5A84B]">
                 {upcomingDeadlines.length > 0 ? upcomingDeadlines[0].daysUntil : '—'}
               </p>
-              <p className="text-xs sm:text-sm text-muted-foreground">Days to Next</p>
+              <p className="text-xs sm:text-sm text-[#6B5B4F]">Days to Next</p>
             </div>
-            <div className="bg-background/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-border/30">
-              <p className="text-2xl sm:text-3xl font-bold font-numbers">{Object.keys(entityTypeInfo).length}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">Entity Types</p>
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-[#E8D5C4]/30">
+              <p className="text-2xl sm:text-3xl font-bold text-[#4A3728]">{Object.keys(entityTypeInfo).length}</p>
+              <p className="text-xs sm:text-sm text-[#6B5B4F]">Entity Types</p>
             </div>
           </div>
         </div>
 
         {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#722F37]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       </div>
 
       {/* Upcoming Deadlines */}
       {upcomingDeadlines.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <Clock weight="duotone" className="h-5 w-5 text-muted-foreground" />
-            <h2 className="font-semibold">Coming Up Next</h2>
+            <Clock weight="duotone" className="h-5 w-5 text-[#6B5B4F]" />
+            <h2 className="font-semibold text-[#4A3728]">Coming Up Next</h2>
           </div>
           <div className="grid sm:grid-cols-3 gap-3">
             {upcomingDeadlines.map((deadline, idx) => {
               const Icon = entityIcons[deadline.entityType];
+              const colors = entityColors[deadline.entityType];
               const isUrgent = deadline.daysUntil <= 30;
               return (
                 <motion.div
@@ -265,32 +261,29 @@ export default function DashboardCalendar() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
+                  className={`h-full p-4 rounded-xl border bg-white ${isUrgent ? 'border-[#E5A84B]/30' : 'border-[#E8D5C4]'}`}
                 >
-                  <Card className={`h-full ${isUrgent ? 'border-amber-500/30 bg-amber-500/5' : ''}`}>
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg ${entityColors[deadline.entityType]}`}>
-                          <Icon weight="duotone" className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
-                            {isUrgent && (
-                              <Badge variant="outline" className="text-[11px] text-amber-600 border-amber-500/30">
-                                Soon
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                            {deadline.description}
-                          </p>
-                          <p className="text-sm font-medium mt-2">
-                            {deadline.daysUntil === 0 ? 'Today!' : `${deadline.daysUntil} days`}
-                          </p>
-                        </div>
+                  <div className="flex items-start gap-3">
+                    <div className={`p-2 rounded-lg ${colors.bg} ${colors.text}`}>
+                      <Icon weight="duotone" className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-sm font-semibold text-[#4A3728]">{deadline.formCode}</span>
+                        {isUrgent && (
+                          <span className="text-[11px] text-[#E5A84B] border border-[#E5A84B]/30 px-1.5 py-0.5 rounded-full">
+                            Soon
+                          </span>
+                        )}
                       </div>
-                    </CardContent>
-                  </Card>
+                      <p className="text-xs text-[#6B5B4F] mt-1 line-clamp-1">
+                        {deadline.description}
+                      </p>
+                      <p className="text-sm font-medium text-[#4A3728] mt-2">
+                        {deadline.daysUntil === 0 ? 'Today!' : `${deadline.daysUntil} days`}
+                      </p>
+                    </div>
+                  </div>
                 </motion.div>
               );
             })}
@@ -300,12 +293,12 @@ export default function DashboardCalendar() {
 
       {/* Entity Filter */}
       <div className="space-y-3">
-        <h2 className="font-semibold flex items-center gap-2">
+        <h2 className="font-semibold text-[#4A3728] flex items-center gap-2">
           <span>Filter by Type</span>
           {selectedEntity && (
             <button
               onClick={() => setSelectedEntity(null)}
-              className="text-xs text-muted-foreground hover:text-foreground"
+              className="text-xs text-[#6B5B4F] hover:text-[#4A3728]"
             >
               (Clear)
             </button>
@@ -317,24 +310,25 @@ export default function DashboardCalendar() {
             const isSelected = selectedEntity === entity;
             const info = entityTypeInfo[entity];
             const count = taxDeadlines.filter(d => d.entityType === entity).length;
+            const colors = entityColors[entity];
 
             return (
               <button
                 key={entity}
                 onClick={() => setSelectedEntity(isSelected ? null : entity)}
-                className={`relative p-3 sm:p-4 rounded-xl border text-left transition-all ${
+                className={`relative p-3 sm:p-4 rounded-xl border text-left transition-all min-h-[60px] ${
                   isSelected
-                    ? `${entityColors[entity]} border-current`
-                    : 'bg-card border-border/50 hover:border-border'
+                    ? `${colors.bg} ${colors.text} ${colors.border}`
+                    : 'bg-white border-[#E8D5C4] hover:border-[#D4B8A0]'
                 }`}
               >
                 <div className="flex items-start gap-2.5">
-                  <div className={`p-1.5 rounded-lg ${isSelected ? 'bg-current/10' : 'bg-muted'}`}>
-                    <Icon weight={isSelected ? 'fill' : 'duotone'} className="h-4 w-4" />
+                  <div className={`p-1.5 rounded-lg ${isSelected ? 'bg-current/10' : 'bg-[#F5EDE3]'}`}>
+                    <Icon weight={isSelected ? 'fill' : 'duotone'} className={`h-4 w-4 ${isSelected ? '' : 'text-[#4A3728]'}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm">{info.label}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{count} deadlines</p>
+                    <p className={`font-medium text-sm ${isSelected ? '' : 'text-[#4A3728]'}`}>{info.label}</p>
+                    <p className={`text-xs mt-0.5 ${isSelected ? 'opacity-70' : 'text-[#6B5B4F]'}`}>{count} deadlines</p>
                   </div>
                 </div>
                 {isSelected && (
@@ -353,172 +347,167 @@ export default function DashboardCalendar() {
 
       {/* Year Timeline */}
       <div className="space-y-3">
-        <h2 className="font-semibold">Year at a Glance</h2>
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-12 gap-2 sm:gap-3">
-              {MONTHS.map((month, idx) => {
-                const monthNum = idx + 1;
-                const deadlines = deadlinesPerMonth[idx];
-                const hasDeadlines = deadlines.length > 0;
-                const isCurrentMonth = monthNum === currentMonth;
-                const isExpanded = expandedMonth === monthNum;
+        <h2 className="font-semibold text-[#4A3728]">Year at a Glance</h2>
+        <div className="p-4 sm:p-6 rounded-xl border border-[#E8D5C4] bg-white">
+          <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-12 gap-2 sm:gap-3">
+            {MONTHS.map((month, idx) => {
+              const monthNum = idx + 1;
+              const deadlines = deadlinesPerMonth[idx];
+              const hasDeadlines = deadlines.length > 0;
+              const isCurrentMonth = monthNum === currentMonth;
+              const isExpanded = expandedMonth === monthNum;
 
-                return (
-                  <motion.button
-                    key={month}
-                    onClick={() => setExpandedMonth(isExpanded ? null : monthNum)}
-                    className={`relative p-2 sm:p-3 rounded-xl text-center transition-all ${
-                      isExpanded
-                        ? 'bg-primary text-primary-foreground ring-2 ring-primary ring-offset-2 ring-offset-background'
-                        : isCurrentMonth
-                        ? 'bg-primary/10 border border-primary/30'
-                        : hasDeadlines
-                        ? 'bg-muted hover:bg-muted/80'
-                        : 'bg-muted/30 hover:bg-muted/50'
-                    }`}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <p className={`text-xs font-medium ${isExpanded ? '' : isCurrentMonth ? 'text-primary' : ''}`}>
-                      {month}
-                    </p>
-                    {hasDeadlines && (
-                      <div className="flex justify-center gap-0.5 mt-1.5">
-                        {deadlines.slice(0, 3).map((d, i) => (
-                          <div
-                            key={i}
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              isExpanded ? 'bg-primary-foreground' : entityDotColors[d.entityType]
-                            }`}
-                          />
-                        ))}
-                        {deadlines.length > 3 && (
-                          <span className={`text-[10px] ml-0.5 ${isExpanded ? '' : 'text-muted-foreground'}`}>
-                            +{deadlines.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </motion.button>
-                );
-              })}
-            </div>
-
-            {/* Expanded Month Details */}
-            <AnimatePresence>
-              {expandedMonth && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
+              return (
+                <motion.button
+                  key={month}
+                  onClick={() => setExpandedMonth(isExpanded ? null : monthNum)}
+                  className={`relative p-2 sm:p-3 rounded-xl text-center transition-all ${
+                    isExpanded
+                      ? 'bg-[#722F37] text-white ring-2 ring-[#722F37] ring-offset-2 ring-offset-white'
+                      : isCurrentMonth
+                      ? 'bg-[#722F37]/10 border border-[#722F37]/30'
+                      : hasDeadlines
+                      ? 'bg-[#F5EDE3] hover:bg-[#E8DDD0]'
+                      : 'bg-[#F5EDE3]/50 hover:bg-[#F5EDE3]'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <div className="pt-4 mt-4 border-t border-border/50">
-                    <h3 className="font-medium text-sm mb-3">
-                      {FULL_MONTHS[expandedMonth - 1]} Deadlines
-                    </h3>
-                    {deadlinesPerMonth[expandedMonth - 1].length > 0 ? (
-                      <div className="space-y-2">
-                        {deadlinesPerMonth[expandedMonth - 1].map((deadline) => {
-                          const Icon = entityIcons[deadline.entityType];
-                          return (
-                            <div
-                              key={deadline.id}
-                              className="flex items-start gap-3 p-3 rounded-lg bg-muted/50"
-                            >
-                              <div className={`p-1.5 rounded-lg ${entityColors[deadline.entityType]}`}>
-                                <Icon weight="duotone" className="h-4 w-4" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
-                                  <Badge variant="outline" className="text-[11px]">{deadline.entityType}</Badge>
-                                  <span className="text-xs text-muted-foreground">{deadline.dueDate}</span>
-                                </div>
-                                <p className="text-sm text-muted-foreground mt-1">{deadline.description}</p>
-                                {deadline.notes && (
-                                  <p className="text-xs text-muted-foreground/70 mt-1 flex items-start gap-1">
-                                    <Info weight="fill" className="h-3 w-3 flex-shrink-0 mt-0.5" />
-                                    {deadline.notes}
-                                  </p>
-                                )}
-                              </div>
+                  <p className={`text-xs font-medium ${isExpanded ? 'text-white' : isCurrentMonth ? 'text-[#722F37]' : 'text-[#4A3728]'}`}>
+                    {month}
+                  </p>
+                  {hasDeadlines && (
+                    <div className="flex justify-center gap-0.5 mt-1.5">
+                      {deadlines.slice(0, 3).map((d, i) => (
+                        <div
+                          key={i}
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            isExpanded ? 'bg-white' : entityDotColors[d.entityType]
+                          }`}
+                        />
+                      ))}
+                      {deadlines.length > 3 && (
+                        <span className={`text-[10px] ml-0.5 ${isExpanded ? 'text-white' : 'text-[#6B5B4F]'}`}>
+                          +{deadlines.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
+
+          {/* Expanded Month Details */}
+          <AnimatePresence>
+            {expandedMonth && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-4 mt-4 border-t border-[#E8D5C4]">
+                  <h3 className="font-medium text-sm text-[#4A3728] mb-3">
+                    {FULL_MONTHS[expandedMonth - 1]} Deadlines
+                  </h3>
+                  {deadlinesPerMonth[expandedMonth - 1].length > 0 ? (
+                    <div className="space-y-2">
+                      {deadlinesPerMonth[expandedMonth - 1].map((deadline) => {
+                        const Icon = entityIcons[deadline.entityType];
+                        const colors = entityColors[deadline.entityType];
+                        return (
+                          <div
+                            key={deadline.id}
+                            className="flex items-start gap-3 p-3 rounded-lg bg-[#F5EDE3]/50"
+                          >
+                            <div className={`p-1.5 rounded-lg ${colors.bg} ${colors.text}`}>
+                              <Icon weight="duotone" className="h-4 w-4" />
                             </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground text-center py-4">
-                        No deadlines in {FULL_MONTHS[expandedMonth - 1]}
-                        {selectedEntity ? ` for ${selectedEntity}` : ''}
-                      </p>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </CardContent>
-        </Card>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-mono text-sm font-semibold text-[#4A3728]">{deadline.formCode}</span>
+                                <span className="text-[11px] px-1.5 py-0.5 rounded-full border border-[#E8D5C4] text-[#6B5B4F]">{deadline.entityType}</span>
+                                <span className="text-xs text-[#6B5B4F]">{deadline.dueDate}</span>
+                              </div>
+                              <p className="text-sm text-[#6B5B4F] mt-1">{deadline.description}</p>
+                              {deadline.notes && (
+                                <p className="text-xs text-[#8B7B6B] mt-1 flex items-start gap-1">
+                                  <Info weight="fill" className="h-3 w-3 flex-shrink-0 mt-0.5" />
+                                  {deadline.notes}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-[#6B5B4F] text-center py-4">
+                      No deadlines in {FULL_MONTHS[expandedMonth - 1]}
+                      {selectedEntity ? ` for ${selectedEntity}` : ''}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* All Deadlines List */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-semibold">All Deadlines</h2>
-          <Button
-            variant="ghost"
-            size="sm"
+          <h2 className="font-semibold text-[#4A3728]">All Deadlines</h2>
+          <button
             onClick={() => downloadICS(selectedEntity ? taxDeadlines.filter(d => d.entityType === selectedEntity) : taxDeadlines)}
-            className="sm:hidden text-xs"
+            className="sm:hidden text-xs flex items-center gap-1.5 px-3 py-2 rounded-lg text-[#6B5B4F] hover:text-[#4A3728] hover:bg-[#F5EDE3] transition-colors"
           >
-            <Export weight="bold" className="h-4 w-4 mr-1.5" />
+            <Export weight="bold" className="h-4 w-4" />
             Export
-          </Button>
+          </button>
         </div>
         <div className="space-y-2">
           {(selectedEntity ? taxDeadlines.filter(d => d.entityType === selectedEntity) : taxDeadlines)
             .sort((a, b) => a.monthNumber - b.monthNumber)
             .map((deadline, idx) => {
               const Icon = entityIcons[deadline.entityType];
+              const colors = entityColors[deadline.entityType];
               return (
                 <motion.div
                   key={deadline.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.03 }}
+                  className="group p-3 sm:p-4 rounded-xl border border-[#E8D5C4] bg-white hover:border-[#D4B8A0] transition-colors"
                 >
-                  <Card className="group">
-                    <CardContent className="p-3 sm:p-4">
-                      <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg ${entityColors[deadline.entityType]} transition-transform group-hover:scale-110`}>
-                          <Icon weight="duotone" className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
-                                <Badge variant="outline" className="text-[11px]">{deadline.entityType}</Badge>
-                                <Badge variant="secondary" className="text-[11px]">{deadline.frequency}</Badge>
-                              </div>
-                              <p className="text-sm text-muted-foreground mt-1">{deadline.description}</p>
-                            </div>
-                            <div className="text-right flex-shrink-0">
-                              <p className="text-sm font-medium">{deadline.dueDate}</p>
-                            </div>
+                  <div className="flex items-start gap-3">
+                    <div className={`p-2 rounded-lg transition-transform group-hover:scale-110 ${colors.bg} ${colors.text}`}>
+                      <Icon weight="duotone" className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-mono text-sm font-semibold text-[#4A3728]">{deadline.formCode}</span>
+                            <span className="text-[11px] px-1.5 py-0.5 rounded-full border border-[#E8D5C4] text-[#6B5B4F]">{deadline.entityType}</span>
+                            <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-[#F5EDE3] text-[#6B5B4F]">{deadline.frequency}</span>
                           </div>
-                          {deadline.notes && (
-                            <p className="text-xs text-muted-foreground/70 mt-2 flex items-start gap-1.5 pt-2 border-t border-border/30">
-                              <Info weight="fill" className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
-                              {deadline.notes}
-                            </p>
-                          )}
+                          <p className="text-sm text-[#6B5B4F] mt-1">{deadline.description}</p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-sm font-medium text-[#4A3728]">{deadline.dueDate}</p>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                      {deadline.notes && (
+                        <p className="text-xs text-[#8B7B6B] mt-2 flex items-start gap-1.5 pt-2 border-t border-[#E8D5C4]/30">
+                          <Info weight="fill" className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
+                          {deadline.notes}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </motion.div>
               );
             })}
@@ -526,23 +515,21 @@ export default function DashboardCalendar() {
       </div>
 
       {/* Footer Info */}
-      <Card className="bg-muted/30 border-dashed">
-        <CardContent className="p-4 sm:p-5">
-          <div className="flex items-start gap-3">
-            <Bell weight="duotone" className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-            <div className="space-y-1.5 text-sm text-muted-foreground">
-              <p className="font-medium text-foreground">Never miss a deadline</p>
-              <p>
-                Export these deadlines to your calendar app (Google Calendar, Apple Calendar, Outlook)
-                to receive automatic reminders 7 days and 1 day before each due date.
-              </p>
-              <p className="text-xs">
-                Deadlines based on LHDN guidelines. Some may vary based on your specific circumstances.
-              </p>
-            </div>
+      <div className="p-4 sm:p-5 rounded-xl border border-dashed border-[#E8D5C4] bg-[#F5EDE3]/30">
+        <div className="flex items-start gap-3">
+          <Bell weight="duotone" className="h-5 w-5 text-[#6B5B4F] flex-shrink-0 mt-0.5" />
+          <div className="space-y-1.5 text-sm text-[#6B5B4F]">
+            <p className="font-medium text-[#4A3728]">Never miss a deadline</p>
+            <p>
+              Export these deadlines to your calendar app (Google Calendar, Apple Calendar, Outlook)
+              to receive automatic reminders 7 days and 1 day before each due date.
+            </p>
+            <p className="text-xs text-[#8B7B6B]">
+              Deadlines based on LHDN guidelines. Some may vary based on your specific circumstances.
+            </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
