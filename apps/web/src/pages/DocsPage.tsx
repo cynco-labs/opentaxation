@@ -251,7 +251,7 @@ export default function DocsPage() {
             <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full border border-[#E8D5C4] bg-white/60 hover:bg-white hover:border-[#D4B8A0] transition-all text-left">
               <MagnifyingGlass weight="regular" className="h-4 w-4 text-[#6B5B5B]" />
               <span className="flex-1 text-sm text-[#6B5B5B]">Search documentation...</span>
-              <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#FDF5F0] text-[10px] font-mono text-[#6B5B5B] border border-[#E8D5C4]">
+              <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#FDF5F0] text-[11px] font-mono text-[#6B5B5B] border border-[#E8D5C4]">
                 <Command weight="bold" className="h-2.5 w-2.5" />K
               </kbd>
             </button>
@@ -262,7 +262,7 @@ export default function DocsPage() {
             <button className="group flex items-center gap-2 px-4 py-2 rounded-full border border-[#E8D5C4] bg-white/60 hover:bg-white hover:border-[#D4B8A0] transition-all">
               <Sparkle weight="duotone" className="h-4 w-4 text-[#E5A84B]" />
               <span className="text-sm font-medium text-[#4A2C2A]">Ask AI</span>
-              <span className="text-[10px] text-[#6B5B5B] bg-[#FDF5F0] px-2 py-0.5 rounded-full border border-[#E8D5C4]">Soon</span>
+              <span className="text-[11px] text-[#6B5B5B] bg-[#FDF5F0] px-2 py-0.5 rounded-full border border-[#E8D5C4]">Soon</span>
             </button>
           </div>
         </div>

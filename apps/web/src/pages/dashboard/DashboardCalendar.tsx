@@ -276,7 +276,7 @@ export default function DashboardCalendar() {
                           <div className="flex items-center gap-2">
                             <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
                             {isUrgent && (
-                              <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-500/30">
+                              <Badge variant="outline" className="text-[11px] text-amber-600 border-amber-500/30">
                                 Soon
                               </Badge>
                             )}
@@ -394,7 +394,7 @@ export default function DashboardCalendar() {
                           />
                         ))}
                         {deadlines.length > 3 && (
-                          <span className={`text-[8px] ml-0.5 ${isExpanded ? '' : 'text-muted-foreground'}`}>
+                          <span className={`text-[10px] ml-0.5 ${isExpanded ? '' : 'text-muted-foreground'}`}>
                             +{deadlines.length - 3}
                           </span>
                         )}
@@ -434,7 +434,7 @@ export default function DashboardCalendar() {
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
-                                  <Badge variant="outline" className="text-[10px]">{deadline.entityType}</Badge>
+                                  <Badge variant="outline" className="text-[11px]">{deadline.entityType}</Badge>
                                   <span className="text-xs text-muted-foreground">{deadline.dueDate}</span>
                                 </div>
                                 <p className="text-sm text-muted-foreground mt-1">{deadline.description}</p>
@@ -500,8 +500,8 @@ export default function DashboardCalendar() {
                             <div>
                               <div className="flex items-center gap-2 flex-wrap">
                                 <span className="font-mono text-sm font-semibold">{deadline.formCode}</span>
-                                <Badge variant="outline" className="text-[10px]">{deadline.entityType}</Badge>
-                                <Badge variant="secondary" className="text-[10px]">{deadline.frequency}</Badge>
+                                <Badge variant="outline" className="text-[11px]">{deadline.entityType}</Badge>
+                                <Badge variant="secondary" className="text-[11px]">{deadline.frequency}</Badge>
                               </div>
                               <p className="text-sm text-muted-foreground mt-1">{deadline.description}</p>
                             </div>

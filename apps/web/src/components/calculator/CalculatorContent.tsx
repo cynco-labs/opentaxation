@@ -57,7 +57,7 @@ function PillButton({
   variant?: 'default' | 'outline';
   className?: string;
 }) {
-  const baseStyles = "inline-flex items-center gap-2 px-6 py-3 sm:py-3 rounded-full text-[15px] font-medium transition-all duration-200 active:scale-95 active:opacity-90";
+  const baseStyles = "inline-flex items-center gap-2 px-6 py-3 min-h-[44px] rounded-full text-[15px] font-medium transition-all duration-200 active:scale-95 active:opacity-90";
   const variants = {
     default: "bg-foreground text-background hover:bg-foreground/90",
     outline: "bg-transparent border border-border text-foreground hover:bg-muted/50",

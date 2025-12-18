@@ -158,7 +158,7 @@ function MobileHeader({ title = 'Tax Calculator', onClearInputs }: MobileHeaderP
           <button
             ref={buttonRef}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted/50 active:bg-muted transition-colors touch-target"
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-muted/50 active:bg-muted transition-colors"
             aria-label="Menu"
             aria-expanded={isMenuOpen}
             aria-haspopup="menu"

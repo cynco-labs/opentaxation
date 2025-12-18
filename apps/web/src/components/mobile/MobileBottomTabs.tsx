@@ -23,7 +23,7 @@ function MobileBottomTabs({ activeTab, onTabChange, hasResults = false }: Mobile
       role="tablist"
       aria-label="Main navigation"
     >
-      <div className="flex items-stretch h-[49px]">
+      <div className="flex items-stretch h-12">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           const Icon = tab.icon;
@@ -66,7 +66,7 @@ function MobileBottomTabs({ activeTab, onTabChange, hasResults = false }: Mobile
 
               {/* Label */}
               <span
-                className={`text-[11px] font-medium tracking-tight transition-colors duration-200 ${
+                className={`text-xs font-medium tracking-tight transition-colors duration-200 ${
                   isActive ? 'text-primary' : 'text-muted-foreground'
                 }`}
                 style={{ letterSpacing: '-0.02em' }}

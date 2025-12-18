@@ -215,7 +215,7 @@ function MonthTimeline({ deadlines }: { deadlines: TaxDeadline[] }) {
         return (
           <div
             key={month}
-            className={`relative flex flex-col items-center px-3 py-2 rounded-xl transition-all min-w-[52px] ${
+            className={`relative flex flex-col items-center px-2 sm:px-3 py-2 rounded-xl transition-all min-w-[40px] sm:min-w-[52px] ${
               isCurrent
                 ? 'bg-[#722F37] text-white'
                 : hasDeadlines
@@ -247,7 +247,7 @@ function MonthTimeline({ deadlines }: { deadlines: TaxDeadline[] }) {
                   />
                 ))}
                 {monthDeadlines.length > 3 && (
-                  <span className={`text-[8px] ml-0.5 ${isCurrent ? 'text-white/60' : 'text-[#722F37]/60'}`}>
+                  <span className={`text-[10px] sm:text-[8px] ml-0.5 ${isCurrent ? 'text-white/60' : 'text-[#722F37]/60'}`}>
                     +{monthDeadlines.length - 3}
                   </span>
                 )}

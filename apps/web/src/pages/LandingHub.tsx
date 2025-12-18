@@ -58,28 +58,28 @@ function CalculatorPreview() {
           </div>
           <span className="text-xs font-medium text-white/80">Tax Calculator</span>
         </div>
-        <div className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] text-white/60">YA 2025</div>
+        <div className="px-2 py-0.5 rounded-full bg-white/10 text-[11px] text-white/60">YA 2025</div>
       </div>
 
       {/* Mock input */}
       <div className="bg-white/10 rounded-xl p-3">
-        <p className="text-[10px] text-white/50 mb-1">Annual Business Profit</p>
+        <p className="text-[11px] text-white/50 mb-1">Annual Business Profit</p>
         <p className="text-lg font-semibold text-white">RM 250,000</p>
       </div>
 
       {/* Results comparison */}
       <div className="grid grid-cols-2 gap-2">
         <div className="bg-white/10 rounded-xl p-3">
-          <p className="text-[10px] text-white/50 mb-1">Enterprise</p>
+          <p className="text-[11px] text-white/50 mb-1">Enterprise</p>
           <p className="text-sm font-semibold text-white">RM 42,850</p>
-          <p className="text-[10px] text-red-300">Higher tax</p>
+          <p className="text-[11px] text-red-300">Higher tax</p>
         </div>
         <div className="bg-white/20 rounded-xl p-3 ring-1 ring-white/30">
-          <p className="text-[10px] text-white/50 mb-1">Sdn Bhd</p>
+          <p className="text-[11px] text-white/50 mb-1">Sdn Bhd</p>
           <p className="text-sm font-semibold text-white">RM 31,200</p>
           <div className="flex items-center gap-1">
             <CheckCircle weight="fill" className="w-3 h-3 text-emerald-300" />
-            <p className="text-[10px] text-emerald-300">Save RM 11,650</p>
+            <p className="text-[11px] text-emerald-300">Save RM 11,650</p>
           </div>
         </div>
       </div>
@@ -104,28 +104,28 @@ function CalendarPreview() {
           </div>
           <span className="text-xs font-medium text-white/80">Tax Calendar</span>
         </div>
-        <div className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] text-white/60">2025</div>
+        <div className="px-2 py-0.5 rounded-full bg-white/10 text-[11px] text-white/60">2025</div>
       </div>
 
       {/* Upcoming deadline */}
       <div className="bg-white/10 rounded-xl p-3">
         <div className="flex items-center gap-2 mb-2">
           <Warning weight="fill" className="w-4 h-4 text-amber-300" />
-          <span className="text-[10px] font-medium text-amber-300">Due in 45 days</span>
+          <span className="text-[11px] font-medium text-amber-300">Due in 45 days</span>
         </div>
         <p className="text-sm font-semibold text-white">Form BE Submission</p>
-        <p className="text-[10px] text-white/50">Individual tax return</p>
+        <p className="text-[11px] text-white/50">Individual tax return</p>
       </div>
 
       {/* Mini calendar grid */}
       <div className="grid grid-cols-7 gap-1 text-center">
         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-          <div key={i} className="text-[8px] text-white/40">{d}</div>
+          <div key={i} className="text-[10px] text-white/40">{d}</div>
         ))}
         {Array.from({ length: 28 }, (_, i) => (
           <div
             key={i}
-            className={`text-[9px] py-0.5 rounded ${
+            className={`text-[10px] py-0.5 rounded ${
               i === 14 ? 'bg-amber-400 text-[#4A3728] font-bold' :
               i === 29 ? 'bg-red-400 text-white font-bold' :
               'text-white/60'
@@ -137,7 +137,7 @@ function CalendarPreview() {
       </div>
 
       {/* Legend */}
-      <div className="flex gap-3 text-[9px]">
+      <div className="flex gap-3 text-[11px]">
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-amber-400" />
           <span className="text-white/50">Form BE</span>
@@ -162,22 +162,22 @@ function EInvoicePreview() {
           </div>
           <span className="text-xs font-medium text-white/80">E-Invoicing</span>
         </div>
-        <div className="px-2 py-0.5 rounded-full bg-emerald-400/20 text-[10px] text-emerald-300 font-medium">NEW</div>
+        <div className="px-2 py-0.5 rounded-full bg-emerald-400/20 text-[11px] text-emerald-300 font-medium">NEW</div>
       </div>
 
       {/* Compliance status */}
       <div className="bg-white/10 rounded-xl p-3">
-        <p className="text-[10px] text-white/50 mb-1">Your Revenue Band</p>
+        <p className="text-[11px] text-white/50 mb-1">Your Revenue Band</p>
         <p className="text-sm font-semibold text-white">RM 25M - RM 100M</p>
         <div className="flex items-center gap-1 mt-1">
           <TrendUp weight="bold" className="w-3 h-3 text-emerald-300" />
-          <p className="text-[10px] text-emerald-300">Mandatory from 1 Jan 2025</p>
+          <p className="text-[11px] text-emerald-300">Mandatory from 1 Jan 2025</p>
         </div>
       </div>
 
       {/* Timeline */}
       <div className="space-y-2">
-        <p className="text-[10px] text-white/50">Implementation Timeline</p>
+        <p className="text-[11px] text-white/50">Implementation Timeline</p>
         <div className="space-y-1.5">
           {[
             { phase: 'Phase 1', date: '1 Aug 2024', done: true },
@@ -189,8 +189,8 @@ function EInvoicePreview() {
                 {item.done && <CheckCircle weight="fill" className="w-3 h-3 text-white" />}
               </div>
               <div className="flex-1 flex justify-between">
-                <span className="text-[10px] text-white/80">{item.phase}</span>
-                <span className="text-[10px] text-white/50">{item.date}</span>
+                <span className="text-[11px] text-white/80">{item.phase}</span>
+                <span className="text-[11px] text-white/50">{item.date}</span>
               </div>
             </div>
           ))}
@@ -198,7 +198,7 @@ function EInvoicePreview() {
       </div>
 
       {/* CTA hint */}
-      <div className="flex items-center justify-center gap-1 text-[10px] text-white/60">
+      <div className="flex items-center justify-center gap-1 text-[11px] text-white/60">
         <span>Check your timeline</span>
         <ArrowRight weight="bold" className="w-3 h-3" />
       </div>
@@ -357,7 +357,7 @@ export default function LandingHub() {
                     >
                       {/* NEW badge */}
                       {app.isNew && (
-                        <div className="absolute top-4 right-4 z-10 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-sm text-[10px] font-semibold text-white">
+                        <div className="absolute top-4 right-4 z-10 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-sm text-[11px] font-semibold text-white">
                           NEW
                         </div>
                       )}

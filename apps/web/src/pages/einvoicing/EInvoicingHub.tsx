@@ -254,7 +254,7 @@ export default function EInvoicingHub() {
                           {isExempt ? 'Exempt' : result.name}
                         </span>
                       ) : (
-                        <span className="text-[10px] uppercase tracking-[0.15em] text-[#8B7B6B]/60">
+                        <span className="text-[11px] uppercase tracking-[0.15em] text-[#8B7B6B]/60">
                           Select your annual revenue
                         </span>
                       )}
@@ -293,7 +293,7 @@ export default function EInvoicingHub() {
                           <span className="hidden sm:inline">{tier.label}</span>
                           <span className="sm:hidden">{tier.shortLabel}</span>
                           {tierExempt && !isSelected && (
-                            <span className="absolute -top-1.5 -right-1.5 text-[8px] px-1.5 py-0.5 bg-[#5B8A72] text-white rounded-full font-bold">
+                            <span className="absolute -top-1.5 -right-1.5 text-[10px] px-1.5 py-0.5 bg-[#5B8A72] text-white rounded-full font-bold">
                               FREE
                             </span>
                           )}
@@ -308,7 +308,7 @@ export default function EInvoicingHub() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.25 }}
-                      className="flex items-center justify-center gap-1.5 text-[10px] text-[#8B7B6B]/50 mt-5"
+                      className="flex items-center justify-center gap-1.5 text-[11px] text-[#8B7B6B]/50 mt-5"
                     >
                       <ShieldCheck weight="fill" className="w-3 h-3" />
                       Based on LHDN Dec 2025 guidelines
@@ -342,7 +342,7 @@ export default function EInvoicingHub() {
                               key={id}
                               onClick={() => setActiveTab(id)}
                               className={cn(
-                                'relative z-10 flex items-center gap-2 min-h-[40px] px-5 rounded-xl text-sm font-medium transition-colors touch-manipulation',
+                                'relative z-10 flex items-center gap-2 min-h-[44px] px-5 rounded-xl text-sm font-medium transition-colors touch-manipulation',
                                 activeTab === id ? 'text-[#4A3728]' : 'text-[#8B7B6B]'
                               )}
                             >
@@ -350,7 +350,7 @@ export default function EInvoicingHub() {
                               {label}
                               {id === 'checklist' && checked.length > 0 && (
                                 <span className={cn(
-                                  'text-[10px] px-1.5 py-0.5 rounded-full font-semibold',
+                                  'text-[11px] px-1.5 py-0.5 rounded-full font-semibold',
                                   checkProgress === 100 ? 'bg-[#5B8A72] text-white' : 'bg-[#F5EDE3] text-[#6B5B4F]'
                                 )}>
                                   {checked.length}/{checklistItems.length}
@@ -403,7 +403,7 @@ export default function EInvoicingHub() {
                                 <div className="flex-1">
                                   <span className="font-semibold">Choose submission method</span>
                                 </div>
-                                <span className="text-[9px] px-2 py-1 bg-[#E5A84B] text-[#4A3728] rounded-full font-semibold">Recommended</span>
+                                <span className="text-[11px] px-2 py-1 bg-[#E5A84B] text-[#4A3728] rounded-full font-semibold">Recommended</span>
                               </div>
                               <p className="text-sm text-white/70 mb-3">Use accounting software integrated with MyInvois:</p>
                               <div className="flex flex-wrap gap-2 mb-3">
@@ -411,7 +411,7 @@ export default function EInvoicingHub() {
                                   sw.comingSoon ? (
                                     <span key={sw.name} className="inline-flex items-center gap-1.5 text-xs px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white/40">
                                       {sw.name}
-                                      <span className="text-[8px] px-1.5 py-0.5 bg-[#5B8A72] text-white rounded-full font-bold">Soon</span>
+                                      <span className="text-[10px] px-1.5 py-0.5 bg-[#5B8A72] text-white rounded-full font-bold">Soon</span>
                                     </span>
                                   ) : (
                                     <a key={sw.name} href={sw.url} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-2 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-colors">
@@ -537,7 +537,7 @@ export default function EInvoicingHub() {
                                       </a>
                                     )}
                                     {item.urgent && !isChecked && (
-                                      <span className="text-[9px] px-2 py-0.5 bg-red-500 text-white rounded-full font-bold flex-shrink-0">!</span>
+                                      <span className="text-[11px] px-2 py-0.5 bg-red-500 text-white rounded-full font-bold flex-shrink-0">!</span>
                                     )}
                                   </motion.button>
                                 );
@@ -683,7 +683,7 @@ export default function EInvoicingHub() {
                                       )}
                                     </div>
                                     <div className={cn(
-                                      'text-[10px] mt-2 text-center font-medium',
+                                      'text-[11px] mt-2 text-center font-medium',
                                       isCurrent ? 'text-[#E5A84B]' : 'text-white/40'
                                     )}>
                                       P{phase.id}

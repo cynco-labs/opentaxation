@@ -88,7 +88,7 @@ function TaxCard({
         <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-5 pt-4 sm:pt-5">
           <div className="flex items-center justify-between gap-2">
             <CardTitle className="font-display text-sm sm:text-base font-semibold">{title}</CardTitle>
-            <Badge variant="default" className="text-[10px] sm:text-xs font-medium">
+            <Badge variant="default" className="text-[11px] sm:text-xs font-medium">
               {title === 'Enterprise' || title === t('results.enterprise') ? t('taxCard.soleProp') : t('taxCard.company')}
             </Badge>
           </div>
@@ -111,7 +111,7 @@ function TaxCard({
                   <p className="text-[11px] sm:text-xs font-medium text-emerald-700 dark:text-emerald-400">
                     {t('taxCard.zakatSaves')} {formatCurrency(zakat.taxBenefit)}
                   </p>
-                  <p className="text-[9px] sm:text-[10px] text-emerald-600/70 dark:text-emerald-400/70">
+                  <p className="text-[10px] sm:text-[11px] text-emerald-600/70 dark:text-emerald-400/70">
                     {title === 'Enterprise' || title === t('results.enterprise') ? t('taxCard.taxRebate100') : t('taxCard.deduction25')}
                   </p>
                 </div>
@@ -130,7 +130,7 @@ function TaxCard({
                 </span>
               </div>
               <div className="flex justify-end">
-                <Badge variant="secondary" className="text-[10px] sm:text-xs font-normal bg-muted/50 text-muted-foreground px-2 py-0.5">
+                <Badge variant="secondary" className="text-[11px] sm:text-xs font-normal bg-muted/50 text-muted-foreground px-2 py-0.5">
                   {(safeEffectiveRate * 100).toFixed(2)}% {t('taxCard.effectiveRate')}
                 </Badge>
               </div>

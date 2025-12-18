@@ -103,7 +103,7 @@ export default function ToolNav({ className }: ToolNavProps) {
                 />
                 <span>{tool.label}</span>
                 {tool.isNew && (
-                  <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-[#722F37] text-white rounded-full">
+                  <span className="px-1.5 py-0.5 text-[11px] font-semibold bg-[#722F37] text-white rounded-full">
                     NEW
                   </span>
                 )}
@@ -129,7 +129,7 @@ export default function ToolNav({ className }: ToolNavProps) {
               to={tool.path}
               className={({ isActive }) =>
                 cn(
-                  'flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-colors min-w-[64px]',
+                  'flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-colors min-w-[64px] min-h-[52px]',
                   isActive || isToolActive(tool.path)
                     ? 'text-[#722F37]'
                     : 'text-[#6B5B5B]'
@@ -154,7 +154,7 @@ export default function ToolNav({ className }: ToolNavProps) {
               <button
                 onClick={() => setMoreMenuOpen(!moreMenuOpen)}
                 className={cn(
-                  'flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-colors min-w-[64px]',
+                  'flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-colors min-w-[64px] min-h-[52px]',
                   moreMenuOpen ? 'text-[#722F37]' : 'text-[#6B5B5B]'
                 )}
               >
