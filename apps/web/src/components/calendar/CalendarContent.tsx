@@ -59,7 +59,7 @@ const entityConfig: Record<EntityType, {
   },
 };
 
-// Entity selector pill
+// Entity selector pill - optimized for 2-column mobile layout
 function EntityPill({
   entity,
   isSelected,
@@ -80,36 +80,39 @@ function EntityPill({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 + index * 0.05, duration: 0.4, ease: smoothEase }}
       onClick={onSelect}
-      className={`group flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-200 ${
+      className={`group flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 sm:py-3.5 rounded-xl border transition-all duration-200 min-h-[60px] sm:min-h-[56px] ${
         isSelected
-          ? 'border-transparent text-white shadow-lg'
-          : 'border-[#E8DDD0] bg-white/50 hover:bg-white hover:border-[#D4C4B0]'
+          ? 'border-transparent text-white shadow-md'
+          : 'border-[#E8DDD0] bg-white hover:border-[#D4C4B0]'
       }`}
       style={isSelected ? { backgroundColor: config.bgColor } : {}}
     >
       <div
-        className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
+        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center transition-colors flex-shrink-0 ${
           isSelected ? 'bg-white/20' : 'bg-[#F5EDE3]'
         }`}
       >
         <Icon
           weight={isSelected ? 'fill' : 'duotone'}
-          className={`h-4 w-4 ${isSelected ? 'text-white' : 'text-[#4A3728]'}`}
+          className={`h-4 w-4 sm:h-5 sm:w-5 ${isSelected ? 'text-white' : 'text-[#4A3728]'}`}
         />
       </div>
-      <div className="text-left">
-        <p className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-[#4A3728]'}`}>
+      <div className="text-left flex-1 min-w-0">
+        <p className={`text-[13px] sm:text-sm font-medium ${isSelected ? 'text-white' : 'text-[#4A3728]'}`}>
           {config.title}
         </p>
-        <p className={`text-xs ${isSelected ? 'text-white/70' : 'text-[#8B7B6B]'}`}>
+        <p className={`text-[11px] sm:text-xs truncate ${isSelected ? 'text-white/70' : 'text-[#8B7B6B]'}`}>
           {config.subtitle}
         </p>
       </div>
+      {isSelected && (
+        <CheckCircle weight="fill" className="w-4 h-4 sm:w-5 sm:h-5 text-white/80 flex-shrink-0" />
+      )}
     </motion.button>
   );
 }
 
-// Deadline card
+// Deadline card - mobile optimized
 function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: number }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const entityColor = entityConfig[deadline.entityType]?.color || '#722F37';
@@ -126,23 +129,24 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
     >
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className={`w-full text-left p-5 rounded-2xl border transition-all duration-200 ${
+        className={`w-full text-left p-4 sm:p-5 rounded-xl sm:rounded-2xl border transition-all duration-200 min-h-[72px] ${
           isExpanded
             ? 'bg-white border-[#D4C4B0] shadow-sm'
             : 'bg-white/50 border-[#E8DDD0] hover:bg-white hover:border-[#D4C4B0]'
         }`}
       >
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4">
+        {/* Mobile: Stack layout | Desktop: Row layout */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+          <div className="flex items-start gap-3 sm:gap-4">
             {/* Entity indicator */}
             <div
-              className="w-1 h-12 rounded-full flex-shrink-0"
+              className="w-1 h-10 sm:h-12 rounded-full flex-shrink-0"
               style={{ backgroundColor: entityColor }}
             />
-            <div className="space-y-1">
+            <div className="space-y-1.5 sm:space-y-1 flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span
-                  className="font-mono text-sm font-semibold px-2.5 py-1 rounded-lg"
+                  className="font-mono text-sm font-semibold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg"
                   style={{ backgroundColor: `${entityColor}15`, color: entityColor }}
                 >
                   {deadline.formCode}
@@ -157,10 +161,11 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
                   </span>
                 )}
               </div>
-              <p className="text-sm text-[#4A3728]">{deadline.description}</p>
+              <p className="text-sm text-[#4A3728] leading-snug">{deadline.description}</p>
             </div>
           </div>
-          <div className="text-right flex-shrink-0">
+          {/* Due date - inline on mobile, right-aligned on desktop */}
+          <div className="flex items-center justify-between sm:block sm:text-right flex-shrink-0 ml-4 sm:ml-0">
             <p className="font-semibold text-[#4A3728]">{deadline.dueDate}</p>
             <p className="text-xs text-[#8B7B6B]">{deadline.month}</p>
           </div>
@@ -175,7 +180,7 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
               transition={{ duration: 0.2 }}
               className="overflow-hidden"
             >
-              <div className="mt-4 pt-4 border-t border-[#E8DDD0] ml-5">
+              <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-[#E8DDD0] ml-4 sm:ml-5">
                 <div className="flex items-start gap-2 text-sm text-[#6B5B4F] bg-[#E5A84B]/10 p-3 rounded-xl">
                   <Warning weight="fill" className="h-4 w-4 text-[#E5A84B] flex-shrink-0 mt-0.5" />
                   <span>{deadline.notes}</span>
@@ -186,7 +191,7 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
         </AnimatePresence>
 
         {deadline.notes && (
-          <div className="mt-3 ml-5 flex items-center gap-1 text-xs text-[#8B7B6B]">
+          <div className="mt-2.5 sm:mt-3 ml-4 sm:ml-5 flex items-center gap-1 text-xs text-[#8B7B6B]">
             <CaretDown
               weight="bold"
               className={`h-3 w-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -199,74 +204,80 @@ function DeadlineCard({ deadline, index }: { deadline: TaxDeadline; index: numbe
   );
 }
 
-// Visual month timeline
+// Visual month timeline - mobile optimized with touch-friendly targets
 function MonthTimeline({ deadlines }: { deadlines: TaxDeadline[] }) {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const currentMonth = new Date().getMonth();
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto pb-2 scrollbar-none">
-      {months.map((month, idx) => {
-        const monthDeadlines = deadlines.filter((d) => d.monthNumber === idx + 1);
-        const hasDeadlines = monthDeadlines.length > 0;
-        const isCurrent = idx === currentMonth;
-        const isPast = idx < currentMonth;
+    <div className="relative -mx-4 sm:mx-0">
+      {/* Fade edges on mobile to indicate scrollability */}
+      <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-white/60 to-transparent z-10 pointer-events-none sm:hidden" />
+      <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-white/60 to-transparent z-10 pointer-events-none sm:hidden" />
 
-        return (
-          <div
-            key={month}
-            className={`relative flex flex-col items-center px-2 sm:px-3 py-2 rounded-xl transition-all min-w-[40px] sm:min-w-[52px] ${
-              isCurrent
-                ? 'bg-[#722F37] text-white'
-                : hasDeadlines
-                ? 'bg-[#F5EDE3]'
-                : ''
-            }`}
-          >
-            <span
-              className={`text-xs font-medium ${
+      <div className="flex items-center gap-1.5 sm:gap-1 overflow-x-auto pb-2 px-4 sm:px-0 scrollbar-none snap-x snap-mandatory sm:snap-none">
+        {months.map((month, idx) => {
+          const monthDeadlines = deadlines.filter((d) => d.monthNumber === idx + 1);
+          const hasDeadlines = monthDeadlines.length > 0;
+          const isCurrent = idx === currentMonth;
+          const isPast = idx < currentMonth;
+
+          return (
+            <div
+              key={month}
+              className={`relative flex flex-col items-center px-3 sm:px-3 py-2.5 sm:py-2 rounded-xl transition-all min-w-[48px] sm:min-w-[52px] snap-center ${
                 isCurrent
-                  ? 'text-white'
-                  : isPast
-                  ? 'text-[#8B7B6B]/50'
+                  ? 'bg-[#722F37] text-white shadow-sm'
                   : hasDeadlines
-                  ? 'text-[#4A3728]'
-                  : 'text-[#8B7B6B]/50'
+                  ? 'bg-[#F5EDE3]'
+                  : ''
               }`}
             >
-              {month}
-            </span>
-            {hasDeadlines && (
-              <div className="flex gap-0.5 mt-1">
-                {monthDeadlines.slice(0, 3).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      isCurrent ? 'bg-white/60' : 'bg-[#722F37]/40'
-                    }`}
-                  />
-                ))}
-                {monthDeadlines.length > 3 && (
-                  <span className={`text-[10px] sm:text-[8px] ml-0.5 ${isCurrent ? 'text-white/60' : 'text-[#722F37]/60'}`}>
-                    +{monthDeadlines.length - 3}
-                  </span>
-                )}
-              </div>
-            )}
-            {isPast && hasDeadlines && (
-              <CheckCircle
-                weight="fill"
-                className="absolute -top-1 -right-1 w-4 h-4 text-[#5B8A72] bg-[#FAF7F2] rounded-full"
-              />
-            )}
-          </div>
-        );
-      })}
+              <span
+                className={`text-xs font-medium ${
+                  isCurrent
+                    ? 'text-white'
+                    : isPast
+                    ? 'text-[#8B7B6B]/50'
+                    : hasDeadlines
+                    ? 'text-[#4A3728]'
+                    : 'text-[#8B7B6B]/50'
+                }`}
+              >
+                {month}
+              </span>
+              {hasDeadlines && (
+                <div className="flex gap-0.5 mt-1.5 sm:mt-1">
+                  {monthDeadlines.slice(0, 3).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        isCurrent ? 'bg-white/60' : 'bg-[#722F37]/40'
+                      }`}
+                    />
+                  ))}
+                  {monthDeadlines.length > 3 && (
+                    <span className={`text-[10px] ml-0.5 ${isCurrent ? 'text-white/60' : 'text-[#722F37]/60'}`}>
+                      +{monthDeadlines.length - 3}
+                    </span>
+                  )}
+                </div>
+              )}
+              {isPast && hasDeadlines && (
+                <CheckCircle
+                  weight="fill"
+                  className="absolute -top-1 -right-1 w-4 h-4 text-[#5B8A72] bg-[#FAF7F2] rounded-full"
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
-// FAQ Item
+// FAQ Item - mobile optimized
 function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -278,20 +289,20 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full text-left p-5 rounded-2xl border transition-all duration-200 ${
+        className={`w-full text-left p-4 sm:p-5 rounded-xl sm:rounded-2xl border transition-all duration-200 min-h-[56px] ${
           isOpen
             ? 'bg-white border-[#D4C4B0]'
             : 'bg-white/30 border-[#E8DDD0] hover:bg-white/60 hover:border-[#D4C4B0]'
         }`}
       >
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-3 sm:gap-4">
           <span
-            className="text-xs font-mono px-2 py-1 rounded-lg bg-[#722F37]/10 text-[#722F37]"
+            className="text-xs font-mono px-2 py-1 rounded-lg bg-[#722F37]/10 text-[#722F37] flex-shrink-0"
           >
             {String(index + 1).padStart(2, '0')}
           </span>
-          <div className="flex-1">
-            <p className="font-medium text-[#4A3728]">{question}</p>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-[#4A3728] text-[15px] sm:text-base leading-snug">{question}</p>
             <AnimatePresence>
               {isOpen && (
                 <motion.p
@@ -299,7 +310,7 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="text-sm text-[#6B5B4F] mt-3 leading-relaxed overflow-hidden"
+                  className="text-sm text-[#6B5B4F] mt-2.5 sm:mt-3 leading-relaxed overflow-hidden"
                 >
                   {answer}
                 </motion.p>
@@ -308,7 +319,7 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
           </div>
           <CaretDown
             weight="bold"
-            className={`h-4 w-4 text-[#8B7B6B] transition-transform flex-shrink-0 ${
+            className={`h-4 w-4 text-[#8B7B6B] transition-transform flex-shrink-0 mt-0.5 ${
               isOpen ? 'rotate-180' : ''
             }`}
           />
@@ -348,72 +359,73 @@ export default function CalendarContent() {
 
   return (
     <div className="min-h-full bg-[#FAF7F2]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 pb-24">
-        {/* Hero */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12 space-y-8 sm:space-y-10 pb-24">
+        {/* Hero - more compact on mobile */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: smoothEase }}
-          className="text-center space-y-5"
+          className="text-center space-y-4 sm:space-y-5"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 border border-[#E8DDD0] rounded-full text-xs font-medium text-[#6B5B4F]">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/60 border border-[#E8DDD0] rounded-full text-xs font-medium text-[#6B5B4F]">
             <Clock weight="fill" className="h-3.5 w-3.5 text-[#E5A84B]" />
             YA 2024/2025 Deadlines
           </div>
 
-          <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] font-normal leading-tight tracking-tight text-[#4A3728]">
+          <h1 className="font-serif text-2xl sm:text-4xl md:text-[2.75rem] font-normal leading-tight tracking-tight text-[#4A3728]">
             Tax deadlines that won't
-            <br />
+            <br className="hidden sm:block" />
+            <span className="sm:hidden"> </span>
             <span className="text-[#722F37] italic">sneak up on you</span>
           </h1>
 
-          <p className="text-[#6B5B4F] max-w-md mx-auto text-[15px]">
+          <p className="text-[#6B5B4F] max-w-md mx-auto text-sm sm:text-[15px] px-2 sm:px-0">
             Because "I forgot" doesn't work on LHDN. All Malaysian tax filing deadlines in one place.
           </p>
         </motion.div>
 
-        {/* Stats */}
+        {/* Stats - more compact on mobile */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15, duration: 0.5 }}
-          className="flex items-center justify-center gap-6 sm:gap-10"
+          className="flex items-center justify-center gap-5 sm:gap-10"
         >
           {[
-            { value: getAllDeadlinesSorted().length, label: 'Deadlines tracked' },
+            { value: getAllDeadlinesSorted().length, label: 'Deadlines' },
             { value: '4', label: 'Entity types' },
-            { value: '0', label: 'Excuses accepted' },
+            { value: '0', label: 'Excuses' },
           ].map((stat, i) => (
             <div key={i} className="text-center">
               <p
-                className="font-serif text-2xl sm:text-3xl font-normal text-[#4A3728]"
+                className="font-serif text-xl sm:text-3xl font-normal text-[#4A3728]"
               >
                 {stat.value}
               </p>
-              <p className="text-xs text-[#8B7B6B]">{stat.label}</p>
+              <p className="text-[11px] sm:text-xs text-[#8B7B6B]">{stat.label}</p>
             </div>
           ))}
         </motion.div>
 
         {/* Entity Selector */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
             <h2
-              className="font-serif text-lg font-normal text-[#4A3728]"
+              className="font-serif text-base sm:text-lg font-normal text-[#4A3728]"
             >
               I'm filing as...
             </h2>
             {selectedEntity && (
               <button
                 onClick={() => setSelectedEntity(null)}
-                className="text-sm text-[#722F37] hover:text-[#5A252C] font-medium transition-colors"
+                className="text-sm text-[#722F37] hover:text-[#5A252C] font-medium transition-colors min-h-[44px] flex items-center"
               >
-                Show all →
+                Show all
               </button>
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
             {entities.map((entity, index) => (
               <EntityPill
                 key={entity}
@@ -431,9 +443,9 @@ export default function CalendarContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.25, duration: 0.5 }}
-          className="bg-white/60 border border-[#E8DDD0] rounded-2xl p-4"
+          className="bg-white/60 border border-[#E8DDD0] rounded-xl sm:rounded-2xl p-3 sm:p-4"
         >
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-2.5 sm:mb-3 px-1">
             <CalendarCheck weight="duotone" className="h-4 w-4 text-[#722F37]" />
             <span className="text-sm font-medium text-[#4A3728]">Year at a glance</span>
           </div>
@@ -441,14 +453,14 @@ export default function CalendarContent() {
         </motion.div>
 
         {/* Deadlines */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
             <h2
-              className="font-serif text-lg font-normal text-[#4A3728]"
+              className="font-serif text-base sm:text-lg font-normal text-[#4A3728]"
             >
               {selectedEntity ? `${entityConfig[selectedEntity].title} deadlines` : 'All deadlines'}
             </h2>
-            <span className="text-sm text-[#8B7B6B] bg-[#F5EDE3] px-3 py-1 rounded-full">
+            <span className="text-xs sm:text-sm text-[#8B7B6B] bg-[#F5EDE3] px-2.5 sm:px-3 py-1 rounded-full">
               {displayedDeadlines.length} {displayedDeadlines.length === 1 ? 'deadline' : 'deadlines'}
             </span>
           </div>
@@ -469,15 +481,17 @@ export default function CalendarContent() {
         </div>
 
         {/* FAQ */}
-        <div className="space-y-4">
-          <h2
-            className="font-serif text-lg font-normal text-[#4A3728]"
-          >
-            Common questions
-          </h2>
-          <p className="text-sm text-[#8B7B6B] -mt-2">
-            The stuff you're too embarrassed to ask your accountant.
-          </p>
+        <div className="space-y-3 sm:space-y-4">
+          <div>
+            <h2
+              className="font-serif text-base sm:text-lg font-normal text-[#4A3728]"
+            >
+              Common questions
+            </h2>
+            <p className="text-xs sm:text-sm text-[#8B7B6B] mt-1">
+              The stuff you're too embarrassed to ask your accountant.
+            </p>
+          </div>
           <div className="space-y-2">
             {faqs.map((faq, index) => (
               <FAQItem key={faq.question} {...faq} index={index} />
@@ -490,21 +504,21 @@ export default function CalendarContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="bg-[#722F37] rounded-3xl p-8 text-center"
+          className="bg-[#722F37] rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center"
         >
           <h3
-            className="font-serif text-xl font-normal text-white mb-2"
+            className="font-serif text-lg sm:text-xl font-normal text-white mb-1.5 sm:mb-2"
           >
             Need official information?
           </h3>
-          <p className="text-white/70 text-sm mb-6">
+          <p className="text-white/70 text-xs sm:text-sm mb-4 sm:mb-6">
             Deadlines accurate as of YA 2024/2025. When in doubt, check with LHDN.
           </p>
           <a
             href="https://www.hasil.gov.my"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#E5A84B] text-[#4A3728] font-medium rounded-full hover:bg-[#D9A045] transition-colors"
+            className="inline-flex items-center gap-2 px-5 sm:px-6 py-3 bg-[#E5A84B] text-[#4A3728] font-medium rounded-full hover:bg-[#D9A045] transition-colors min-h-[48px] text-sm sm:text-base"
           >
             Visit LHDN Website
             <CaretRight weight="bold" className="h-4 w-4" />

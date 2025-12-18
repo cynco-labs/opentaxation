@@ -315,7 +315,7 @@ export default function LandingHub() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="relative"
+              className="relative w-full overflow-hidden"
             >
               {/* Carousel navigation */}
               <div className="flex items-center justify-between mb-4">
@@ -341,7 +341,7 @@ export default function LandingHub() {
               {/* Carousel container */}
               <div
                 ref={carouselRef}
-                className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4"
+                className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 -mx-6 px-6 lg:mx-0 lg:px-0"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {TOOL_APPS.map((app) => {

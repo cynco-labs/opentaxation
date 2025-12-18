@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { Outlet, NavLink, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserMenu } from '@/components/UserMenu';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { motion } from 'framer-motion';
 import { ClockCounterClockwise, Gear, House, CalendarCheck, Article, Icon } from 'phosphor-react';
 import Logo from '@/components/Logo';
@@ -35,8 +34,8 @@ export default function DashboardLayout() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading dashboard...</div>
+      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
+        <div className="animate-pulse text-[#6B5B4F]">Loading dashboard...</div>
       </div>
     );
   }
@@ -47,23 +46,21 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#FAF7F2]">
           {/* Header */}
-          <header className="sticky top-0 z-50 border-b border-border/30 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
+          <header className="sticky top-0 z-50 border-b border-[#E8D5C4] bg-[#FAF7F2]/95 backdrop-blur-xl">
             <div className="flex h-14 items-center justify-between px-4 sm:px-6">
               {/* Left: Logo + Dashboard badge */}
               <div className="flex items-center gap-3">
                 <NavLink to="/" className="flex-shrink-0">
                   <Logo size="sm" />
                 </NavLink>
-                <div className="hidden sm:block h-5 w-px bg-border" />
-                <span className="hidden sm:block text-sm text-muted-foreground">Dashboard</span>
+                <div className="hidden sm:block h-5 w-px bg-[#E8D5C4]" />
+                <span className="hidden sm:block text-sm text-[#6B5B4F]">Dashboard</span>
               </div>
 
               {/* Right: Actions */}
               <div className="flex items-center gap-2">
-                <ThemeToggle />
-                <div className="h-5 w-px bg-border hidden sm:block" />
                 <UserMenu />
               </div>
             </div>
@@ -71,7 +68,7 @@ export default function DashboardLayout() {
 
           <div className="flex">
             {/* Sidebar */}
-            <aside className="hidden md:flex w-64 flex-col border-r border-border/30 min-h-[calc(100vh-4rem)] bg-background">
+            <aside className="hidden md:flex w-64 flex-col border-r border-[#E8D5C4] min-h-[calc(100vh-4rem)] bg-[#FAF7F2]">
               <nav className="flex-1 p-4 space-y-1" role="navigation" aria-label="Dashboard navigation">
                 {navItems.map(({ to, icon: Icon, label, end }) => (
                   <NavLink
@@ -81,8 +78,8 @@ export default function DashboardLayout() {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                         isActive
-                          ? 'bg-primary/10 text-primary border border-primary/20'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                          ? 'bg-[#722F37]/10 text-[#722F37] border border-[#722F37]/20'
+                          : 'text-[#6B5B4F] hover:text-[#4A3728] hover:bg-[#F5EDE3]'
                       }`
                     }
                   >
@@ -95,7 +92,7 @@ export default function DashboardLayout() {
 
             {/* Mobile nav */}
             <nav
-              className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border/30 bg-background/95 backdrop-blur-xl p-2 pb-safe"
+              className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-[#E8D5C4] bg-[#FAF7F2]/95 backdrop-blur-xl p-2 pb-safe"
               role="navigation"
               aria-label="Dashboard navigation"
             >
@@ -106,10 +103,10 @@ export default function DashboardLayout() {
                     to={to}
                     end={end}
                     className={({ isActive }) =>
-                      `flex flex-col items-center gap-1 p-2 rounded-lg text-xs transition-colors touch-target ${
+                      `flex flex-col items-center gap-1 p-2 rounded-lg text-xs transition-colors min-h-[52px] ${
                         isActive
-                          ? 'text-primary'
-                          : 'text-muted-foreground'
+                          ? 'text-[#722F37]'
+                          : 'text-[#6B5B4F]'
                       }`
                     }
                   >

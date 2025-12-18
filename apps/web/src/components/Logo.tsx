@@ -52,7 +52,7 @@ export default function Logo({ className, size = 'md', showMark = true }: LogoPr
             {/* Open circle - gap at top right represents "open" */}
             <path
               d="M12 3a9 9 0 1 0 6.36 2.64"
-              className="stroke-foreground"
+              stroke="#4A3728"
               strokeWidth="2.5"
               strokeLinecap="round"
               fill="none"
@@ -62,8 +62,8 @@ export default function Logo({ className, size = 'md', showMark = true }: LogoPr
       )}
 
       {/* Wordmark */}
-      <span className={cn('font-medium tracking-tight text-foreground', config.text)}>
-        opentaxation<span className="text-muted-foreground">.my</span>
+      <span className={cn('font-medium tracking-tight text-[#4A3728]', config.text)}>
+        opentaxation<span className="text-[#6B5B4F]">.my</span>
       </span>
     </motion.a>
   );

@@ -44,89 +44,67 @@ function PhosphorBackground() {
       >
         <path
           d="M-100 400 Q 200 350, 400 380 T 800 360 T 1300 400"
-          className="stroke-border"
+          stroke="#E8D5C4"
           strokeWidth="1"
           fill="none"
         />
         <path
           d="M-100 450 Q 250 400, 500 420 T 900 400 T 1300 450"
-          className="stroke-border"
+          stroke="#E8D5C4"
           strokeWidth="1"
           fill="none"
         />
         <path
           d="M-100 500 Q 300 450, 550 470 T 950 450 T 1300 500"
-          className="stroke-border"
+          stroke="#E8D5C4"
           strokeWidth="1"
           fill="none"
         />
         <path
           d="M-100 300 Q 150 280, 350 300 T 700 280 T 1300 320"
-          className="stroke-border"
+          stroke="#E8D5C4"
           strokeWidth="1"
           fill="none"
         />
         <path
           d="M-100 200 Q 180 170, 380 190 T 750 170 T 1300 210"
-          className="stroke-border"
+          stroke="#E8D5C4"
           strokeWidth="1"
           fill="none"
         />
 
         {/* Contour clusters */}
-        <ellipse cx="950" cy="150" rx="100" ry="50" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="950" cy="150" rx="60" ry="30" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="150" cy="650" rx="80" ry="40" className="stroke-border" strokeWidth="1" fill="none" />
-        <ellipse cx="150" cy="650" rx="40" ry="20" className="stroke-border" strokeWidth="1" fill="none" />
+        <ellipse cx="950" cy="150" rx="100" ry="50" stroke="#E8D5C4" strokeWidth="1" fill="none" />
+        <ellipse cx="950" cy="150" rx="60" ry="30" stroke="#E8D5C4" strokeWidth="1" fill="none" />
+        <ellipse cx="150" cy="650" rx="80" ry="40" stroke="#E8D5C4" strokeWidth="1" fill="none" />
+        <ellipse cx="150" cy="650" rx="40" ry="20" stroke="#E8D5C4" strokeWidth="1" fill="none" />
       </svg>
 
-      {/* Scattered Phosphor icons with labels - like documentation */}
-      <div className="absolute top-[12%] left-[8%] flex flex-col items-center gap-1 opacity-40">
-        <Receipt weight="light" className="h-6 w-6 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">receipt-light</span>
-      </div>
+      {/* Scattered Phosphor icons - hidden on mobile for cleaner look */}
+      <div className="hidden sm:block">
+        <div className="absolute top-[12%] left-[8%] flex flex-col items-center gap-1 opacity-30">
+          <Receipt weight="light" className="h-6 w-6 text-[#4A3728]" />
+        </div>
 
-      <div className="absolute top-[65%] left-[5%] flex flex-col items-center gap-1 opacity-40">
-        <Vault weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">vault-light</span>
-      </div>
+        <div className="absolute top-[65%] left-[5%] flex flex-col items-center gap-1 opacity-30">
+          <Vault weight="light" className="h-5 w-5 text-[#4A3728]" />
+        </div>
 
-      <div className="absolute top-[20%] right-[8%] flex flex-col items-center gap-1 opacity-40">
-        <Buildings weight="light" className="h-6 w-6 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">buildings-light</span>
-      </div>
+        <div className="absolute top-[20%] right-[8%] flex flex-col items-center gap-1 opacity-30">
+          <Buildings weight="light" className="h-6 w-6 text-[#4A3728]" />
+        </div>
 
-      <div className="absolute top-[75%] right-[12%] flex flex-col items-center gap-1 opacity-40">
-        <ChartLineUp weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">chart-line-up</span>
-      </div>
+        <div className="absolute top-[75%] right-[12%] flex flex-col items-center gap-1 opacity-30">
+          <ChartLineUp weight="light" className="h-5 w-5 text-[#4A3728]" />
+        </div>
 
-      <div className="absolute bottom-[20%] left-[20%] flex flex-col items-center gap-1 opacity-40">
-        <Coins weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">coins-light</span>
-      </div>
+        <div className="absolute bottom-[20%] left-[20%] flex flex-col items-center gap-1 opacity-30">
+          <Coins weight="light" className="h-5 w-5 text-[#4A3728]" />
+        </div>
 
-      <div className="absolute top-[40%] right-[5%] flex flex-col items-center gap-1 opacity-40">
-        <Wallet weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">wallet-light</span>
-      </div>
-
-      <div className="absolute top-[50%] left-[3%] flex flex-col items-center gap-1 opacity-40">
-        <Calculator weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">calculator</span>
-      </div>
-
-      <div className="absolute bottom-[35%] right-[4%] flex flex-col items-center gap-1 opacity-40">
-        <TrendUp weight="light" className="h-5 w-5 text-foreground" />
-        <div className="w-1 h-1 rounded-full bg-foreground" />
-        <span className="text-[10px] text-muted-foreground font-medium">trend-up</span>
+        <div className="absolute top-[40%] right-[5%] flex flex-col items-center gap-1 opacity-30">
+          <Wallet weight="light" className="h-5 w-5 text-[#4A3728]" />
+        </div>
       </div>
     </div>
   );
@@ -143,25 +121,24 @@ export default function AuthPage() {
   }, [user, isLoading, navigate]);
 
   return (
-    <div className="min-h-screen min-h-[100dvh] w-full bg-background relative overflow-hidden">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-[#FAF7F2] relative overflow-hidden">
       <PhosphorBackground />
 
       {/* Main container */}
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header */}
-        <header className="flex items-center justify-between p-6 sm:p-8">
+        <header className="flex items-center justify-between p-4 sm:p-8">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 text-[#6B5B4F] hover:text-[#4A3728] transition-colors min-h-[44px]"
           >
             <ArrowLeft weight="bold" className="h-5 w-5" />
             <span className="text-sm font-medium">Back</span>
           </button>
-          <Logo size="sm" />
         </header>
 
         {/* Main content - centered */}
-        <main className="flex-1 flex items-center justify-center px-6 py-12">
+        <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -169,14 +146,14 @@ export default function AuthPage() {
             className="w-full max-w-sm"
           >
             {/* Card */}
-            <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+            <div className="bg-white border border-[#E8D5C4] rounded-2xl p-6 sm:p-8 shadow-sm">
               {/* Header */}
-              <div className="text-center mb-8">
-                <h1 className="font-display text-2xl font-bold tracking-tight mb-2">
-                  Welcome back, taxpayer
+              <div className="text-center mb-6 sm:mb-8">
+                <h1 className="font-serif text-xl sm:text-2xl font-semibold tracking-tight text-[#4A3728] mb-2">
+                  Welcome back
                 </h1>
-                <p className="text-muted-foreground text-sm">
-                  Don't worry, we won't tell LHDN about your secret spreadsheet addiction.
+                <p className="text-[#6B5B4F] text-sm">
+                  Sign in to save your calculations and track your tax journey.
                 </p>
               </div>
 
@@ -186,74 +163,71 @@ export default function AuthPage() {
                 disabled={isLoading}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
-                className="w-full h-12 rounded-xl bg-background border border-border hover:border-foreground/20 hover:bg-muted/30 transition-all duration-200 flex items-center justify-center gap-3"
+                className="w-full h-12 rounded-xl bg-[#FAF7F2] border border-[#E8D5C4] hover:border-[#D4B8A0] hover:bg-white transition-all duration-200 flex items-center justify-center gap-3"
               >
                 {isLoading ? (
                   <>
-                    <div className="h-4 w-4 border-2 border-muted-foreground/30 border-t-foreground rounded-full animate-spin" />
-                    <span className="text-sm font-medium">Signing in...</span>
+                    <div className="h-4 w-4 border-2 border-[#E8D5C4] border-t-[#722F37] rounded-full animate-spin" />
+                    <span className="text-sm font-medium text-[#4A3728]">Signing in...</span>
                   </>
                 ) : (
                   <>
                     <GoogleLogo className="h-5 w-5" />
-                    <span className="text-sm font-medium">Continue with Google</span>
+                    <span className="text-sm font-medium text-[#4A3728]">Continue with Google</span>
                   </>
                 )}
               </motion.button>
 
               {/* Divider */}
               <div className="my-6 flex items-center gap-4">
-                <div className="flex-1 h-px bg-border" />
-                <span className="text-xs text-muted-foreground">what you get</span>
-                <div className="flex-1 h-px bg-border" />
+                <div className="flex-1 h-px bg-[#E8D5C4]" />
+                <span className="text-xs text-[#8B7B6B]">what you get</span>
+                <div className="flex-1 h-px bg-[#E8D5C4]" />
               </div>
 
               {/* Features */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center flex-shrink-0">
-                    <Calculator weight="duotone" className="h-4 w-4 text-foreground" />
+                  <div className="w-8 h-8 rounded-lg bg-[#F5EDE3] flex items-center justify-center flex-shrink-0">
+                    <Calculator weight="duotone" className="h-4 w-4 text-[#722F37]" />
                   </div>
-                  <div>
+                  <div className="text-[#4A3728]">
                     <span className="font-medium">Save calculations</span>
-                    <span className="text-muted-foreground"> — for when you forget everything</span>
+                    <span className="text-[#6B5B4F]"> — access anytime</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center flex-shrink-0">
-                    <ChartLineUp weight="duotone" className="h-4 w-4 text-foreground" />
+                  <div className="w-8 h-8 rounded-lg bg-[#F5EDE3] flex items-center justify-center flex-shrink-0">
+                    <ChartLineUp weight="duotone" className="h-4 w-4 text-[#722F37]" />
                   </div>
-                  <div>
+                  <div className="text-[#4A3728]">
                     <span className="font-medium">Track changes</span>
-                    <span className="text-muted-foreground"> — watch your savings grow (hopefully)</span>
+                    <span className="text-[#6B5B4F]"> — compare over time</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center flex-shrink-0">
-                    <ShieldCheck weight="duotone" className="h-4 w-4 text-foreground" />
+                  <div className="w-8 h-8 rounded-lg bg-[#F5EDE3] flex items-center justify-center flex-shrink-0">
+                    <ShieldCheck weight="duotone" className="h-4 w-4 text-[#5B8A72]" />
                   </div>
-                  <div>
+                  <div className="text-[#4A3728]">
                     <span className="font-medium">100% private</span>
-                    <span className="text-muted-foreground"> — your data stays between us</span>
+                    <span className="text-[#6B5B4F]"> — your data is safe</span>
                   </div>
                 </div>
               </div>
 
               {/* Terms */}
-              <p className="mt-6 text-center text-xs text-muted-foreground">
+              <p className="mt-6 text-center text-xs text-[#8B7B6B]">
                 By signing in, you agree to our{' '}
-                <a href="/terms" className="underline underline-offset-2 hover:text-foreground transition-colors">
+                <a href="/terms" className="underline underline-offset-2 hover:text-[#4A3728] transition-colors">
                   Terms
                 </a>{' '}
                 &{' '}
-                <a href="/privacy" className="underline underline-offset-2 hover:text-foreground transition-colors">
+                <a href="/privacy" className="underline underline-offset-2 hover:text-[#4A3728] transition-colors">
                   Privacy
                 </a>
-                .
-                <br />
-                <span className="opacity-70">No spam, we promise. We're too lazy for that.</span>
               </p>
             </div>
 
@@ -262,21 +236,21 @@ export default function AuthPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="mt-6 flex items-center justify-center gap-6 text-xs text-muted-foreground"
+              className="mt-6 flex items-center justify-center gap-4 sm:gap-6 text-xs text-[#8B7B6B]"
             >
               <span>YA 2024/2025</span>
-              <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+              <span className="w-1 h-1 rounded-full bg-[#E8D5C4]" />
               <span>Forever Free</span>
-              <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+              <span className="w-1 h-1 rounded-full bg-[#E8D5C4]" />
               <span>LHDN Rates</span>
             </motion.div>
           </motion.div>
         </main>
 
         {/* Footer */}
-        <footer className="p-6 sm:p-8 text-center">
-          <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} opentaxation.my — Built for Malaysian entrepreneurs who'd rather not do math.
+        <footer className="p-4 sm:p-8 text-center">
+          <p className="text-xs text-[#8B7B6B]">
+            &copy; {new Date().getFullYear()} opentaxation.my
           </p>
         </footer>
       </div>
