@@ -78,6 +78,15 @@
 
 ---
 
+## /yearend2025
+
+a year-end interactive checklist to help users verify zakat receipts
+for malaysia lhdn tax relief.
+
+this route is intentionally not linked from the main navigation.
+
+---
+
 ## Example Calculation
 
 ```

@@ -43,6 +43,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "framer-motion": "^10.16.16",
+    "html2canvas": "^1.4.1",
     "i18next": "^25.7.1",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.309.0",

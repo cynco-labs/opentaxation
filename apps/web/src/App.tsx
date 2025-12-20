@@ -37,6 +37,9 @@ const BlogPostPage = lazy(() => import('./pages/blog/BlogPostPage'));
 const BlogAdminList = lazy(() => import('./pages/dashboard/blog/BlogAdminList'));
 const BlogAdminEdit = lazy(() => import('./pages/dashboard/blog/BlogAdminEdit'));
 
+// Special microsites (standalone, hidden)
+const YearEnd2025Page = lazy(() => import('./pages/yearend2025/YearEnd2025Page'));
+
 
 // Loading fallback for lazy routes
 function RouteLoading() {
@@ -77,6 +80,9 @@ function AppRoutes() {
 
         {/* Calculator has its own optimized layout */}
         <Route path="calculator" element={<CalculatorPage />} />
+
+        {/* Year End 2025 - standalone microsite (hidden, direct link only) */}
+        <Route path="yearend2025" element={<YearEnd2025Page />} />
 
         {/* Auth pages (outside AppShell) */}
         <Route path="login" element={<AuthPage />} />
