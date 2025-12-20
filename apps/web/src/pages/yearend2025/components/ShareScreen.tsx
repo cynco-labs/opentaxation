@@ -7,6 +7,7 @@ import {
   Link as LinkIcon,
   ArrowLeft,
   ArrowCounterClockwise,
+  Check,
 } from 'phosphor-react';
 import { CHECKPOINTS } from '../zakatReceiptChecklist';
 import WrappedCard from './WrappedCard';
@@ -126,10 +127,16 @@ export default function ShareScreen({
           <Button
             variant="outline"
             size="lg"
-            className="flex-1 border-gray-300 py-3 touch-manipulation active:scale-95 transition-all active:bg-gray-50"
+            className={`flex-1 border-gray-300 py-3 touch-manipulation active:scale-95 transition-all ${
+              copied ? 'bg-green-50 border-green-500' : 'active:bg-gray-50'
+            }`}
             onClick={handleCopyLink}
           >
-            <LinkIcon className="h-5 w-5" weight="bold" />
+            {copied ? (
+              <Check className="h-5 w-5 text-green-600" weight="bold" />
+            ) : (
+              <LinkIcon className="h-5 w-5" weight="bold" />
+            )}
           </Button>
         </motion.div>
 
