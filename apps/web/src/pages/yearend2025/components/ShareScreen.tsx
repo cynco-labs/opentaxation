@@ -77,7 +77,7 @@ export default function ShareScreen({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ type: 'spring', bounce: 0.2 }}
-        className="w-full max-w-2xl space-y-3 sm:space-y-6 max-h-full overflow-y-auto"
+        className="w-full max-w-2xl space-y-2 sm:space-y-4"
       >
         {/* Title - Compact on mobile */}
         <div className="text-center">
