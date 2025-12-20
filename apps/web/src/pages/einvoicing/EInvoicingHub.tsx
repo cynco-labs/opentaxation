@@ -220,13 +220,13 @@ export default function EInvoicingHub() {
                     MyInvois Compliance Checker
                   </div>
 
-                  <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-[#4A3728] mb-4">
+                  <h1 className="font-sans text-[38px] sm:text-[48px] lg:text-[56px] leading-[1.08] tracking-tight font-light text-brand-espresso mb-4">
                     When does e-invoicing
                     <br />
-                    <span className="text-[#722F37] italic">apply to you?</span>
+                    <span className="text-brand-rose font-light">apply to you?</span>
                   </h1>
 
-                  <p className={cn('text-[#6B5B4F] text-base lg:text-lg mb-6', !result && 'max-w-md mx-auto')}>
+                  <p className={cn('text-brand-espresso/70 text-base lg:text-lg mb-6', !result && 'max-w-md mx-auto')}>
                     Select your annual revenue to see your compliance timeline and get a personalized action plan.
                   </p>
 
