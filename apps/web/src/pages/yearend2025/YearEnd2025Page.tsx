@@ -35,6 +35,32 @@ export default function YearEnd2025Page() {
     }
   }, [state.currentStep, setState]);
 
+  // Handle browser back/forward button
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const step = event.state?.step || 1;
+      setState((prev) => ({ ...prev, currentStep: step as 1 | 2 | 3 }));
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    // Initialize history state
+    if (!window.history.state?.step) {
+      window.history.replaceState({ step: state.currentStep }, '');
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [setState]);
+
+  // Push history state when step changes
+  useEffect(() => {
+    if (window.history.state?.step !== state.currentStep) {
+      window.history.pushState({ step: state.currentStep }, '');
+    }
+  }, [state.currentStep]);
+
   const handleStart = () => {
     setState((prev) => ({ ...prev, currentStep: 2 }));
   };

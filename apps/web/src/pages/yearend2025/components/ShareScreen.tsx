@@ -72,13 +72,13 @@ export default function ShareScreen({
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center p-3 sm:p-6">
+    <div className="h-screen overflow-hidden bg-[#FAF7F2] flex items-center justify-center p-3 sm:p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ type: 'spring', bounce: 0.2 }}
-        className="w-full max-w-2xl space-y-4 sm:space-y-6"
+        className="w-full max-w-2xl space-y-3 sm:space-y-6 max-h-full overflow-y-auto"
       >
         {/* Title - Compact on mobile */}
         <div className="text-center">
