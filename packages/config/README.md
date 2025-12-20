@@ -10,7 +10,7 @@ This package contains all tax-related configuration and rules for Malaysia (YA 2
 - `auditRules.ts` - Audit exemption criteria
 - `defaultReliefs.ts` - Default personal tax reliefs
 - `dividendTax.ts` - Dividend tax calculation (YA 2025)
-- `socsoRules.ts` - SOCSO contribution rules (for v2)
+- `socsoRules.ts` - SOCSO contribution rules
 
 ## Tax Year
 
@@ -38,4 +38,3 @@ When tax rates change:
 2. Update the "Last Updated" date
 3. Update ASSUMPTIONS.md
 4. Add entry to CHANGELOG.md
-
