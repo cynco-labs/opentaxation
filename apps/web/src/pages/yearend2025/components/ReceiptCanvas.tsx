@@ -68,13 +68,13 @@ export default function ReceiptCanvas({
 
       {/* Compact Bottom Section */}
       <div className="flex-shrink-0 mt-4">
-        {allCompleted ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', bounce: 0.2 }}
-            className="max-w-2xl mx-auto"
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', bounce: 0.2 }}
+          className="max-w-2xl mx-auto"
+        >
+          {allCompleted ? (
             <div className="bg-white rounded-[2px] border border-gray-300 shadow-lg overflow-hidden mx-2 sm:mx-0">
               <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 sm:px-6 py-3 sm:py-4">
                 <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -100,18 +100,25 @@ export default function ReceiptCanvas({
                 </div>
               </div>
             </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center"
-          >
-            <p className="text-xs text-gray-600">
-              💡 Click on the numbered circles (1-10) to read details and mark as checked
-            </p>
-          </motion.div>
-        )}
+          ) : (
+            <div className="space-y-3">
+              <p className="text-xs text-gray-600 text-center">
+                💡 Click on the numbered circles (1-10) to read details and mark as checked
+              </p>
+              <div className="flex justify-center">
+                <Button
+                  onClick={onContinue}
+                  variant="outline"
+                  size="sm"
+                  className="border-gray-300 hover:bg-gray-50 active:bg-gray-100 font-semibold py-2 px-4 touch-manipulation active:scale-95 transition-all"
+                >
+                  Preview Your Wrapped
+                  <ArrowRight className="ml-2 h-4 w-4" weight="bold" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </motion.div>
       </div>
     </div>
   );
