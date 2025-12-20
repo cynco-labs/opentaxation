@@ -43,21 +43,21 @@ export default function IntroScreen({ onStart }: IntroScreenProps) {
   const deadline = new Date('2025-12-31T23:59:59');
   const timeLeft = useCountdown(deadline);
   return (
-    <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center px-4 sm:px-6 py-12 sm:py-20">
+    <div className="min-h-screen bg-gradient-to-br from-[#FAF7F2] via-[#F5F1EA] to-[#FAF7F2] flex items-center justify-center px-4 sm:px-6 py-12 sm:py-20">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', bounce: 0.15, duration: 0.8 }}
         className="text-center space-y-10 sm:space-y-16 max-w-3xl mx-auto w-full"
       >
-        {/* Minimal Logo Mark */}
+        {/* Elegant Logo Mark with Shadow */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.6 }}
-          className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-[2px] border-2 border-gray-900 bg-white shadow-lg"
+          className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-[2px] border-2 border-gray-900 bg-white shadow-2xl"
         >
-          <span className="text-3xl sm:text-4xl">🕌</span>
+          <span className="text-4xl sm:text-5xl">🕌</span>
         </motion.div>
 
         {/* Minimal Heading */}
@@ -77,42 +77,47 @@ export default function IntroScreen({ onStart }: IntroScreenProps) {
           </p>
         </motion.div>
 
-        {/* Elegant Countdown */}
+        {/* Beautiful Countdown Card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, type: 'spring', bounce: 0.2 }}
-          className="inline-flex items-center gap-3 sm:gap-6 px-6 sm:px-10 py-4 sm:py-5 bg-white rounded-[2px] border border-gray-200 shadow-lg"
+          className="relative overflow-hidden"
         >
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-gray-900 tabular-nums">
-              {timeLeft.days}
+          <div className="inline-flex items-center gap-4 sm:gap-8 px-8 sm:px-12 py-5 sm:py-7 bg-gradient-to-br from-white to-gray-50 rounded-[2px] border border-gray-200 shadow-2xl backdrop-blur-sm">
+            {/* Subtle background pattern */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#5A2129]/5 to-transparent opacity-50" />
+
+            <div className="text-center relative z-10">
+              <div className="text-3xl sm:text-4xl font-bold text-gray-900 tabular-nums">
+                {timeLeft.days}
+              </div>
+              <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wider mt-1 font-medium">
+                days
+              </div>
             </div>
-            <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">
-              days
+            <div className="text-gray-300 text-3xl sm:text-4xl font-light relative z-10">:</div>
+            <div className="text-center relative z-10">
+              <div className="text-3xl sm:text-4xl font-bold text-gray-900 tabular-nums">
+                {String(timeLeft.hours).padStart(2, '0')}
+              </div>
+              <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wider mt-1 font-medium">
+                hours
+              </div>
             </div>
-          </div>
-          <div className="text-gray-300 text-2xl sm:text-3xl font-light">:</div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-gray-900 tabular-nums">
-              {String(timeLeft.hours).padStart(2, '0')}
-            </div>
-            <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">
-              hours
-            </div>
-          </div>
-          <div className="text-gray-300 text-2xl sm:text-3xl font-light">:</div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-gray-900 tabular-nums">
-              {String(timeLeft.minutes).padStart(2, '0')}
-            </div>
-            <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">
-              mins
+            <div className="text-gray-300 text-3xl sm:text-4xl font-light relative z-10">:</div>
+            <div className="text-center relative z-10">
+              <div className="text-3xl sm:text-4xl font-bold text-gray-900 tabular-nums">
+                {String(timeLeft.minutes).padStart(2, '0')}
+              </div>
+              <div className="text-xs sm:text-sm text-gray-600 uppercase tracking-wider mt-1 font-medium">
+                mins
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Beautiful Custom Button */}
+        {/* Elegant CTA Button */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -120,20 +125,23 @@ export default function IntroScreen({ onStart }: IntroScreenProps) {
         >
           <button
             onClick={onStart}
-            className="group relative inline-flex items-center justify-center gap-3 px-10 sm:px-14 py-4 sm:py-5 bg-gray-900 text-white font-semibold text-base sm:text-lg rounded-[2px] shadow-xl hover:shadow-2xl active:shadow-md transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 overflow-hidden touch-manipulation"
+            className="group relative inline-flex items-center justify-center gap-3 px-12 sm:px-16 py-5 sm:py-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-semibold text-base sm:text-lg rounded-[2px] shadow-2xl hover:shadow-3xl active:shadow-lg transition-all duration-300 hover:-translate-y-1 active:translate-y-0 overflow-hidden touch-manipulation"
           >
-            {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {/* Animated gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#5A2129] to-[#722F37] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
             {/* Content */}
             <span className="relative z-10">start checking</span>
             <ArrowRight
-              className="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+              className="relative z-10 h-5 w-5 sm:h-6 sm:w-6 transition-transform duration-300 group-hover:translate-x-1.5"
               weight="bold"
             />
 
-            {/* Border accent */}
-            <div className="absolute inset-0 rounded-[2px] border-2 border-white/10" />
+            {/* Subtle border */}
+            <div className="absolute inset-0 rounded-[2px] ring-1 ring-white/20" />
           </button>
         </motion.div>
 

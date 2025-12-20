@@ -58,22 +58,28 @@ export default function FloatingCheckpointModal({
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-          >
-            {/* Centered Modal */}
+          />
+
+          {/* Bottom Sheet (Mobile) / Centered Modal (Desktop) */}
+          <div className="fixed inset-0 z-50 pointer-events-none flex items-end sm:items-center justify-center p-0 sm:p-4">
             <motion.div
               ref={modalRef}
-              className="relative bg-white rounded-[2px] shadow-2xl border border-gray-300 max-w-lg w-full my-auto max-h-[90vh] overflow-y-auto"
+              className="pointer-events-auto relative bg-white rounded-t-3xl sm:rounded-[2px] shadow-2xl border-t-2 sm:border border-gray-200 max-w-lg w-full max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
-              initial={{ opacity: 0, scale: 0.96, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 10 }}
-              transition={{ type: 'spring', bounce: 0.15, duration: 0.25 }}
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             >
+              {/* Drag Handle (Mobile only) */}
+              <div className="sm:hidden flex justify-center pt-3 pb-2">
+                <div className="w-10 h-1 bg-gray-300 rounded-full" />
+              </div>
 
               {/* Minimal Header */}
               <div className="relative bg-gray-50 px-4 sm:px-6 py-4 sm:py-5 border-b-2 border-gray-300">
@@ -167,7 +173,7 @@ export default function FloatingCheckpointModal({
                 </Button>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

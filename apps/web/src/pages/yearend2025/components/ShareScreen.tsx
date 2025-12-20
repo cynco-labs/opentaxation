@@ -104,12 +104,12 @@ export default function ShareScreen({
           />
         </motion.div>
 
-        {/* Action buttons - Better mobile UX */}
+        {/* Action buttons - Mobile only */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="flex gap-2 px-2 sm:px-0"
+          className="flex gap-2 px-2 sm:hidden"
         >
           <Button
             size="lg"
@@ -118,12 +118,9 @@ export default function ShareScreen({
             disabled={isDownloading}
           >
             <DownloadSimple
-              className="h-5 w-5 sm:mr-2"
+              className="h-5 w-5"
               weight="bold"
             />
-            <span className="hidden sm:inline">
-              {isDownloading ? 'generating...' : 'download PNG'}
-            </span>
           </Button>
 
           <Button
@@ -132,10 +129,7 @@ export default function ShareScreen({
             className="flex-1 border-gray-300 py-3 touch-manipulation active:scale-95 transition-all active:bg-gray-50"
             onClick={handleCopyLink}
           >
-            <LinkIcon className="h-5 w-5 sm:mr-2" weight="bold" />
-            <span className="hidden sm:inline">
-              {copied ? 'copied!' : 'copy link'}
-            </span>
+            <LinkIcon className="h-5 w-5" weight="bold" />
           </Button>
         </motion.div>
 

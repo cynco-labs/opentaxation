@@ -43,38 +43,57 @@ export default function ReceiptChecklistScreen({
       exit={{ opacity: 0 }}
       className="min-h-screen w-full bg-[#FAF7F2] flex flex-col"
     >
-      {/* Compact Header - Sticky on mobile */}
-      <div className="sticky top-0 z-10 flex-shrink-0 bg-white/95 backdrop-blur-xl border-b border-border/20 px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <span className="text-xs sm:text-sm font-medium text-[#4A3728]">
-              {completedIds.length}/{CHECKPOINTS.length} checked
-            </span>
-            <div className="w-24 sm:w-32 h-1.5 bg-muted rounded-[2px] overflow-hidden shadow-inner">
-              <motion.div
-                className="h-full bg-gradient-to-r from-[#5A2129] to-[#722F37] shadow-sm"
-                initial={{ width: 0 }}
-                animate={{ width: `${(completedIds.length / CHECKPOINTS.length) * 100}%` }}
-                transition={{ type: 'spring', bounce: 0.2 }}
-                style={{
-                  boxShadow: completedIds.length > 0 ? '0 0 8px rgba(90, 33, 41, 0.3)' : 'none',
-                }}
-              />
+      {/* Beautiful Header - Sticky */}
+      <div className="sticky top-0 z-20 flex-shrink-0 bg-gradient-to-b from-white to-white/95 backdrop-blur-xl border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          {/* Progress Info */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-[2px] bg-gradient-to-br from-[#5A2129] to-[#722F37] flex items-center justify-center shadow-md">
+                <span className="text-white text-sm font-bold">{completedIds.length}</span>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-gray-900">
+                  {completedIds.length}/{CHECKPOINTS.length} completed
+                </p>
+                <p className="text-xs text-gray-500">
+                  {allCompleted ? 'All done!' : `${CHECKPOINTS.length - completedIds.length} more to go`}
+                </p>
+              </div>
             </div>
+            {completedIds.length > 0 && (
+              <button
+                onClick={onReset}
+                className="text-xs text-gray-500 hover:text-[#5A2129] transition-colors font-medium"
+              >
+                reset
+              </button>
+            )}
           </div>
-          {completedIds.length > 0 && (
-            <button
-              onClick={onReset}
-              className="text-xs text-muted-foreground hover:text-[#5A2129] transition-colors"
-            >
-              reset
-            </button>
-          )}
+
+          {/* Beautiful Progress Bar */}
+          <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+            <motion.div
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#5A2129] to-[#722F37] rounded-full shadow-lg"
+              initial={{ width: 0 }}
+              animate={{ width: `${(completedIds.length / CHECKPOINTS.length) * 100}%` }}
+              transition={{ type: 'spring', bounce: 0.3, duration: 0.8 }}
+            />
+            {/* Shimmer effect */}
+            {completedIds.length > 0 && completedIds.length < CHECKPOINTS.length && (
+              <motion.div
+                className="absolute inset-y-0 left-0 right-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                animate={{ x: ['-100%', '200%'] }}
+                transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
+                style={{ width: `${(completedIds.length / CHECKPOINTS.length) * 100}%` }}
+              />
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Main Content - Scrollable on mobile */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden py-3 sm:py-6 px-2 sm:px-4">
+      {/* Main Content - Scrollable */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="w-full max-w-7xl mx-auto">
           <ReceiptCanvas
             completedIds={completedIds}
