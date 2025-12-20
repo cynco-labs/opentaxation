@@ -1,114 +1,152 @@
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Receipt, CheckCircle, Clock, ArrowRight } from 'phosphor-react';
-import Logo from '@/components/Logo';
+import { ArrowRight } from 'phosphor-react';
+import { useState, useEffect } from 'react';
 
 interface IntroScreenProps {
   onStart: () => void;
 }
 
+function useCountdown(targetDate: Date) {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const target = targetDate.getTime();
+      const difference = target - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000),
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  return timeLeft;
+}
+
 export default function IntroScreen({ onStart }: IntroScreenProps) {
+  const deadline = new Date('2025-12-31T23:59:59');
+  const timeLeft = useCountdown(deadline);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FAF7F2] via-white to-[#FAF7F2] flex flex-col safe-area-inset">
-      {/* Minimal Header */}
-      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-[#5A2129]/10">
-        <Logo size="sm" />
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
+    <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center px-4 sm:px-6 py-12 sm:py-20">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', bounce: 0.15, duration: 0.8 }}
+        className="text-center space-y-10 sm:space-y-16 max-w-3xl mx-auto w-full"
+      >
+        {/* Minimal Logo Mark */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'spring', bounce: 0.15, duration: 0.6 }}
-          className="text-center space-y-8 sm:space-y-12 max-w-4xl mx-auto w-full"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.6 }}
+          className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-[2px] border-2 border-gray-900 bg-white shadow-lg"
         >
-          {/* Elegant Header */}
-          <div className="space-y-6">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-[2px] bg-[#5A2129]/5 border border-[#5A2129]/10"
-            >
-              <Receipt weight="fill" className="h-4 w-4 text-[#5A2129]" />
-              <span className="text-sm font-medium text-[#5A2129]">Year End 2025</span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight px-2"
-            >
-              <span className="text-[#4A3728]">Zakat Receipt</span>
-              <br />
-              <span className="text-[#5A2129]">Checklist</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-base sm:text-lg md:text-xl text-[#6B5B4F] max-w-2xl mx-auto leading-relaxed font-medium px-4"
-            >
-              Check your zakat receipt with 10 checkpoints before submitting to LHDN
-            </motion.p>
-          </div>
-
-          {/* Elegant Feature Pills */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-wrap items-center justify-center gap-3"
-          >
-            <div className="flex items-center gap-2 px-4 py-2 rounded-[2px] bg-white border border-[#5A2129]/10 shadow-sm">
-              <CheckCircle weight="duotone" className="h-5 w-5 text-[#5A2129]" />
-              <span className="text-sm font-medium text-[#4A3728]">10 checkpoints</span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-[2px] bg-white border border-[#5A2129]/10 shadow-sm">
-              <Clock weight="duotone" className="h-5 w-5 text-[#5A2129]" />
-              <span className="text-sm font-medium text-[#4A3728]">60 seconds</span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-[2px] bg-white border border-[#E5A84B]/20 shadow-sm">
-              <span className="text-sm font-semibold text-[#E5A84B]">⭐ IC matters!</span>
-            </div>
-          </motion.div>
-
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="space-y-4"
-          >
-            <Button
-              size="lg"
-              onClick={onStart}
-              className="bg-[#5A2129] hover:bg-[#4A1B21] active:bg-[#3A1119] text-white px-8 sm:px-12 py-5 sm:py-6 text-base sm:text-lg h-auto font-semibold rounded-[2px] shadow-lg hover:shadow-xl active:scale-95 transition-all group w-full sm:w-auto max-w-sm mx-auto touch-manipulation"
-            >
-              Start Checking Now
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" weight="bold" />
-            </Button>
-            <p className="text-sm sm:text-base text-[#6B5B4F] px-4">
-              💡 Have your zakat receipt ready
-            </p>
-          </motion.div>
-
-          {/* Minimal Disclaimer */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="pt-8 border-t border-[#5A2129]/10"
-          >
-            <p className="text-xs text-[#8B7B6B] max-w-lg mx-auto leading-relaxed">
-              This is not tax advice. Progress saved locally only.
-            </p>
-          </motion.div>
+          <span className="text-3xl sm:text-4xl">🕌</span>
         </motion.div>
-      </div>
+
+        {/* Minimal Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-4 sm:space-y-6"
+        >
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
+            zakat receipt
+            <br />
+            <span className="text-gray-600">year-end check</span>
+          </h1>
+          <p className="text-base sm:text-lg text-gray-600 max-w-md mx-auto">
+            verify your receipt before dec 31
+          </p>
+        </motion.div>
+
+        {/* Elegant Countdown */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4, type: 'spring', bounce: 0.2 }}
+          className="inline-flex items-center gap-3 sm:gap-6 px-6 sm:px-10 py-4 sm:py-5 bg-white rounded-[2px] border border-gray-200 shadow-lg"
+        >
+          <div className="text-center">
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900 tabular-nums">
+              {timeLeft.days}
+            </div>
+            <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">
+              days
+            </div>
+          </div>
+          <div className="text-gray-300 text-2xl sm:text-3xl font-light">:</div>
+          <div className="text-center">
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900 tabular-nums">
+              {String(timeLeft.hours).padStart(2, '0')}
+            </div>
+            <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">
+              hours
+            </div>
+          </div>
+          <div className="text-gray-300 text-2xl sm:text-3xl font-light">:</div>
+          <div className="text-center">
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900 tabular-nums">
+              {String(timeLeft.minutes).padStart(2, '0')}
+            </div>
+            <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider mt-0.5">
+              mins
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Beautiful Custom Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <button
+            onClick={onStart}
+            className="group relative inline-flex items-center justify-center gap-3 px-10 sm:px-14 py-4 sm:py-5 bg-gray-900 text-white font-semibold text-base sm:text-lg rounded-[2px] shadow-xl hover:shadow-2xl active:shadow-md transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 overflow-hidden touch-manipulation"
+          >
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            {/* Content */}
+            <span className="relative z-10">start checking</span>
+            <ArrowRight
+              className="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+              weight="bold"
+            />
+
+            {/* Border accent */}
+            <div className="absolute inset-0 rounded-[2px] border-2 border-white/10" />
+          </button>
+        </motion.div>
+
+        {/* Minimal Footer */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="text-xs sm:text-sm text-gray-500"
+        >
+          10 checkpoints • 60 seconds • ic matters
+        </motion.p>
+      </motion.div>
     </div>
   );
 }

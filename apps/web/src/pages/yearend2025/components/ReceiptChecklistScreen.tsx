@@ -41,16 +41,16 @@ export default function ReceiptChecklistScreen({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-screen w-full bg-[#FAF7F2] overflow-hidden flex flex-col"
+      className="min-h-screen w-full bg-[#FAF7F2] flex flex-col"
     >
-      {/* Compact Header */}
-      <div className="flex-shrink-0 bg-white/95 backdrop-blur-xl border-b border-border/20 px-4 py-3 shadow-sm">
+      {/* Compact Header - Sticky on mobile */}
+      <div className="sticky top-0 z-10 flex-shrink-0 bg-white/95 backdrop-blur-xl border-b border-border/20 px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-[#4A3728]">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="text-xs sm:text-sm font-medium text-[#4A3728]">
               {completedIds.length}/{CHECKPOINTS.length} checked
             </span>
-            <div className="w-32 h-1.5 bg-muted rounded-[2px] overflow-hidden shadow-inner">
+            <div className="w-24 sm:w-32 h-1.5 bg-muted rounded-[2px] overflow-hidden shadow-inner">
               <motion.div
                 className="h-full bg-gradient-to-r from-[#5A2129] to-[#722F37] shadow-sm"
                 initial={{ width: 0 }}
@@ -73,9 +73,9 @@ export default function ReceiptChecklistScreen({
         </div>
       </div>
 
-      {/* Main Content - Fits in viewport */}
-      <div className="flex-1 overflow-hidden flex items-center justify-center p-4">
-        <div className="w-full max-w-7xl h-full flex flex-col">
+      {/* Main Content - Scrollable on mobile */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden py-3 sm:py-6 px-2 sm:px-4">
+        <div className="w-full max-w-7xl mx-auto">
           <ReceiptCanvas
             completedIds={completedIds}
             activeId={activeCheckpoint?.id || null}

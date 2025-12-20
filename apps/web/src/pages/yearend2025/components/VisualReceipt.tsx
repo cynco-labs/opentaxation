@@ -32,42 +32,42 @@ export default function VisualReceipt({
     <div className="relative w-full max-w-4xl mx-auto">
       {/* Realistic Receipt Card */}
       <motion.div
-        className="relative bg-white rounded-[2px] shadow-lg border border-gray-200 mx-2 sm:mx-4"
+        className="relative bg-white rounded-[2px] shadow-lg border border-gray-200"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: 'spring', bounce: 0.1 }}
       >
         {/* Receipt Header - Simple & Professional */}
-        <div className="relative px-6 py-4 bg-gradient-to-b from-gray-50 to-white border-b-2 border-gray-300 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gray-100 rounded-[2px] border border-gray-300 flex items-center justify-center">
-              <span className="text-xl">🕌</span>
+        <div className="relative px-3 sm:px-6 py-2 sm:py-4 bg-gradient-to-b from-gray-50 to-white border-b-2 border-gray-300 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-100 rounded-[2px] border border-gray-300 flex items-center justify-center">
+              <span className="text-base sm:text-xl">🕌</span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900 tracking-tight">
+              <h3 className="text-xs sm:text-base font-bold text-gray-900 tracking-tight">
                 Pusat Pungutan Zakat
               </h3>
-              <p className="text-xs text-gray-600">Wilayah Persekutuan</p>
+              <p className="text-[10px] sm:text-xs text-gray-600">Wilayah Persekutuan</p>
             </div>
           </div>
-          <div className="bg-gray-900 px-3 py-1.5 rounded-[2px] border border-gray-700">
-            <p className="text-white font-bold text-xs tracking-wider">
+          <div className="bg-gray-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-[2px] border border-gray-700">
+            <p className="text-white font-bold text-[10px] sm:text-xs tracking-wider">
               RESIT RASMI
             </p>
           </div>
         </div>
 
-        {/* Receipt Body - Cleaner spacing */}
-        <div className="p-6 md:p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        {/* Receipt Body - Compact on mobile */}
+        <div className="p-3 sm:p-6 md:p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-2 sm:gap-y-4">
             {/* Left Column */}
-            <div className="space-y-4">
+            <div className="space-y-2 sm:space-y-4">
               {/* Nama penuh */}
               <div>
                 <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">
                   Nama Penuh
                 </label>
-                <div className="mt-1 h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2">
+                <div className="mt-0.5 sm:mt-1 h-6 sm:h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2">
                   <div className="w-full h-px bg-gray-300" />
                 </div>
               </div>
@@ -78,7 +78,7 @@ export default function VisualReceipt({
                   No. Kad Pengenalan
                   <span className="text-[10px] text-[#E5A84B]">⭐</span>
                 </label>
-                <div className="mt-1 h-8 bg-amber-50/50 border-b-2 border-[#E5A84B] flex items-center px-2">
+                <div className="mt-0.5 sm:mt-1 h-6 sm:h-8 bg-amber-50/50 border-b-2 border-[#E5A84B] flex items-center px-2">
                   <div className="w-full h-px bg-[#E5A84B]/40" />
                 </div>
               </div>
@@ -88,8 +88,8 @@ export default function VisualReceipt({
                 <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">
                   Alamat
                 </label>
-                <div className="mt-1 h-14 bg-gray-50 border-b border-gray-300 flex items-center px-2">
-                  <div className="w-full space-y-1.5">
+                <div className="mt-0.5 sm:mt-1 h-10 sm:h-14 bg-gray-50 border-b border-gray-300 flex items-center px-2">
+                  <div className="w-full space-y-1 sm:space-y-1.5">
                     <div className="h-px bg-gray-300 w-full" />
                     <div className="h-px bg-gray-300 w-4/5" />
                     <div className="h-px bg-gray-300 w-3/5" />
@@ -99,13 +99,13 @@ export default function VisualReceipt({
             </div>
 
             {/* Right Column */}
-            <div className="space-y-4">
+            <div className="space-y-2 sm:space-y-4">
               {/* No. Siri */}
               <div>
                 <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">
                   No. Siri / Rujukan
                 </label>
-                <div className="mt-1 h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2">
+                <div className="mt-0.5 sm:mt-1 h-6 sm:h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2">
                   <div className="w-2/3 h-px bg-gray-300" />
                 </div>
               </div>
@@ -115,7 +115,7 @@ export default function VisualReceipt({
                 <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">
                   Jenis Zakat
                 </label>
-                <div className="mt-1 h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2">
+                <div className="mt-0.5 sm:mt-1 h-6 sm:h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2">
                   <div className="w-3/4 h-px bg-gray-300" />
                 </div>
               </div>
@@ -125,7 +125,7 @@ export default function VisualReceipt({
                 <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">
                   Cara Bayaran
                 </label>
-                <div className="mt-1 h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2">
+                <div className="mt-0.5 sm:mt-1 h-6 sm:h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2">
                   <div className="w-1/2 h-px bg-gray-300" />
                 </div>
               </div>
@@ -135,25 +135,25 @@ export default function VisualReceipt({
                 <label className="text-[10px] font-bold text-gray-900 uppercase tracking-wide">
                   Jumlah Zakat
                 </label>
-                <div className="mt-1 h-10 bg-emerald-50 border-b-2 border-emerald-600 flex items-center px-2">
-                  <span className="text-xl font-bold text-emerald-700">RM</span>
-                  <div className="ml-2 w-28 h-px bg-emerald-600/30" />
+                <div className="mt-0.5 sm:mt-1 h-8 sm:h-10 bg-emerald-50 border-b-2 border-emerald-600 flex items-center px-2">
+                  <span className="text-base sm:text-xl font-bold text-emerald-700">RM</span>
+                  <div className="ml-2 w-20 sm:w-28 h-px bg-emerald-600/30" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Tarikh - Bottom section */}
-          <div className="border-t-2 border-dashed border-gray-300 mt-6 pt-4 flex items-center justify-between">
+          <div className="border-t-2 border-dashed border-gray-300 mt-3 sm:mt-6 pt-2 sm:pt-4 flex items-center justify-between">
             <div>
               <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">
                 Tarikh
               </label>
-              <div className="mt-1 h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2 w-40">
-                <div className="w-32 h-px bg-gray-300" />
+              <div className="mt-1 h-6 sm:h-8 bg-gray-50 border-b border-gray-300 flex items-center px-2 w-32 sm:w-40">
+                <div className="w-24 sm:w-32 h-px bg-gray-300" />
               </div>
             </div>
-            <div className="w-24 h-20 border-2 border-dashed border-gray-400 rounded-[2px] flex items-center justify-center bg-gray-50">
+            <div className="w-16 h-14 sm:w-24 sm:h-20 border-2 border-dashed border-gray-400 rounded-[2px] flex items-center justify-center bg-gray-50">
               <span className="text-[10px] text-gray-500 font-bold">
                 COP
               </span>
@@ -161,7 +161,7 @@ export default function VisualReceipt({
           </div>
 
           {/* Footer */}
-          <div className="mt-6 pt-4 border-t border-gray-200 flex items-center justify-center">
+          <div className="mt-3 sm:mt-6 pt-2 sm:pt-4 border-t border-gray-200 flex items-center justify-center">
             <Logo size="sm" className="opacity-30" />
           </div>
         </div>
