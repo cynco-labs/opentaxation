@@ -26,12 +26,11 @@ export default function YearEnd2025Page() {
 
   // Migrate old state (when we had 4 steps) to new state (3 steps)
   useEffect(() => {
-    // @ts-expect-error - checking for old state with 4 steps
-    if (state.currentStep === 4) {
+    const currentStep = state.currentStep as number;
+    if (currentStep === 4) {
       setState((prev) => ({ ...prev, currentStep: 3 }));
     }
-    // @ts-expect-error - checking for invalid steps
-    if (state.currentStep > 3) {
+    if (currentStep > 3) {
       setState(initialState);
     }
   }, [state.currentStep, setState]);

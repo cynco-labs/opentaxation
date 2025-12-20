@@ -82,6 +82,12 @@ export async function getTurnstileToken(
       container.remove();
     };
 
+    if (!window.turnstile) {
+      cleanup();
+      resolve(null);
+      return;
+    }
+
     widgetId = window.turnstile.render(container, {
       sitekey: siteKey,
       size: 'invisible',
@@ -101,7 +107,7 @@ export async function getTurnstileToken(
     });
 
     try {
-      window.turnstile.execute(widgetId);
+      window.turnstile?.execute(widgetId);
     } catch {
       cleanup();
       resolve(null);
