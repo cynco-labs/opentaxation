@@ -286,17 +286,56 @@ DROP POLICY IF EXISTS "Anyone can read approved comments" ON blog_comments;
 CREATE POLICY "Anyone can read approved comments" ON blog_comments FOR SELECT
   USING (is_approved = true);
 
+-- Authors can read all comments (moderation)
+DROP POLICY IF EXISTS "Authors can read all comments" ON blog_comments;
+CREATE POLICY "Authors can read all comments" ON blog_comments FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM blog_authors
+      WHERE blog_authors.user_id = auth.jwt() ->> 'sub'
+      AND blog_authors.is_active = true
+    )
+  );
+
 DROP POLICY IF EXISTS "Users can insert own comments" ON blog_comments;
 CREATE POLICY "Users can insert own comments" ON blog_comments FOR INSERT
-  WITH CHECK (auth.jwt() ->> 'sub' = user_id);
+  WITH CHECK (auth.jwt() ->> 'sub' = user_id AND is_approved = false);
 
 DROP POLICY IF EXISTS "Users can update own comments" ON blog_comments;
 CREATE POLICY "Users can update own comments" ON blog_comments FOR UPDATE
-  USING (auth.jwt() ->> 'sub' = user_id);
+  USING (auth.jwt() ->> 'sub' = user_id AND is_approved = false)
+  WITH CHECK (auth.jwt() ->> 'sub' = user_id AND is_approved = false);
+
+DROP POLICY IF EXISTS "Authors can moderate comments" ON blog_comments;
+CREATE POLICY "Authors can moderate comments" ON blog_comments FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM blog_authors
+      WHERE blog_authors.user_id = auth.jwt() ->> 'sub'
+      AND blog_authors.is_active = true
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM blog_authors
+      WHERE blog_authors.user_id = auth.jwt() ->> 'sub'
+      AND blog_authors.is_active = true
+    )
+  );
 
 DROP POLICY IF EXISTS "Users can delete own comments" ON blog_comments;
 CREATE POLICY "Users can delete own comments" ON blog_comments FOR DELETE
   USING (auth.jwt() ->> 'sub' = user_id);
+
+DROP POLICY IF EXISTS "Authors can delete comments" ON blog_comments;
+CREATE POLICY "Authors can delete comments" ON blog_comments FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1 FROM blog_authors
+      WHERE blog_authors.user_id = auth.jwt() ->> 'sub'
+      AND blog_authors.is_active = true
+    )
+  );
 
 -- Bookmarks: Users manage own
 DROP POLICY IF EXISTS "Users can read own bookmarks" ON blog_bookmarks;

@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { checkRateLimit, RATE_LIMITS } from './rateLimiter';
 import type { Database, Json } from '@/types/database';
 
 // ============================================
@@ -38,6 +39,7 @@ export interface CreateLeadParams {
   source?: string;
   metadata?: LeadMetadata;
   userId?: string | null;
+  captchaToken?: string;
 }
 
 export interface Lead {
@@ -52,6 +54,14 @@ export interface Lead {
   status: LeadStatus;
 }
 
+type FunctionErrorContext = { status?: number; statusText?: string };
+
+function getFunctionErrorStatus(error: unknown): FunctionErrorContext | null {
+  if (!error || typeof error !== 'object') return null;
+  const context = (error as { context?: FunctionErrorContext }).context;
+  return context ?? null;
+}
+
 /**
  * Create a new lead in the database
  */
@@ -61,6 +71,10 @@ export async function createLead(params: CreateLeadParams): Promise<{ success: b
     return { success: false, error: 'Please enter a valid email address' };
   }
 
+  if (!checkRateLimit('lead-submit', RATE_LIMITS.LEAD)) {
+    return { success: false, error: 'Too many submissions. Please try again later.' };
+  }
+
   // If Supabase isn't configured, return success silently
   // This allows the CTA to work in development without a database
   if (!isSupabaseConfigured || !supabase) {
@@ -68,7 +82,29 @@ export async function createLead(params: CreateLeadParams): Promise<{ success: b
   }
 
   try {
-    const { error } = await supabase.from('leads').insert({
+    const payload = {
+      email: params.email,
+      leadType: params.leadType,
+      source: params.source || 'whats_next_cta',
+      metadata: params.metadata || {},
+      userId: params.userId || null,
+      captchaToken: params.captchaToken,
+    };
+
+    const { data, error } = await supabase.functions.invoke('submit-lead', {
+      body: payload,
+    });
+
+    if (!error && data?.success) {
+      return { success: true };
+    }
+
+    const status = getFunctionErrorStatus(error)?.status;
+    if (status && status !== 404 && status !== 405) {
+      return { success: false, error: data?.error || error?.message || 'Failed to save your information.' };
+    }
+
+    const { error: insertError } = await supabase.from('leads').insert({
       email: params.email,
       lead_type: params.leadType,
       source: params.source || 'whats_next_cta',
@@ -77,13 +113,13 @@ export async function createLead(params: CreateLeadParams): Promise<{ success: b
       status: 'new',
     });
 
-    if (error) {
+    if (insertError) {
       // Handle duplicate email gracefully
-      if (error.code === PGSQL_UNIQUE_VIOLATION) {
+      if (insertError.code === PGSQL_UNIQUE_VIOLATION) {
         return { success: true }; // Treat as success, user is already in system
       }
-      console.error('[Leads] Error creating lead:', error);
-      return { success: false, error: error.message };
+      console.error('[Leads] Error creating lead:', insertError);
+      return { success: false, error: insertError.message };
     }
 
     return { success: true };

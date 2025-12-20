@@ -6,7 +6,7 @@ import type {
 } from '../types';
 import { calculateSolePropScenario } from './calculateSolePropScenario';
 import { calculateSdnBhdScenario } from './calculateSdnBhdScenario';
-import { SIMILARITY_THRESHOLD, CROSSOVER_CALCULATION, DEFAULTS, SME_THRESHOLDS } from '../constants';
+import { SIMILARITY_THRESHOLD, CROSSOVER_CALCULATION, SME_THRESHOLDS } from '../constants';
 
 /**
  * Compare Sole Prop (Enterprise) vs Sdn Bhd scenarios
@@ -146,6 +146,7 @@ function getCacheKey(inputs: TaxCalculationInputs): string {
     auditCost: inputs.auditCost || 0,
     auditCriteria: inputs.auditCriteria,
     reliefs: inputs.reliefs,
+    extendedReliefs: inputs.extendedReliefs,
     applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge || false,
     dividendDistributionPercent: inputs.dividendDistributionPercent ?? 100,
     zakat: inputs.zakat,
@@ -175,6 +176,7 @@ function calculateCrossoverPoint(
     businessProfit: currentProfit,
     otherIncome: inputs.otherIncome || 0,
     reliefs: inputs.reliefs,
+    extendedReliefs: inputs.extendedReliefs,
     zakat: inputs.zakat,
   });
 
@@ -186,6 +188,7 @@ function calculateCrossoverPoint(
     auditCost: inputs.auditCost,
     auditCriteria: inputs.auditCriteria,
     reliefs: inputs.reliefs,
+    extendedReliefs: inputs.extendedReliefs,
     applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
     dividendDistributionPercent: inputs.dividendDistributionPercent,
     zakat: inputs.zakat,
@@ -208,6 +211,7 @@ function calculateCrossoverPoint(
     businessProfit: minProfit,
     otherIncome: inputs.otherIncome || 0,
     reliefs: inputs.reliefs,
+    extendedReliefs: inputs.extendedReliefs,
     zakat: inputs.zakat,
   });
 
@@ -219,6 +223,7 @@ function calculateCrossoverPoint(
     auditCost: inputs.auditCost,
     auditCriteria: inputs.auditCriteria,
     reliefs: inputs.reliefs,
+    extendedReliefs: inputs.extendedReliefs,
     applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
     dividendDistributionPercent: inputs.dividendDistributionPercent,
     zakat: inputs.zakat,
@@ -228,6 +233,7 @@ function calculateCrossoverPoint(
     businessProfit: maxProfit,
     otherIncome: inputs.otherIncome || 0,
     reliefs: inputs.reliefs,
+    extendedReliefs: inputs.extendedReliefs,
     zakat: inputs.zakat,
   });
 
@@ -239,6 +245,7 @@ function calculateCrossoverPoint(
     auditCost: inputs.auditCost,
     auditCriteria: inputs.auditCriteria,
     reliefs: inputs.reliefs,
+    extendedReliefs: inputs.extendedReliefs,
     applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
     dividendDistributionPercent: inputs.dividendDistributionPercent,
     zakat: inputs.zakat,
@@ -261,6 +268,7 @@ function calculateCrossoverPoint(
       businessProfit: midProfit,
       otherIncome: inputs.otherIncome || 0,
       reliefs: inputs.reliefs,
+      extendedReliefs: inputs.extendedReliefs,
       zakat: inputs.zakat,
     });
 
@@ -272,6 +280,7 @@ function calculateCrossoverPoint(
       auditCost: inputs.auditCost,
       auditCriteria: inputs.auditCriteria,
       reliefs: inputs.reliefs,
+      extendedReliefs: inputs.extendedReliefs,
       applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
       dividendDistributionPercent: inputs.dividendDistributionPercent,
       zakat: inputs.zakat,

@@ -195,7 +195,7 @@ export default function EInvoicingHub() {
         <meta name="description" content="Interactive e-invoicing compliance checker for Malaysian businesses. Find your phase, deadline, and get a personalized action plan." />
       </Helmet>
 
-      <div className="min-h-[calc(100vh-3.5rem)] w-full bg-[#FAF7F2] flex flex-col">
+      <div className="min-h-[calc(100vh-3.5rem)] min-h-[calc(100dvh-3.5rem)] w-full bg-[#FAF7F2] flex flex-col">
         {/* ===== MAIN CONTENT ===== */}
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -746,7 +746,7 @@ export default function EInvoicingHub() {
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-                className="absolute bottom-0 left-0 right-0 bg-[#FAF7F2] rounded-t-3xl max-h-[80vh] flex flex-col safe-area-bottom lg:left-auto lg:right-4 lg:bottom-4 lg:w-[480px] lg:rounded-3xl lg:max-h-[70vh]"
+                className="absolute bottom-0 left-0 right-0 bg-[#FAF7F2] rounded-t-3xl max-h-[80vh] flex flex-col pb-safe lg:left-auto lg:right-4 lg:bottom-4 lg:w-[480px] lg:rounded-3xl lg:max-h-[70vh]"
               >
                 {/* Handle - mobile only */}
                 <div className="flex justify-center pt-3 pb-2 lg:hidden">

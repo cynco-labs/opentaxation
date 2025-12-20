@@ -307,22 +307,21 @@ Check Supabase Session
     ↓
 User can:
     ├── Use calculator (no auth required)
-    ├── Download PDF (no auth required)
     ├── Share via URL (no auth required)
+    ├── View tax calendar (no auth required)
     └── Save calculations (auth required)
 ```
 
 **Guest users get:**
 - Full calculator functionality
-- PDF export
 - URL sharing
+- Tax calendar access
 - localStorage persistence
 
 **Signed-in users get:**
 - Everything above, plus:
 - Cloud-saved calculations
 - Cross-device sync
-- Tax calendar
 
 ---
 

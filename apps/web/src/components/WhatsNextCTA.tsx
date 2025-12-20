@@ -15,6 +15,7 @@ import {
 import type { ComparisonResult } from '@tax-engine/core';
 import { createLead, getUtmParams, getReferrer } from '@/lib/leads';
 import { useAuth } from '@/contexts/AuthContext';
+import { getTurnstileToken } from '@/lib/turnstile';
 
 interface WhatsNextCTAProps {
   comparison: ComparisonResult;
@@ -63,6 +64,7 @@ function WhatsNextCTA({ comparison, onDismiss }: WhatsNextCTAProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
   // Only show when Sdn Bhd is recommended
   if (comparison.whichIsBetter !== 'sdnBhd' || isDismissed) {
@@ -81,6 +83,16 @@ function WhatsNextCTA({ comparison, onDismiss }: WhatsNextCTAProps) {
     setIsSubmitting(true);
     setError(null);
 
+    let captchaToken: string | null = null;
+    if (turnstileSiteKey) {
+      captchaToken = await getTurnstileToken(turnstileSiteKey, 'lead_submit');
+      if (!captchaToken) {
+        setError('Verification failed. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     const result = await createLead({
       email,
       leadType: 'incorporation',
@@ -92,6 +104,7 @@ function WhatsNextCTA({ comparison, onDismiss }: WhatsNextCTAProps) {
         referrer: getReferrer(),
       },
       userId: user?.id || null,
+      captchaToken: captchaToken || undefined,
     });
 
     if (result.success) {
@@ -139,7 +152,7 @@ function WhatsNextCTA({ comparison, onDismiss }: WhatsNextCTAProps) {
             </div>
 
             {/* Services Grid */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {serviceConfigs.map((service) => {
                 const Icon = service.icon;
                 return (
@@ -193,7 +206,7 @@ function WhatsNextCTA({ comparison, onDismiss }: WhatsNextCTAProps) {
                   onSubmit={handleSubmit}
                   className="space-y-3"
                 >
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <div className="relative flex-1">
                       <EnvelopeSimple className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <input
@@ -213,7 +226,7 @@ function WhatsNextCTA({ comparison, onDismiss }: WhatsNextCTAProps) {
                     <button
                       type="submit"
                       disabled={isSubmitting || !email}
-                      className="h-11 px-5 rounded-xl bg-foreground text-background text-sm font-medium hover:bg-foreground/90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                      className="h-11 px-5 rounded-xl bg-foreground text-background text-sm font-medium hover:bg-foreground/90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
                     >
                       {isSubmitting ? (
                         <span className="animate-subtle-pulse">{t('whatsNext.sending')}</span>

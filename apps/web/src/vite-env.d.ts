@@ -11,9 +11,9 @@ interface ImportMetaEnv {
   readonly VITE_PLAUSIBLE_DOMAIN?: string
   readonly VITE_ERROR_TRACKING_ENABLED?: string
   readonly VITE_ERROR_TRACKING_ENDPOINT?: string
+  readonly VITE_TURNSTILE_SITE_KEY?: string
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
-

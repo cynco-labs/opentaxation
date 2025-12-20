@@ -10,11 +10,9 @@ import {
   Coins,
   Calculator,
   Vault,
-  TrendUp,
   ShieldCheck,
 } from 'phosphor-react';
 import { useAuth } from '@/contexts/AuthContext';
-import Logo from '@/components/Logo';
 
 // Smooth easing
 const smoothEase = [0.25, 0.1, 0.25, 1];

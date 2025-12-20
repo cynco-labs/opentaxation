@@ -240,6 +240,31 @@ export default function LandingHub() {
     }
   };
 
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    let ticking = false;
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const isMobile = window.innerWidth < 640;
+        const cardWidth = isMobile ? 260 : 280;
+        const gap = 16;
+        const index = Math.round(carousel.scrollLeft / (cardWidth + gap));
+        const clampedIndex = Math.max(0, Math.min(index, TOOL_APPS.length - 1));
+        setActiveIndex((prev) => (prev !== clampedIndex ? clampedIndex : prev));
+        ticking = false;
+      });
+    };
+
+    carousel.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      carousel.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const PreviewComponents: Record<string, React.FC> = {
     calculator: CalculatorPreview,
     calendar: CalendarPreview,
@@ -247,7 +272,7 @@ export default function LandingHub() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] bg-[#FAF7F2] flex flex-col">
+    <div className="min-h-[calc(100vh-3.5rem)] min-h-[calc(100dvh-3.5rem)] bg-[#FAF7F2] flex flex-col">
       {/* Main Content - Single viewport hero */}
       <main className="flex-1 flex items-center">
         <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:py-0">

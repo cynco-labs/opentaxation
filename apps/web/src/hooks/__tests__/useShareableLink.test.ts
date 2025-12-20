@@ -22,6 +22,8 @@ describe('useShareableLink', () => {
     hasForeignOwnership: false,
     inputMode: 'profit',
     targetNetIncome: 10000,
+    zakat: { enabled: true, autoCalculate: true },
+    extendedReliefs: { lifestyle_books: { amount: 200 } },
   };
 
   const mockOnLoadSharedInputs = vi.fn();
@@ -121,8 +123,8 @@ describe('useShareableLink', () => {
 
     expect(encoded).not.toBeNull();
 
-    // Verify encoding contains base64 characters
-    expect(encoded).toMatch(/^[A-Za-z0-9+/=]+$/);
+    // Verify encoding contains URL-safe base64 characters
+    expect(encoded).toMatch(/^[A-Za-z0-9_-]+$/);
   });
 
   it('generates link with current origin', () => {

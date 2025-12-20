@@ -5,9 +5,43 @@ import type { StoredInputs } from './useLocalStorage';
  * Encode inputs into a URL-safe base64 string
  * Uses a compact format to keep URLs shorter
  */
+const SHARE_VERSION = 2;
+
+function base64UrlEncode(value: string): string {
+  return btoa(value)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
+
+function base64UrlDecode(value: string): string {
+  const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+  const padding = normalized.length % 4;
+  const padded = padding ? normalized + '='.repeat(4 - padding) : normalized;
+  return atob(padded);
+}
+
+function decodeEncodedPayload(encoded: string): string | null {
+  try {
+    return base64UrlDecode(encoded);
+  } catch {
+    try {
+      return atob(encoded);
+    } catch {
+      return null;
+    }
+  }
+}
+
+function pickDefined<T extends Record<string, unknown>>(value: T): Partial<T> {
+  const entries = Object.entries(value).filter(([, v]) => v !== undefined);
+  return Object.fromEntries(entries) as Partial<T>;
+}
+
 function encodeInputs(inputs: StoredInputs): string {
   // Create a compact object with short keys
   const compact = {
+    v: SHARE_VERSION,
     bp: inputs.businessProfit,
     oi: inputs.otherIncome,
     ms: inputs.monthlySalary,
@@ -21,12 +55,13 @@ function encodeInputs(inputs: StoredInputs): string {
     fo: inputs.hasForeignOwnership ? 1 : 0,
     im: inputs.inputMode === 'target' ? 1 : 0,
     tn: inputs.targetNetIncome,
+    er: inputs.extendedReliefs,
+    z: inputs.zakat,
   };
 
   try {
     const json = JSON.stringify(compact);
-    // Use btoa for base64 encoding (browser-compatible)
-    return btoa(json);
+    return base64UrlEncode(json);
   } catch {
     return '';
   }
@@ -37,8 +72,11 @@ function encodeInputs(inputs: StoredInputs): string {
  */
 function decodeInputs(encoded: string): Partial<StoredInputs> | null {
   try {
-    const json = atob(encoded);
+    const json = decodeEncodedPayload(encoded);
+    if (!json) return null;
+
     const compact = JSON.parse(json) as {
+      v?: number;
       bp?: number;
       oi?: number;
       ms?: number;
@@ -52,9 +90,20 @@ function decodeInputs(encoded: string): Partial<StoredInputs> | null {
       fo?: number;
       im?: number;
       tn?: number;
+      er?: StoredInputs['extendedReliefs'];
+      z?: StoredInputs['zakat'];
     };
 
-    return {
+    if (!compact || typeof compact !== 'object') {
+      return null;
+    }
+
+    const version = typeof compact.v === 'number' ? compact.v : 1;
+    if (version !== 1 && version !== 2) {
+      return null;
+    }
+
+    const decoded: Partial<StoredInputs> = {
       businessProfit: compact.bp,
       otherIncome: compact.oi,
       monthlySalary: compact.ms,
@@ -63,12 +112,19 @@ function decodeInputs(encoded: string): Partial<StoredInputs> | null {
       auditAssets: compact.aa,
       auditEmployees: compact.ae,
       auditCost: compact.ac,
-      applyYa2025DividendSurcharge: compact.ds === 1,
+      applyYa2025DividendSurcharge: typeof compact.ds === 'number' ? compact.ds === 1 : undefined,
       dividendDistributionPercent: compact.dp,
-      hasForeignOwnership: compact.fo === 1,
-      inputMode: compact.im === 1 ? 'target' : 'profit',
+      hasForeignOwnership: typeof compact.fo === 'number' ? compact.fo === 1 : undefined,
+      inputMode: typeof compact.im === 'number' ? (compact.im === 1 ? 'target' : 'profit') : undefined,
       targetNetIncome: compact.tn,
     };
+
+    if (version >= 2) {
+      decoded.extendedReliefs = compact.er;
+      decoded.zakat = compact.z;
+    }
+
+    return pickDefined(decoded);
   } catch {
     return null;
   }

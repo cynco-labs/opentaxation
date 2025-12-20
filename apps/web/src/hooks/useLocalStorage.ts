@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { InputMode, ZakatInput, ReliefClaimValues } from '@tax-engine/core';
 
 /**
@@ -97,10 +97,63 @@ export function useTaxInputsStorage(defaultInputs: StoredInputs): {
   clearInputs: () => void;
   hasStoredInputs: boolean;
 } {
-  const [inputs, setInputs, clearInputs] = useLocalStorage<StoredInputs>(
+  const [storedInputs, setInputs, clearInputs] = useLocalStorage<StoredInputs>(
     COMBINED_STORAGE_KEY,
     defaultInputs
   );
+
+  const migrateInputs = useCallback((inputs: StoredInputs): StoredInputs => {
+    const numberOrDefault = (value: unknown, fallback: number) =>
+      typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+    const boolOrDefault = (value: unknown, fallback: boolean) =>
+      typeof value === 'boolean' ? value : fallback;
+    const inputModeOrDefault = (value: unknown, fallback: InputMode) =>
+      value === 'target' || value === 'profit' ? value : fallback;
+
+    const zakat =
+      inputs.zakat && typeof inputs.zakat === 'object' && typeof inputs.zakat.enabled === 'boolean'
+        ? inputs.zakat
+        : defaultInputs.zakat;
+
+    const extendedReliefs =
+      inputs.extendedReliefs && typeof inputs.extendedReliefs === 'object'
+        ? inputs.extendedReliefs
+        : defaultInputs.extendedReliefs;
+
+    return {
+      businessProfit: numberOrDefault(inputs.businessProfit, defaultInputs.businessProfit),
+      otherIncome: numberOrDefault(inputs.otherIncome, defaultInputs.otherIncome),
+      monthlySalary: numberOrDefault(inputs.monthlySalary, defaultInputs.monthlySalary),
+      complianceCosts: numberOrDefault(inputs.complianceCosts, defaultInputs.complianceCosts),
+      auditRevenue: numberOrDefault(inputs.auditRevenue, defaultInputs.auditRevenue),
+      auditAssets: numberOrDefault(inputs.auditAssets, defaultInputs.auditAssets),
+      auditEmployees: numberOrDefault(inputs.auditEmployees, defaultInputs.auditEmployees),
+      auditCost: numberOrDefault(inputs.auditCost, defaultInputs.auditCost),
+      applyYa2025DividendSurcharge: boolOrDefault(
+        inputs.applyYa2025DividendSurcharge,
+        defaultInputs.applyYa2025DividendSurcharge
+      ),
+      dividendDistributionPercent: numberOrDefault(
+        inputs.dividendDistributionPercent,
+        defaultInputs.dividendDistributionPercent
+      ),
+      hasForeignOwnership: boolOrDefault(inputs.hasForeignOwnership, defaultInputs.hasForeignOwnership),
+      inputMode: inputModeOrDefault(inputs.inputMode, defaultInputs.inputMode),
+      targetNetIncome: numberOrDefault(inputs.targetNetIncome, defaultInputs.targetNetIncome),
+      zakat,
+      extendedReliefs,
+    };
+  }, [defaultInputs]);
+
+  const inputs = useMemo(() => migrateInputs(storedInputs), [migrateInputs, storedInputs]);
+
+  useEffect(() => {
+    const stored = JSON.stringify(storedInputs);
+    const migrated = JSON.stringify(inputs);
+    if (stored !== migrated) {
+      setInputs(inputs);
+    }
+  }, [inputs, setInputs, storedInputs]);
 
   // Check if there are stored inputs (different from defaults)
   const hasStoredInputs = typeof window !== 'undefined' &&

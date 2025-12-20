@@ -4,6 +4,7 @@
  */
 
 import { supabase, isSupabaseConfigured } from './supabase';
+import { checkRateLimit, RATE_LIMITS } from './rateLimiter';
 import type { Database, PostStatus, Locale } from '@/types/database';
 
 // Re-export types for consumers
@@ -144,6 +145,14 @@ export function formatBlogDate(dateString: string, locale: Locale = 'en'): strin
   });
 }
 
+function sanitizeSearchTerm(term: string): string {
+  return term
+    .replace(/[%_,()]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 100);
+}
+
 // ============================================
 // POSTS API
 // ============================================
@@ -196,7 +205,12 @@ export async function getPosts(options: {
   }
 
   if (search) {
-    query = query.or(`title.ilike.%${search}%,excerpt.ilike.%${search}%,content.ilike.%${search}%`);
+    const safeSearch = sanitizeSearchTerm(search);
+    if (safeSearch) {
+      query = query.or(
+        `title.ilike.%${safeSearch}%,excerpt.ilike.%${safeSearch}%,content.ilike.%${safeSearch}%`
+      );
+    }
   }
 
   const { data, count, error } = await query;
@@ -398,28 +412,60 @@ export async function addComment(
   userId: string,
   userName: string,
   userAvatar?: string,
-  parentId?: string
+  parentId?: string,
+  captchaToken?: string
 ): Promise<Comment> {
   const client = ensureSupabase();
+  const trimmedContent = content.trim();
 
-  const { data, error } = await client
+  if (!trimmedContent) {
+    throw new Error('Comment cannot be empty.');
+  }
+
+  if (!checkRateLimit('comment-create', RATE_LIMITS.COMMENT)) {
+    throw new Error('Please wait before posting another comment.');
+  }
+
+  const { data, error } = await client.functions.invoke('submit-comment', {
+    body: {
+      postId,
+      content: trimmedContent,
+      userId,
+      userName,
+      userAvatar,
+      parentId,
+      captchaToken,
+    },
+  });
+
+  if (!error && data?.comment) {
+    return data.comment as Comment;
+  }
+
+  const status = (error as { context?: { status?: number } })?.context?.status;
+  if (status && status !== 404 && status !== 405) {
+    throw new Error(data?.error || error?.message || 'Failed to add comment.');
+  }
+
+  const { data: fallbackData, error: fallbackError } = await client
     .from('blog_comments')
     .insert({
       post_id: postId,
       user_id: userId,
       user_name: userName,
       user_avatar: userAvatar,
-      content,
+      content: trimmedContent,
       parent_id: parentId,
+      is_approved: false,
     })
     .select()
     .single();
 
-  if (error) {
-    throw error;
+  if (fallbackError) {
+    throw fallbackError;
   }
 
-  return data as Comment;
+  return fallbackData as Comment;
 }
 
 // ============================================

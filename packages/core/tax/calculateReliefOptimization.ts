@@ -10,7 +10,6 @@
  */
 
 import {
-  RELIEF_CATALOG,
   SHARED_CAP_LIMITS,
   SHARED_CAP_LABELS,
   getReliefById,
@@ -31,18 +30,32 @@ const BASIC_RELIEF_AMOUNT = 9000;
  * Calculate the effective claim amount for a single relief
  * Handles per-unit reliefs by multiplying amount × quantity
  */
-function getEffectiveClaim(entry: ReliefClaimEntry, reliefId: string): number {
+function getEffectiveClaim(
+  entry: ReliefClaimEntry,
+  reliefId: string
+): { claimed: number; effective: number; wasCapped: boolean } {
   const relief = getReliefById(reliefId);
-  if (!relief) return 0;
+  if (!relief) return { claimed: 0, effective: 0, wasCapped: false };
 
-  const baseAmount = entry.amount || 0;
+  const baseAmount = Math.max(0, entry.amount || 0);
 
-  // For per-unit reliefs, multiply by quantity
-  if (relief.perUnit && entry.quantity) {
-    return baseAmount * entry.quantity;
+  if (!relief.perUnit) {
+    return { claimed: baseAmount, effective: baseAmount, wasCapped: false };
   }
 
-  return baseAmount;
+  const quantity = Math.max(0, Math.floor(entry.quantity ?? 1));
+  if (quantity === 0) {
+    return { claimed: 0, effective: 0, wasCapped: false };
+  }
+
+  const cappedAmount = Math.min(baseAmount, relief.limit);
+  const wasCapped = cappedAmount < baseAmount;
+
+  return {
+    claimed: baseAmount * quantity,
+    effective: cappedAmount * quantity,
+    wasCapped,
+  };
 }
 
 /**
@@ -56,34 +69,12 @@ function applyIndividualLimit(
   const relief = getReliefById(reliefId);
   if (!relief) return { allowed: 0, wasCapped: false };
 
-  // For per-unit reliefs, the limit applies per unit
-  // e.g., child_under18: limit is 2000 per child, already multiplied in getEffectiveClaim
-  const allowed = Math.min(claimed, relief.limit * (relief.perUnit ? Math.ceil(claimed / relief.limit) : 1));
-
-  // Actually, let's reconsider: the limit is the max total regardless of units
-  // E.g., 3 children × 2000 = 6000 max, not 2000 max
-  // The per-unit limit means "per child up to this amount", so total can exceed
-
-  // Simpler approach: for per-unit, multiply limit by quantity from the entry
-  // But we don't have the entry here. Let's check the relief definition.
-
-  // Based on Malaysian tax rules: per-child reliefs don't have a combined cap
-  // You can claim RM2,000 × number of children (unlimited children)
-  // So we just return the claimed amount if it's per-unit
-
   if (relief.perUnit) {
-    // For per-unit reliefs, there's no combined cap
-    // The individual limit is per unit, which was already factored in by the UI
     return { allowed: claimed, wasCapped: false };
   }
 
-  const effectiveLimit = relief.limit;
-  const finalAllowed = Math.min(claimed, effectiveLimit);
-
-  return {
-    allowed: finalAllowed,
-    wasCapped: finalAllowed < claimed,
-  };
+  const allowed = Math.min(claimed, relief.limit);
+  return { allowed, wasCapped: allowed < claimed };
 }
 
 /**
@@ -121,16 +112,16 @@ export function calculateReliefOptimization(
     const relief = getReliefById(reliefId);
     if (!relief || relief.mandatory) continue;
 
-    const effectiveClaim = getEffectiveClaim(entry, reliefId);
-    if (effectiveClaim <= 0) continue;
+    const { claimed, effective, wasCapped: wasPerUnitCapped } = getEffectiveClaim(entry, reliefId);
+    if (effective <= 0) continue;
 
-    const { allowed, wasCapped } = applyIndividualLimit(reliefId, effectiveClaim);
+    const { allowed, wasCapped } = applyIndividualLimit(reliefId, effective);
 
-    if (wasCapped) {
+    if (wasPerUnitCapped || wasCapped) {
       cappedItems.push({
         id: reliefId,
         name: relief.name,
-        claimed: effectiveClaim,
+        claimed,
         allowed,
         reason: 'individual_limit',
       });
@@ -165,29 +156,55 @@ export function calculateReliefOptimization(
       sharedCapTotals[group] = limit;
 
       // Distribute the cap proportionally among claimed reliefs
-      for (const reliefId of reliefIds) {
+      const allocations = reliefIds.map((reliefId) => {
         const claimed = afterIndividualLimits[reliefId] || 0;
-        const proportion = claimed / totalInGroup;
-        const allowed = Math.floor(proportion * limit);
+        const raw = (claimed / totalInGroup) * limit;
+        const floored = Math.floor(raw);
+        return {
+          reliefId,
+          claimed,
+          allowed: floored,
+          fraction: raw - floored,
+        };
+      });
 
-        breakdown[reliefId] = allowed;
+      let totalAllocated = allocations.reduce((sum, item) => sum + item.allowed, 0);
+      let remaining = Math.max(0, Math.round(limit - totalAllocated));
 
-        // Only add to cappedItems if not already there and actually reduced
-        if (allowed < claimed) {
-          const existing = cappedItems.find(c => c.id === reliefId);
+      if (remaining > 0 && allocations.length > 0) {
+        const byFraction = [...allocations].sort((a, b) => b.fraction - a.fraction);
+        let allocatedThisRound = true;
+
+        while (remaining > 0 && allocatedThisRound) {
+          allocatedThisRound = false;
+          for (const item of byFraction) {
+            if (remaining === 0) break;
+            if (item.allowed < item.claimed) {
+              item.allowed += 1;
+              remaining -= 1;
+              allocatedThisRound = true;
+            }
+          }
+        }
+      }
+
+      for (const item of allocations) {
+        breakdown[item.reliefId] = item.allowed;
+
+        if (item.allowed < item.claimed) {
+          const existing = cappedItems.find(c => c.id === item.reliefId);
           if (existing) {
-            // Update the allowed amount if shared cap is more restrictive
-            if (allowed < existing.allowed) {
-              existing.allowed = allowed;
+            if (item.allowed < existing.allowed) {
+              existing.allowed = item.allowed;
               existing.reason = 'shared_cap';
             }
           } else {
-            const relief = getReliefById(reliefId);
+            const relief = getReliefById(item.reliefId);
             cappedItems.push({
-              id: reliefId,
-              name: relief?.name || reliefId,
-              claimed,
-              allowed,
+              id: item.reliefId,
+              name: relief?.name || item.reliefId,
+              claimed: item.claimed,
+              allowed: item.allowed,
               reason: 'shared_cap',
             });
           }

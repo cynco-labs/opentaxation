@@ -116,7 +116,7 @@ export default function ShareButton({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.96 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full right-0 mb-3 z-50 w-[320px]"
+            className="absolute bottom-full right-2 sm:right-0 mb-3 z-50 w-[320px] max-w-[calc(100vw-2rem)]"
             role="dialog"
             aria-modal="true"
           >

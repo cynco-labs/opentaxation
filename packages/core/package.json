@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
-    "test": "vitest"
+    "test": "VITE_CJS_IGNORE_WARNING=1 vitest"
   },
   "dependencies": {
     "@tax-engine/config": "*"
@@ -16,4 +16,3 @@
     "vitest": "^1.0.4"
   }
 }
-

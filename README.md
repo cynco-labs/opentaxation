@@ -64,14 +64,14 @@
 | EPF Integration | :white_check_mark: | Employer (13%/12%) + Employee (11%) |
 | Zakat Calculator | :white_check_mark: | 100% rebate (Enterprise) / 2.5% deduction (Sdn Bhd) |
 | YA 2025 Dividend Surcharge | :white_check_mark: | 2% on dividends > RM100k |
-| PDF Export | :white_check_mark: | Download professional reports (no login required) |
+| PDF Export | :hourglass_flowing_sand: | Planned report export |
 | Share via URL | :white_check_mark: | Share calculations with anyone |
 | Crossover Chart | :white_check_mark: | Visual profit threshold |
 | PWA / Offline | :white_check_mark: | Install on iOS/Android |
 | Dark Mode | :white_check_mark: | Easy on the eyes |
 | Mobile Responsive | :white_check_mark: | Works everywhere |
 | Save Calculations | :white_check_mark: | Cloud sync (requires account) |
-| Tax Calendar | :white_check_mark: | Never miss a deadline (requires account) |
+| Tax Calendar | :white_check_mark: | Never miss a deadline (no account required) |
 | **E-Invoicing Hub** | :white_check_mark: | **Compliance checker, timeline, industry guides** |
 | Partner Referrals | :hourglass_flowing_sand: | Coming soon |
 | Tax News & Updates | :hourglass_flowing_sand: | Stay informed on policy changes |
@@ -226,7 +226,7 @@ opentaxation.my/
 - Use the full calculator without signing in
 - 100% client-side calculations - your data never leaves your browser
 - Inputs saved to your browser's localStorage only
-- Download PDF reports and share results via URL
+- Share results via URL
 
 **Logged-in users (optional):**
 - Everything above, plus:
@@ -246,9 +246,10 @@ v1.0                             v1.1 (Current)                  v2.0 (Future)
      |                                |                               |
      +-- Core calculator              +-- Zakat integration           +-- Tax news & updates
      +-- EPF integration              +-- Tax calendar                +-- What-if scenarios
-     +-- PDF export                   +-- Mobile redesign             +-- Multi-year planning
-     +-- PWA ready                    +-- E-Invoicing Hub             +-- Case study library
-     +-- Crossover chart              +-- Partner referrals           +-- Accountant directory
+     +-- PWA ready                    +-- Mobile redesign             +-- PDF export
+     +-- Crossover chart              +-- E-Invoicing Hub             +-- Multi-year planning
+                                      +-- Partner referrals           +-- Case study library
+                                                                     +-- Accountant directory
 ```
 
 ---

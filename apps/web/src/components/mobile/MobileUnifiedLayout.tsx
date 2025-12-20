@@ -27,7 +27,7 @@ function MobileUnifiedLayout({
   const [inputsExpanded, setInputsExpanded] = useState(true);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen min-h-[100dvh] flex flex-col bg-background">
       {/* Compact header */}
       <MobileHeader onClearInputs={onClearInputs} />
 
@@ -73,7 +73,7 @@ function MobileUnifiedLayout({
                 transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
                 className="overflow-hidden"
               >
-                <div className="max-h-[50vh] overflow-y-auto overscroll-contain">
+                <div className="pb-2">
                   {inputsContent}
                 </div>
               </motion.div>
