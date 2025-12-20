@@ -8,6 +8,8 @@ import { describe, it, expect } from 'vitest';
 import {
   calculateEmployerSOCSO,
   calculateEmployeeSOCSO,
+  calculateEmployerEIS,
+  calculateEmployeeEIS,
   SOCSO_RATES,
 } from '../socsoRules';
 
@@ -87,5 +89,25 @@ describe('SOCSO_RATES constant', () => {
   it('has correct employee rates', () => {
     expect(SOCSO_RATES.employee.low).toBe(0.005);
     expect(SOCSO_RATES.employee.threshold).toBe(6000);
+  });
+
+  it('has EIS rates and cap', () => {
+    expect(SOCSO_RATES.eis.employer).toBe(0.002);
+    expect(SOCSO_RATES.eis.employee).toBe(0.002);
+    expect(SOCSO_RATES.eis.wageCap).toBe(5000);
+  });
+});
+
+describe('EIS calculations', () => {
+  it('applies EIS up to wage cap', () => {
+    const employer = calculateEmployerEIS(6000); // capped at 5k * 0.2%
+    const employee = calculateEmployeeEIS(6000);
+    expect(employer).toBeCloseTo(10, 1);
+    expect(employee).toBeCloseTo(10, 1);
+  });
+
+  it('returns 0 for non-positive salary', () => {
+    expect(calculateEmployerEIS(0)).toBe(0);
+    expect(calculateEmployeeEIS(-100)).toBe(0);
   });
 });

@@ -2,35 +2,51 @@
  * Default Personal Tax Reliefs (Malaysia)
  * Common reliefs for individuals
  * 
- * Source: LHDN Malaysia - YA 2024/2025
+ * Source: LHDN Malaysia
+ *
+ * NOTE: This module now derives limits from taxYears.ts (single source of truth).
+ * The exported constants are for backward compatibility.
  */
 
+import { getCurrentTaxYear } from './taxYears';
+
 export interface PersonalReliefs {
-  basic: number; // Basic relief (RM9,000)
-  epfAndLifeInsurance: number; // EPF + Life Insurance (combined max RM7,000)
-  medical: number; // Medical insurance/expenses (RM8,000)
-  spouse?: number; // Spouse relief (RM4,000 if spouse has no income)
-  children?: number; // Children relief (RM2,000 per child, max varies)
+  basic: number; // Basic relief
+  epfAndLifeInsurance: number; // EPF + Life Insurance (combined max)
+  medical: number; // Medical insurance/expenses
+  spouse?: number; // Spouse relief (if spouse has no income)
+  children?: number; // Children relief (per child, max varies)
   education?: number; // Education/medical expenses for children
   [key: string]: number | undefined; // Allow for additional reliefs
 }
 
 /**
- * Default reliefs used in calculations
+ * Get relief limits for the current tax year
+ * This is the authoritative source - use this in new code
+ */
+export function getReliefLimits() {
+  return getCurrentTaxYear().personal.reliefLimits;
+}
+
+/**
+ * Default reliefs used in calculations (current tax year)
  * Based on common reliefs for typical taxpayers
  * 
- * - Basic relief: RM9,000 (mandatory)
- * - EPF/Life Insurance: RM7,000 (max combined)
- * - Medical: RM8,000
+ * - Basic relief: from tax year config (mandatory)
+ * - EPF/Life Insurance: from tax year config (max combined)
+ * - Medical: from tax year config
  * 
  * Note: Other reliefs (spouse, children, etc.) can be added but are not included
  * in default calculation as they vary by individual circumstances
  */
-export const DEFAULT_RELIEFS: PersonalReliefs = {
-  basic: 9000,
-  epfAndLifeInsurance: 7000,
-  medical: 8000,
-};
+export const DEFAULT_RELIEFS: PersonalReliefs = (() => {
+  const limits = getReliefLimits();
+  return {
+    basic: limits.basic,
+    epfAndLifeInsurance: limits.epfAndLifeInsurance,
+    medical: limits.medical,
+  };
+})();
 
 /**
  * Calculate total reliefs from relief profile
@@ -54,13 +70,17 @@ export function getDefaultReliefs(): PersonalReliefs {
 }
 
 /**
- * Common relief limits for reference
+ * Common relief limits for reference (current tax year)
+ * @deprecated Use getReliefLimits() for new code to support multiple tax years
  */
-export const RELIEF_LIMITS = {
-  basic: 9000,
-  epfAndLifeInsurance: 7000, // Combined max
-  medical: 8000,
-  spouse: 4000, // If spouse has no income
-  children: 2000, // Per child (varies by age/status)
-  education: 8000, // Per child
-} as const;
+export const RELIEF_LIMITS = (() => {
+  const limits = getReliefLimits();
+  return {
+    basic: limits.basic,
+    epfAndLifeInsurance: limits.epfAndLifeInsurance,
+    medical: limits.medical,
+    spouse: limits.spouse,
+    children: limits.children,
+    education: limits.education,
+  } as const;
+})();

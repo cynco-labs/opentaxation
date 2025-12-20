@@ -3,6 +3,8 @@ import {
   calculateEmployeeEPF,
   calculateEmployerSOCSO,
   calculateEmployeeSOCSO,
+  calculateEmployerEIS,
+  calculateEmployeeEIS,
   calculateMaxAffordableSalary,
   isAuditExempt,
   calculateDividendTax,
@@ -11,7 +13,7 @@ import {
   getCorporateTaxBracketBreakdown,
   calculateBusinessZakatDeduction,
   meetsNisabThreshold,
-  ZAKAT_RATE,
+  getZakatConfig,
   calculatePersonalTaxFromBrackets,
   type PersonalReliefs,
 } from '@tax-engine/config';
@@ -19,6 +21,7 @@ import { calculateCorporateTax } from './calculateCorporateTax';
 import { calculatePersonalTax } from './calculatePersonalTax';
 import { calculateReliefOptimization } from './calculateReliefOptimization';
 import type { TaxCalculationInputs, SdnBhdScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult } from '../types';
+import { SME_THRESHOLDS } from '../constants';
 
 /**
  * Calculate Sdn Bhd (Private Limited Company) scenario
@@ -56,7 +59,7 @@ import type { TaxCalculationInputs, SdnBhdScenarioResult, WaterfallStep, TaxBrac
  */
 export function calculateSdnBhdScenario(
   inputs: Required<Pick<TaxCalculationInputs, 'businessProfit' | 'monthlySalary' | 'otherIncome' | 'complianceCosts'>> &
-    Pick<TaxCalculationInputs, 'auditCost' | 'auditCriteria' | 'reliefs' | 'extendedReliefs' | 'applyYa2025DividendSurcharge' | 'dividendDistributionPercent' | 'zakat'>
+    Pick<TaxCalculationInputs, 'auditCost' | 'auditCriteria' | 'reliefs' | 'extendedReliefs' | 'applyYa2025DividendSurcharge' | 'dividendDistributionPercent' | 'zakat' | 'hasForeignOwnership' | 'paidUpCapital' | 'grossIncome' | 'relatedCompanyShare'>
 ): SdnBhdScenarioResult {
   const {
     businessProfit,
@@ -70,6 +73,10 @@ export function calculateSdnBhdScenario(
     applyYa2025DividendSurcharge = false,
     dividendDistributionPercent = 100, // Default to 100% distribution
     zakat,
+    hasForeignOwnership,
+    paidUpCapital,
+    grossIncome,
+    relatedCompanyShare,
   } = inputs;
 
   // Input validation and sanitization
@@ -93,12 +100,14 @@ export function calculateSdnBhdScenario(
   const annualSalary = monthlySalary * 12;
   const employerEPF = calculateEmployerEPF(annualSalary);
 
-  // SOCSO calculations (mandatory for salary ≤ RM5,000/month)
+  // SOCSO + EIS calculations (simplified, mandatory under wage caps)
   const employerSOCSO = calculateEmployerSOCSO(monthlySalary) * 12;
   const employeeSOCSO = calculateEmployeeSOCSO(monthlySalary) * 12;
+  const employerEIS = calculateEmployerEIS(monthlySalary) * 12;
+  const employeeEIS = calculateEmployeeEIS(monthlySalary) * 12;
 
   // Company taxable profit includes SOCSO as a deductible expense
-  const companyTaxableProfitBeforeZakat = businessProfit - annualSalary - employerEPF - employerSOCSO;
+  const companyTaxableProfitBeforeZakat = businessProfit - annualSalary - employerEPF - employerSOCSO - employerEIS;
 
   // Calculate zakat deduction for company if enabled
   // For Sdn Bhd, zakat is a deduction from aggregate income (max 2.5% of aggregate income)
@@ -111,8 +120,9 @@ export function calculateSdnBhdScenario(
   if (zakat?.enabled) {
     // Determine zakat amount: use provided amount or auto-calculate
     if (zakat.autoCalculate !== false && zakat.amountPaid === undefined) {
-      // Auto-calculate zakat at 2.5% of aggregate income
-      zakatAmount = Math.round(aggregateIncome * ZAKAT_RATE * 100) / 100;
+      // Auto-calculate zakat at configured rate of aggregate income
+      const zakatConfig = getZakatConfig();
+      zakatAmount = Math.round(aggregateIncome * zakatConfig.rate * 100) / 100;
     } else {
       zakatAmount = zakat.amountPaid ?? 0;
     }
@@ -137,13 +147,21 @@ export function calculateSdnBhdScenario(
   // Calculate salary affordability
   // This checks if the company can actually pay the proposed salary
   const maxAffordableSalary = calculateMaxAffordableSalary(businessProfit);
-  const totalSalaryCost = annualSalary + employerEPF + employerSOCSO;
+  const totalSalaryCost = annualSalary + employerEPF + employerSOCSO + employerEIS;
   const isAffordable = totalSalaryCost <= businessProfit;
   const shortfall = isAffordable ? 0 : totalSalaryCost - businessProfit;
   const companyWouldBeInsolvent = !isAffordable;
 
   // Calculate corporate tax on profit after zakat deduction
-  const corporateTaxResult = calculateCorporateTax(companyTaxableProfit);
+  // Determine SME qualification (paid-up, gross income, related share, foreign ownership)
+  const disqualifySme = Boolean(
+    (paidUpCapital !== undefined && paidUpCapital > SME_THRESHOLDS.MAX_PAID_UP_CAPITAL) ||
+    (grossIncome !== undefined && grossIncome > SME_THRESHOLDS.MAX_REVENUE) ||
+    (relatedCompanyShare !== undefined && relatedCompanyShare > SME_THRESHOLDS.MAX_RELATED_COMPANY_SHARE) ||
+    hasForeignOwnership
+  );
+
+  const corporateTaxResult = calculateCorporateTax(companyTaxableProfit, { forceStandardRate: disqualifySme });
   const corporateTax = corporateTaxResult.tax;
 
   // Calculate what corporate tax would have been without zakat deduction (for display)
@@ -165,7 +183,7 @@ export function calculateSdnBhdScenario(
   // Owner side calculations
   const employeeEPF = calculateEmployeeEPF(annualSalary);
   // Salary after deducting employee EPF and SOCSO contributions
-  const salaryAfterEPF = annualSalary - employeeEPF - employeeSOCSO;
+  const salaryAfterEPF = annualSalary - employeeEPF - employeeSOCSO - employeeEIS;
 
   // Auto-calculate EPF relief from actual employee EPF contributions
   // EPF relief is capped at RM7,000 per Malaysian tax law
@@ -235,8 +253,9 @@ export function calculateSdnBhdScenario(
   const companyWaterfall: WaterfallStep[] = [
     { label: 'Business Profit', amount: businessProfit, type: 'add' },
     { label: 'Director Salary', amount: annualSalary, type: 'subtract' },
-    { label: 'Employer EPF (13%)', amount: employerEPF, type: 'subtract', indent: true },
+    { label: 'Employer EPF', amount: employerEPF, type: 'subtract', indent: true },
     { label: 'Employer SOCSO', amount: employerSOCSO, type: 'subtract', indent: true },
+    { label: 'Employer EIS', amount: employerEIS, type: 'subtract', indent: true },
   ];
 
   // Show zakat in company waterfall if enabled

@@ -1,26 +1,40 @@
 /**
  * SOCSO (Social Security Organization) Rules for Malaysia
  *
- * SOCSO contributions are mandatory for employees earning ≤ RM6,000/month
- * Optional for employees earning > RM6,000/month
+ * SOCSO contributions are mandatory for employees earning ≤ threshold/month
+ * Optional for employees earning > threshold/month
  *
- * Updated: October 2024 - Wage ceiling increased from RM5,000 to RM6,000
  * Source: https://www.perkeso.gov.my/en/rate-of-contribution.html
  *
  * Note: This uses simplified percentage rates for estimation.
  * Actual SOCSO uses a table-based contribution system.
+ *
+ * NOTE: This module now derives rates from taxYears.ts (single source of truth).
+ * The exported constants are for backward compatibility.
  */
+
+import { getCurrentTaxYear } from './taxYears';
 
 export interface SOCSORates {
   employee: number; // Employee contribution rate
   employer: number; // Employer contribution rate
+  eisEmployee: number; // EIS employee contribution rate
+  eisEmployer: number; // EIS employer contribution rate
+  eisWageCap: number; // EIS wage cap (monthly)
+}
+
+/**
+ * Get SOCSO configuration for the current tax year
+ * This is the authoritative source - use this in new code
+ */
+export function getSOCSOConfig() {
+  return getCurrentTaxYear().socso;
 }
 
 /**
  * Calculate employer SOCSO contribution
  *
  * SOCSO rates vary by salary brackets (simplified for estimation)
- * Updated October 2024: Wage ceiling increased to RM6,000
  *
  * @param monthlySalary - Monthly salary
  * @returns Monthly employer SOCSO contribution
@@ -28,11 +42,12 @@ export interface SOCSORates {
 export function calculateEmployerSOCSO(monthlySalary: number): number {
   if (monthlySalary <= 0) return 0;
 
+  const config = getSOCSOConfig();
   // SOCSO is calculated based on salary brackets
-  // Simplified: For salary ≤ RM6,000/month, employer contributes ~1.75%
-  // For salary > RM6,000/month, SOCSO is optional
-  if (monthlySalary <= 6000) {
-    return Math.round(monthlySalary * 0.0175 * 100) / 100;
+  // Simplified: For salary ≤ threshold/month, employer contributes at employerRate
+  // For salary > threshold/month, SOCSO is optional
+  if (monthlySalary <= config.wageThreshold) {
+    return Math.round(monthlySalary * config.employerRate * 100) / 100;
   }
 
   // Optional for higher salaries - return 0
@@ -42,19 +57,18 @@ export function calculateEmployerSOCSO(monthlySalary: number): number {
 /**
  * Calculate employee SOCSO contribution
  *
- * Updated October 2024: Wage ceiling increased to RM6,000
- *
  * @param monthlySalary - Monthly salary
  * @returns Monthly employee SOCSO contribution
  */
 export function calculateEmployeeSOCSO(monthlySalary: number): number {
   if (monthlySalary <= 0) return 0;
 
+  const config = getSOCSOConfig();
   // SOCSO is calculated based on salary brackets
-  // Simplified: For salary ≤ RM6,000/month, employee contributes ~0.5%
-  // For salary > RM6,000/month, SOCSO is optional
-  if (monthlySalary <= 6000) {
-    return Math.round(monthlySalary * 0.005 * 100) / 100;
+  // Simplified: For salary ≤ threshold/month, employee contributes at employeeRate
+  // For salary > threshold/month, SOCSO is optional
+  if (monthlySalary <= config.wageThreshold) {
+    return Math.round(monthlySalary * config.employeeRate * 100) / 100;
   }
 
   // Optional for higher salaries - return 0
@@ -62,18 +76,43 @@ export function calculateEmployeeSOCSO(monthlySalary: number): number {
 }
 
 /**
- * SOCSO rates for reference
- * Note: Actual rates vary by salary brackets - this is simplified
- * Updated October 2024: Wage ceiling increased to RM6,000
+ * Calculate EIS contributions (simplified percentage up to wage cap)
  */
-export const SOCSO_RATES = {
-  employer: {
-    low: 0.0175, // Approximate for salary ≤ RM6,000/month
-    threshold: 6000,
-  },
-  employee: {
-    low: 0.005, // Approximate for salary ≤ RM6,000/month
-    threshold: 6000,
-  },
-} as const;
+export function calculateEmployerEIS(monthlySalary: number): number {
+  if (monthlySalary <= 0) return 0;
+  const config = getSOCSOConfig();
+  const cap = Math.min(monthlySalary, config.eisWageCap);
+  return Math.round(cap * config.eisEmployerRate * 100) / 100;
+}
+
+export function calculateEmployeeEIS(monthlySalary: number): number {
+  if (monthlySalary <= 0) return 0;
+  const config = getSOCSOConfig();
+  const cap = Math.min(monthlySalary, config.eisWageCap);
+  return Math.round(cap * config.eisEmployeeRate * 100) / 100;
+}
+
+/**
+ * SOCSO rates for reference (current tax year)
+ * Note: Actual rates vary by salary brackets - this is simplified
+ * @deprecated Use getSOCSOConfig() for new code to support multiple tax years
+ */
+export const SOCSO_RATES = (() => {
+  const config = getSOCSOConfig();
+  return {
+    employer: {
+      low: config.employerRate,
+      threshold: config.wageThreshold,
+    },
+    employee: {
+      low: config.employeeRate,
+      threshold: config.wageThreshold,
+    },
+    eis: {
+      employer: config.eisEmployerRate,
+      employee: config.eisEmployeeRate,
+      wageCap: config.eisWageCap,
+    },
+  } as const;
+})();
 

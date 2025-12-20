@@ -8,8 +8,11 @@ const TURNSTILE_SECRET_KEY = Deno.env.get('TURNSTILE_SECRET_KEY') ?? '';
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 
+// Get allowed origin from environment, default to * for development
+const ALLOWED_ORIGIN = Deno.env.get('ALLOWED_ORIGIN') || '*';
+
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -21,6 +24,10 @@ type LeadPayload = {
   userId?: string | null;
   captchaToken?: string;
 };
+
+const MAX_EMAIL_LENGTH = 255;
+const MAX_SOURCE_LENGTH = 100;
+const MAX_METADATA_SIZE = 10000; // 10KB limit for metadata JSON
 
 function jsonResponse(body: Record<string, unknown>, status: number) {
   return new Response(JSON.stringify(body), {
@@ -77,6 +84,36 @@ serve(async (req) => {
 
   if (!payload?.email || !payload.leadType) {
     return jsonResponse({ error: 'Missing required fields.' }, 400);
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(payload.email)) {
+    return jsonResponse({ error: 'Invalid email format.' }, 400);
+  }
+
+  // Validate email length
+  if (payload.email.length > MAX_EMAIL_LENGTH) {
+    return jsonResponse({ error: 'Email too long.' }, 400);
+  }
+
+  // Validate leadType enum
+  const validLeadTypes: LeadPayload['leadType'][] = ['incorporation', 'newsletter', 'partner_inquiry'];
+  if (!validLeadTypes.includes(payload.leadType)) {
+    return jsonResponse({ error: 'Invalid lead type.' }, 400);
+  }
+
+  // Validate source length if provided
+  if (payload.source && payload.source.length > MAX_SOURCE_LENGTH) {
+    return jsonResponse({ error: 'Source too long.' }, 400);
+  }
+
+  // Validate metadata size if provided
+  if (payload.metadata) {
+    const metadataSize = JSON.stringify(payload.metadata).length;
+    if (metadataSize > MAX_METADATA_SIZE) {
+      return jsonResponse({ error: 'Metadata too large.' }, 400);
+    }
   }
 
   if (!(await verifyTurnstile(payload.captchaToken))) {

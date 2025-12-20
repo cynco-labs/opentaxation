@@ -25,6 +25,9 @@ const DEFAULT_INPUTS: StoredInputs = {
   applyYa2025DividendSurcharge: false,
   dividendDistributionPercent: 100,
   hasForeignOwnership: false,
+  paidUpCapital: 0,
+  grossIncome: 0,
+  relatedCompanyShare: 0,
   inputMode: 'profit',
   targetNetIncome: 10000,
   extendedReliefs: {},
@@ -64,6 +67,9 @@ export default function CalculatorPage() {
   const setApplyYa2025DividendSurcharge = useCallback((value: boolean) => updateInput('applyYa2025DividendSurcharge', value), [updateInput]);
   const setDividendDistributionPercent = useCallback((value: number) => updateInput('dividendDistributionPercent', value), [updateInput]);
   const setHasForeignOwnership = useCallback((value: boolean) => updateInput('hasForeignOwnership', value), [updateInput]);
+  const setPaidUpCapital = useCallback((value: number) => updateInput('paidUpCapital', value), [updateInput]);
+  const setGrossIncome = useCallback((value: number) => updateInput('grossIncome', value), [updateInput]);
+  const setRelatedCompanyShare = useCallback((value: number) => updateInput('relatedCompanyShare', value), [updateInput]);
   const setInputMode = useCallback((value: InputMode) => updateInput('inputMode', value), [updateInput]);
   const setTargetNetIncome = useCallback((value: number) => updateInput('targetNetIncome', value), [updateInput]);
   const setZakat = useCallback((value: ZakatInput) => updateInput('zakat', value), [updateInput]);
@@ -90,6 +96,9 @@ export default function CalculatorPage() {
     onApplyYa2025DividendSurchargeChange: setApplyYa2025DividendSurcharge,
     onDividendDistributionPercentChange: setDividendDistributionPercent,
     onForeignOwnershipChange: setHasForeignOwnership,
+    onSmePaidUpCapitalChange: setPaidUpCapital,
+    onSmeGrossIncomeChange: setGrossIncome,
+    onSmeRelatedShareChange: setRelatedCompanyShare,
     onClearInputs: handleClearInputs,
     onInputModeChange: setInputMode,
     onTargetNetIncomeChange: setTargetNetIncome,
@@ -98,7 +107,8 @@ export default function CalculatorPage() {
     setBusinessProfit, setOtherIncome, setMonthlySalary, setComplianceCosts,
     setAuditRevenue, setAuditAssets, setAuditEmployees, setAuditCost,
     setReliefs, setExtendedReliefs, setApplyYa2025DividendSurcharge, setDividendDistributionPercent,
-    setHasForeignOwnership, handleClearInputs, setInputMode, setTargetNetIncome, setZakat,
+    setHasForeignOwnership, setPaidUpCapital, setGrossIncome, setRelatedCompanyShare,
+    handleClearInputs, setInputMode, setTargetNetIncome, setZakat,
   ]);
 
   // Calculate derived state
@@ -137,6 +147,9 @@ export default function CalculatorPage() {
       totalAssets: storedInputs.auditAssets,
       employees: storedInputs.auditEmployees,
     },
+    paidUpCapital: storedInputs.paidUpCapital,
+    grossIncome: storedInputs.grossIncome,
+    relatedCompanyShare: storedInputs.relatedCompanyShare,
     reliefs,
     extendedReliefs: storedInputs.extendedReliefs,
     applyYa2025DividendSurcharge: storedInputs.applyYa2025DividendSurcharge,
@@ -203,7 +216,7 @@ export default function CalculatorPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-[calc(100vh-3.5rem)] w-full overflow-hidden bg-background flex flex-row"
+            className="h-[calc(100vh-3.5rem)] w-full overflow-hidden bg-brand-ivory flex flex-row"
           >
             <InputsSection
               inputs={inputs}

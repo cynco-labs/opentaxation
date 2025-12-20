@@ -1,20 +1,31 @@
 /**
  * Utility functions for rounding financial values
+ * 
+ * NOTE: These functions now use Money internally for consistent precision.
+ * For new code, prefer using Money class directly.
  */
+
+import { Money } from './money';
 
 /**
  * Round a number to currency precision (2 decimal places)
- * Using direct multipliers for clarity and performance
+ * Uses Money internally for consistent rounding
  */
 export function roundCurrency(value: number): number {
-  return Math.round(value * 100) / 100;
+  if (!isFinite(value)) {
+    return value;
+  }
+  return Money.fromDollars(value).toDollars();
 }
 
 /**
  * Round a number to percentage precision (4 decimal places)
- * Using direct multipliers for clarity and performance
+ * For percentages, we keep more precision than currency
  */
 export function roundPercentage(value: number): number {
+  if (!isFinite(value)) {
+    return value;
+  }
   return Math.round(value * 10000) / 10000;
 }
 

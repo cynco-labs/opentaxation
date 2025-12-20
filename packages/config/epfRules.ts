@@ -1,14 +1,26 @@
 /**
  * EPF (Employees Provident Fund) Rules for Malaysia
  * 
- * Rates verified as of 2024/2025
  * Source: EPF Act 1991, EPF Malaysia
+ *
+ * NOTE: This module now derives rates from taxYears.ts (single source of truth).
+ * The exported constants are for backward compatibility.
  */
+
+import { getCurrentTaxYear } from './taxYears';
+
+/**
+ * Get EPF configuration for the current tax year
+ * This is the authoritative source - use this in new code
+ */
+export function getEPFConfig() {
+  return getCurrentTaxYear().epf;
+}
 
 /**
  * Calculate employer EPF contribution
- * - Salary ≤ RM5,000/month: 13%
- * - Salary > RM5,000/month: 12%
+ * - Salary ≤ threshold/month: employerRateLow
+ * - Salary > threshold/month: employerRateHigh
  * 
  * Note: EPF is calculated on monthly salary, but we use annual salary for convenience
  * and apply the rate based on monthly equivalent
@@ -16,35 +28,43 @@
 export function calculateEmployerEPF(annualSalary: number): number {
   if (annualSalary <= 0) return 0;
   
+  const config = getEPFConfig();
   const monthlySalary = annualSalary / 12;
-  const rate = monthlySalary <= 5000 ? 0.13 : 0.12;
+  const rate = monthlySalary <= config.salaryThreshold 
+    ? config.employerRateLow 
+    : config.employerRateHigh;
   
   return Math.round(annualSalary * rate * 100) / 100;
 }
 
 /**
  * Calculate employee EPF contribution
- * - Employee contribution: 11% of salary
+ * - Employee contribution: employeeRate of salary
  * 
- * Note: Employee can opt for lower rate (minimum 8%) but 11% is standard
+ * Note: Employee can opt for lower rate (minimum 8%) but standard rate is used here
  */
 export function calculateEmployeeEPF(annualSalary: number): number {
   if (annualSalary <= 0) return 0;
   
-  return Math.round(annualSalary * 0.11 * 100) / 100;
+  const config = getEPFConfig();
+  return Math.round(annualSalary * config.employeeRate * 100) / 100;
 }
 
 /**
- * EPF rates for reference
+ * EPF rates for reference (current tax year)
+ * @deprecated Use getEPFConfig() for new code to support multiple tax years
  */
-export const EPF_RATES = {
-  employer: {
-    low: 0.13, // For salary ≤ RM5,000/month
-    high: 0.12, // For salary > RM5,000/month
-    threshold: 5000, // Monthly threshold
-  },
-  employee: 0.11, // Standard employee contribution rate
-} as const;
+export const EPF_RATES = (() => {
+  const config = getEPFConfig();
+  return {
+    employer: {
+      low: config.employerRateLow,
+      high: config.employerRateHigh,
+      threshold: config.salaryThreshold,
+    },
+    employee: config.employeeRate,
+  } as const;
+})();
 
 /**
  * Calculate maximum affordable annual salary given business profit
@@ -62,12 +82,13 @@ export function calculateMaxAffordableSalary(businessProfit: number): number {
   const maxWithLowerRate = businessProfit / 1.12;
   const monthlyWithLowerRate = maxWithLowerRate / 12;
 
-  // If monthly salary would be > RM5,000, the 12% rate applies
-  if (monthlyWithLowerRate > EPF_RATES.employer.threshold) {
+  // If monthly salary would be > threshold, the high rate applies
+  const config = getEPFConfig();
+  if (monthlyWithLowerRate > config.salaryThreshold) {
     return Math.round(maxWithLowerRate * 100) / 100;
   }
 
-  // Otherwise, use higher rate (13% for salary <= RM5k/month)
-  // maxSalary = businessProfit / (1 + 0.13) = businessProfit / 1.13
-  return Math.round((businessProfit / 1.13) * 100) / 100;
+  // Otherwise, use higher rate (for salary <= threshold/month)
+  // maxSalary = businessProfit / (1 + employerRateLow)
+  return Math.round((businessProfit / (1 + config.employerRateLow)) * 100) / 100;
 }

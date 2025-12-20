@@ -68,10 +68,15 @@ export function compareScenarios(
   // Check for SME qualification issues
   // Company doesn't qualify for SME rates (15-17%) if:
   // - Revenue > RM50M (checked via auditCriteria.revenue)
+  // - Paid-up capital > RM2.5M
+  // - Related company share > 50%
   // - ≥20% foreign ownership (checked via hasForeignOwnership flag)
   const hasSmeQualificationIssue = Boolean(
     inputs.hasForeignOwnership ||
-    (inputs.auditCriteria && inputs.auditCriteria.revenue > SME_THRESHOLDS.MAX_REVENUE)
+    (inputs.auditCriteria && inputs.auditCriteria.revenue > SME_THRESHOLDS.MAX_REVENUE) ||
+    (inputs.paidUpCapital !== undefined && inputs.paidUpCapital > SME_THRESHOLDS.MAX_PAID_UP_CAPITAL) ||
+    (inputs.relatedCompanyShare !== undefined && inputs.relatedCompanyShare > SME_THRESHOLDS.MAX_RELATED_COMPANY_SHARE) ||
+    (inputs.grossIncome !== undefined && inputs.grossIncome > SME_THRESHOLDS.MAX_REVENUE)
   );
 
   if (hasSmeQualificationIssue) {

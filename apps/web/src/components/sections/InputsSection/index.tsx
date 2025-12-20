@@ -39,12 +39,12 @@ function InputsSection({
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-      className="flex-1 overflow-hidden lg:border-r border-border/40"
+      className="flex-1 overflow-hidden lg:border-r border-brand-border-ivory/60 bg-brand-ivory"
     >
       <div className="h-full flex flex-col">
         {/* Sticky header - hidden when using MobileTabLayout */}
         {!hideHeader && (
-          <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/30 supports-[backdrop-filter]:bg-background/80 lg:bg-transparent lg:backdrop-blur-none lg:border-0">
+          <header className="sticky top-0 z-40 bg-brand-ivory/90 backdrop-blur-xl border-b border-brand-border-ivory/60 supports-[backdrop-filter]:bg-brand-ivory/80 lg:bg-transparent lg:backdrop-blur-none lg:border-0">
             <div className="px-4 sm:px-5 lg:px-8 py-3 sm:py-4 lg:py-6">
               <div className="flex items-center justify-between gap-3">
                 <Logo size="sm" className="hidden lg:flex" />

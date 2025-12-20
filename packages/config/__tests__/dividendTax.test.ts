@@ -17,6 +17,14 @@ describe('calculateDividendTax', () => {
     expect(calculateDividendTax(99999)).toBe(0);
   });
 
+  it('applies surcharge only on excess above threshold', () => {
+    expect(calculateDividendTax(120_000)).toBe(400); // (120k-100k)*2%
+  });
+
+  it('charges nothing at threshold', () => {
+    expect(calculateDividendTax(100_000)).toBe(0);
+  });
+
   it('returns 0 for dividend exactly at threshold', () => {
     expect(calculateDividendTax(100000)).toBe(0);
   });

@@ -2,7 +2,7 @@
 
 # opentaxation.my
 
-<img src="apps/web/public/og-image.png" alt="opentaxation.my" width="600" />
+<img src="apps/web/public/OG/opentaxation.my%20og.png" alt="opentaxation.my" width="720" />
 
 ### Instantly compare Enterprise vs Sdn Bhd tax. Free. Private. Malaysian.
 
@@ -21,41 +21,41 @@
 ## How It Works
 
 ```
-                         YOUR BUSINESS PROFIT
-                                 |
-                                 v
-          +----------------------+----------------------+
-          |                                             |
-          v                                             v
-   +-------------+                              +-------------+
-   |  ENTERPRISE |                              |   SDN BHD   |
-   |  (Sole Prop)|                              |  (Company)  |
-   +------+------+                              +------+------+
-          |                                            |
-          v                                            v
-   +-------------+                    +---------------------------------+
-   | Personal    |                    |  Corporate Tax    + Personal    |
-   | Tax Only    |                    |  (on profit)        (on salary) |
-   | (0-30%)     |                    |  (15-24%)         + Dividend    |
-   +------+------+                    |                     (on payout) |
-          |                           +-----------------+---------------+
-          |                                             |
-          +---------------------+-----------------------+
-                                |
-                                v
-                    +------------------------+
-                    |   SIDE-BY-SIDE         |
-                    |   COMPARISON           |
-                    |                        |
-                    |   + Tax Savings        |
-                    |   + Crossover Point    |
-                    |   + Recommendation     |
-                    +------------------------+
+             INPUTS (profit, salary, reliefs, zakat)
+                              |
+                              v
+                  +----------------------+
+                  |  @tax-engine/core   |
+                  |  (Money precision)  |
+                  +----------+----------+
+                             |
+        +--------------------+--------------------+
+        |                                         |
+        v                                         v
+ +--------------+                         +---------------+
+ | Enterprise   |                         |   Sdn Bhd     |
+ | Personal tax |                         | Corp + salary |
+ | Reliefs      |                         | Dividends     |
+ +-------+------+                         +-------+-------+
+         |                                        |
+         +----------------+-----------------------+
+                          v
+         +----------------+----------------+
+         |  Side-by-side comparison        |
+         |  • Tax savings                  |
+         |  • Crossover point              |
+         |  • Recommendation               |
+         +---------------------------------+
+
+         Extras:
+         • Tax Calendar (deadlines)
+         • E-Invoicing Hub (phases/industry guides)
+         • Shareable links + dashboard saves
 ```
 
 ---
 
-## Feature Matrix
+## Feature Matrix (Latest)
 
 | Feature | Status | Description |
 |:--------|:------:|:------------|
@@ -73,6 +73,9 @@
 | Save Calculations | :white_check_mark: | Cloud sync (requires account) |
 | Tax Calendar | :white_check_mark: | Never miss a deadline (no account required) |
 | **E-Invoicing Hub** | :white_check_mark: | **Compliance checker, timeline, industry guides** |
+| **Tax Calendar** | :white_check_mark: | **Deadline reminders without login** |
+| Money Precision | :white_check_mark: | Integer-cents `Money` class for safe math |
+| Server Verification | :white_check_mark: | Supabase edge function for recompute/save |
 | Partner Referrals | :hourglass_flowing_sand: | Coming soon |
 | Tax News & Updates | :hourglass_flowing_sand: | Stay informed on policy changes |
 
@@ -136,10 +139,10 @@ cd opentaxation.my
 npm install
 
 # Start development server
-npm run dev
+npm run dev -- --host --port 5173
 ```
 
-Open [http://localhost:3001](http://localhost:3001) and start calculating!
+Open [http://localhost:5173](http://localhost:5173) and start calculating!
 
 ---
 

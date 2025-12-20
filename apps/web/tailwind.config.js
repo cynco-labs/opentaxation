@@ -23,8 +23,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        /* Open Ledger design system fonts */
-        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        /* Brand-aligned design system fonts - Manrope for clean, modern sans-serif */
+        sans: ['"Manrope"', 'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
         serif: ['ui-serif', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
       },
       letterSpacing: {
@@ -33,6 +34,8 @@ export default {
         'snug': '-0.011em',
         'normal': '0',
         'wide': '0.025em',
+        'wider': '0.05em',
+        'widest': '0.1em',
       },
       colors: {
         border: "hsl(var(--border))",
@@ -76,11 +79,33 @@ export default {
           DEFAULT: "hsl(var(--amber))",
           light: "hsl(var(--amber-light))",
         },
+        // Brand-aligned color palette
+        brand: {
+          ivory: "hsl(var(--brand-ivory))",
+          maroon: "hsl(var(--brand-maroon))",
+          espresso: "hsl(var(--brand-espresso))",
+          'on-maroon': "hsl(var(--brand-on-maroon))",
+          rose: "hsl(var(--brand-rose))",
+          blush: "hsl(var(--brand-blush))",
+          gold: "hsl(var(--brand-gold))",
+          burgundy: "hsl(var(--brand-burgundy))",
+          'border-ivory': "hsl(var(--brand-border-ivory))",
+          'border-maroon': "hsl(var(--brand-border-maroon))",
+          'muted-ivory': "hsl(var(--brand-muted-ivory))",
+          'muted-rose': "hsl(var(--brand-muted-rose))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "var(--radius)",
+        sm: "var(--radius)",
+        pill: "var(--radius)",
+        card: "var(--radius)",
+      },
+      boxShadow: {
+        'soft': '0 10px 30px -12px rgba(58, 42, 36, 0.25)',
+        'card': '0 14px 40px -18px rgba(58, 42, 36, 0.28)',
+        'soft-hover': '0 12px 35px -10px rgba(58, 42, 36, 0.3)',
       },
       keyframes: {
         "accordion-down": {

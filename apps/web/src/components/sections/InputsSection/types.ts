@@ -50,6 +50,9 @@ export interface SdnBhdSettingsSectionProps {
     | 'onDividendDistributionPercentChange'
     | 'onApplyYa2025DividendSurchargeChange'
     | 'onForeignOwnershipChange'
+    | 'onSmePaidUpCapitalChange'
+    | 'onSmeGrossIncomeChange'
+    | 'onSmeRelatedShareChange'
   >;
 }
 

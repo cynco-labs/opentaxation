@@ -109,7 +109,7 @@ function GoogleLoginButton() {
       onClick={() => signInWithGoogle()}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative flex items-center gap-2.5 pl-3 pr-4 py-2 rounded-full bg-background border border-border/60 hover:border-foreground/20 shadow-sm hover:shadow-md transition-all duration-300"
+      className="group relative flex items-center gap-2.5 pl-3 pr-4 py-2 rounded-full bg-brand-ivory border border-brand-border-ivory hover:border-brand-rose/40 shadow-soft hover:shadow-soft-hover transition-all duration-200"
     >
       {/* Subtle glow on hover */}
       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#4285F4]/5 via-[#34A853]/5 to-[#EA4335]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

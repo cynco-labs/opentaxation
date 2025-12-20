@@ -1,3 +1,8 @@
+/* Import fonts first */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -52,7 +57,7 @@
 
 @layer base {
   :root {
-    /* Warm Phosphor-inspired palette */
+    /* Brand-aligned palette - warm, muted, sophisticated */
     --background: 40 33% 96%;          /* Warm cream #f7f4ef */
     --background-secondary: 40 25% 93%; /* Slightly darker cream #f0ebe3 */
     --foreground: 40 10% 15%;           /* Warm charcoal #2a2825 */
@@ -73,7 +78,8 @@
     --border: 40 15% 85%;               /* Warm border */
     --input: 40 15% 88%;
     --ring: 40 10% 30%;
-    --radius: 0.75rem;
+    /* Global corner radius: sharpened to 0.2px across components */
+    --radius: 0.2px;
     /* Accent colors - warm amber/gold tones (Phosphor-inspired) */
     --amber: 38 92% 50%;                /* Rich amber #f59e0b */
     --amber-light: 45 93% 58%;          /* Warm gold #eab308 */
@@ -81,6 +87,20 @@
     --warm-brown: 25 30% 35%;           /* Warm brown accent */
     /* Surface for code blocks */
     --surface-dark: 40 15% 12%;
+    
+    /* Brand-aligned design tokens */
+    --brand-ivory: 40 30% 97%;          /* #F8F3EE - Light off-white/ivory */
+    --brand-maroon: 350 35% 20%;        /* #4B1A27 - Deep maroon */
+    --brand-espresso: 25 20% 18%;       /* #3A2A24 - Dark espresso brown */
+    --brand-on-maroon: 30 25% 92%;      /* #F6EDE6 - Light off-white for dark bg */
+    --brand-rose: 350 35% 60%;          /* #C2888D - Dusty rose */
+    --brand-blush: 20 30% 80%;          /* #E6C9BD - Blush pink */
+    --brand-gold: 38 85% 65%;           /* #F5B65A - Warm gold/orange */
+    --brand-burgundy: 350 50% 30%;      /* #6C1F30 - Burgundy */
+    --brand-border-ivory: 30 20% 85%;  /* #E6DCD2 - Light brown border */
+    --brand-border-maroon: 350 30% 30%; /* #5A2330 - Maroon border */
+    --brand-muted-ivory: 35 25% 94%;    /* #F3EBE3 - Muted ivory */
+    --brand-muted-rose: 20 25% 75%;     /* #D9B9B1 - Muted rose */
   }
 
   /* Dark mode - Warm charcoal tones */
@@ -116,6 +136,11 @@
 
   html.dark {
     color-scheme: dark;
+  }
+
+  /* Override common rounded utilities to enforce the 0.2px radius everywhere */
+  :where(.rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-full, .rounded-pill, .rounded-card, .rounded-none) {
+    border-radius: 0.2px !important;
   }
 
   /* Smooth theme transitions - scoped to specific elements to avoid layout jank */
@@ -203,8 +228,8 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    /* System font stack - fast, native, clean (like invoicely.gg) */
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    /* Brand-aligned font stack - Inter for modern, clean sans-serif */
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -212,20 +237,37 @@
     letter-spacing: -0.011em;
   }
 
-  /* Headings - tighter letter-spacing for modern SaaS feel */
+  /* Headings - brand-aligned typography with generous line-height */
   h1, h2, h3, h4, h5, h6,
   .font-display,
   .font-heading {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.2;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.011em;
+    line-height: 1.15;
+    color: hsl(var(--brand-espresso));
   }
 
-  /* Large display headings - even tighter tracking */
+  /* Large display headings - brand-aligned sizing */
   h1, .text-4xl, .text-5xl, .text-6xl {
-    letter-spacing: -0.035em;
-    font-weight: 700;
+    letter-spacing: -0.011em;
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  
+  h1 {
+    font-size: 3.5rem; /* 56px */
+    line-height: 1.15;
+  }
+  
+  h2 {
+    font-size: 2.5rem; /* 40px */
+    line-height: 1.2;
+  }
+  
+  h3 {
+    font-size: 2rem; /* 32px */
+    line-height: 1.25;
   }
 
   /* Tabular numbers for clean, aligned financial values */
@@ -318,8 +360,9 @@
     @apply bg-background-secondary;
   }
 
+  /* Brand-aligned section utilities */
   .section-cta {
-    @apply bg-primary text-primary-foreground;
+    @apply bg-brand-maroon text-brand-on-maroon;
   }
 
   .section-cta h1,
@@ -328,26 +371,59 @@
   .section-cta h4,
   .section-cta p,
   .section-cta span {
-    @apply text-primary-foreground;
+    @apply text-brand-on-maroon;
   }
 
   .section-cta .text-muted-foreground {
-    @apply text-primary-foreground/70;
+    @apply text-brand-on-maroon/70;
   }
 
   .section-dark {
-    @apply bg-surface-dark text-white;
+    @apply bg-brand-maroon text-brand-on-maroon;
   }
 
   .section-dark h1,
   .section-dark h2,
   .section-dark h3,
   .section-dark h4 {
-    @apply text-white;
+    @apply text-brand-on-maroon;
   }
 
   .section-dark .text-muted-foreground {
-    @apply text-white/60;
+    @apply text-brand-on-maroon/60;
+  }
+  
+  /* Brand-aligned background utilities */
+  .bg-brand-ivory {
+    background-color: hsl(var(--brand-ivory));
+  }
+  
+  .bg-brand-maroon {
+    background-color: hsl(var(--brand-maroon));
+  }
+  
+  .text-brand-espresso {
+    color: hsl(var(--brand-espresso));
+  }
+  
+  .text-brand-on-maroon {
+    color: hsl(var(--brand-on-maroon));
+  }
+  
+  /* Brand-aligned CTA band utility for landing pages */
+  .cta-band {
+    @apply bg-brand-maroon text-brand-on-maroon py-16 sm:py-20 lg:py-24;
+  }
+  
+  .cta-band h1,
+  .cta-band h2,
+  .cta-band h3,
+  .cta-band p {
+    @apply text-brand-on-maroon;
+  }
+  
+  .cta-band .text-muted-foreground {
+    @apply text-brand-on-maroon/70;
   }
 
   /* Consistent section padding */

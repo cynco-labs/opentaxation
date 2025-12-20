@@ -23,6 +23,10 @@ export interface Database {
           name: string;
           inputs: Json;
           results: Json;
+          tax_year: string | null;
+          engine_version: string | null;
+          verified: boolean | null;
+          computed_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -32,6 +36,10 @@ export interface Database {
           name: string;
           inputs: Json;
           results: Json;
+          tax_year?: string | null;
+          engine_version?: string | null;
+          verified?: boolean | null;
+          computed_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -41,6 +49,10 @@ export interface Database {
           name?: string;
           inputs?: Json;
           results?: Json;
+          tax_year?: string | null;
+          engine_version?: string | null;
+          verified?: boolean | null;
+          computed_at?: string | null;
           updated_at?: string;
         };
         Relationships: [];

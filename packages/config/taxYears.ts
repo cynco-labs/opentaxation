@@ -28,6 +28,14 @@ export interface ReliefLimits {
   children: number;
   /** Education per child */
   education: number;
+  /** Lifestyle (books, sports, devices) */
+  lifestyle: number;
+  /** Lifestyle additional (tech, subscription) */
+  lifestyleAdditional: number;
+  /** PRS (Private Retirement Scheme) */
+  prs: number;
+  /** SSPN (education savings) */
+  sspn: number;
 }
 
 /**
@@ -50,12 +58,18 @@ export interface EPFConfig {
  * SOCSO rate configuration
  */
 export interface SOCSOConfig {
-  /** Employer rate (simplified) */
+  /** Category 1 (Malaysia citizens/permanent residents) simplified employer rate */
   employerRate: number;
-  /** Employee rate (simplified) */
+  /** Category 1 simplified employee rate */
   employeeRate: number;
-  /** Monthly salary threshold (contributions mandatory below, optional above) */
+  /** Monthly salary threshold (mandatory below, optional above) */
   wageThreshold: number;
+  /** EIS employer rate (simplified) */
+  eisEmployerRate: number;
+  /** EIS employee rate (simplified) */
+  eisEmployeeRate: number;
+  /** EIS wage cap (monthly) */
+  eisWageCap: number;
 }
 
 /**
@@ -98,6 +112,15 @@ export interface TaxYearConfig {
     smeBrackets: TaxBracket[];
     /** Standard rate for non-SME companies */
     standardRate: number;
+    /** SME qualification limits */
+    smeCriteria: {
+      /** Max paid-up capital to qualify (RM) */
+      maxPaidUpCapital: number;
+      /** Max gross income to qualify (RM) */
+      maxGrossIncome: number;
+      /** Max related-company shareholding (%) to still qualify */
+      maxRelatedCompanyShare: number;
+    };
   };
 
   /** EPF contribution rates */
@@ -145,6 +168,10 @@ const YA_2024_2025: TaxYearConfig = {
       spouse: 4000,
       children: 2000,
       education: 8000,
+      lifestyle: 2500,
+      lifestyleAdditional: 500,
+      prs: 3000,
+      sspn: 8000,
     },
   },
 
@@ -155,6 +182,11 @@ const YA_2024_2025: TaxYearConfig = {
       { min: 600000, max: null, rate: 0.24 },
     ],
     standardRate: 0.24,
+    smeCriteria: {
+      maxPaidUpCapital: 2_500_000,
+      maxGrossIncome: 50_000_000,
+      maxRelatedCompanyShare: 50, // if related companies hold >50%, disqualify SME
+    },
   },
 
   epf: {
@@ -169,6 +201,9 @@ const YA_2024_2025: TaxYearConfig = {
     employerRate: 0.0175,
     employeeRate: 0.005,
     wageThreshold: 6000,
+    eisEmployerRate: 0.002,
+    eisEmployeeRate: 0.002,
+    eisWageCap: 5000,
   },
 
   dividend: {

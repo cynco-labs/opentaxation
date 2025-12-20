@@ -30,12 +30,12 @@ function ResultsSection({ comparison, inputs, generateShareableLink, hideHeader 
       initial={{ x: 20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-      className="flex-1 overflow-hidden bg-background-secondary"
+      className="flex-1 overflow-hidden bg-brand-muted-ivory"
     >
       <div className="h-full flex flex-col">
         {/* Sticky header - iOS native style - hidden when using MobileTabLayout */}
         {!hideHeader && (
-          <header className="sticky top-0 z-40 bg-background-secondary/95 backdrop-blur-xl border-b border-border/30 supports-[backdrop-filter]:bg-background-secondary/80 lg:bg-transparent lg:backdrop-blur-none lg:border-0">
+          <header className="sticky top-0 z-40 bg-brand-muted-ivory/90 backdrop-blur-xl border-b border-brand-border-ivory/60 supports-[backdrop-filter]:bg-brand-muted-ivory/80 lg:bg-transparent lg:backdrop-blur-none lg:border-0">
             <div className="px-5 sm:px-5 lg:px-8 py-4 sm:py-4 lg:py-6">
               <h2 className="font-display text-lg sm:text-xl lg:text-3xl font-bold tracking-tight" id="results-heading">
                 {t('results.header.title')}
@@ -185,12 +185,12 @@ function ResultsSection({ comparison, inputs, generateShareableLink, hideHeader 
               className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8"
             >
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-muted/50 flex items-center justify-center">
-                  <Sparkle weight="duotone" className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground/60" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-brand-muted-ivory flex items-center justify-center border border-brand-border-ivory">
+                  <Sparkle weight="duotone" className="h-8 w-8 sm:h-10 sm:w-10 text-brand-espresso/50" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm sm:text-base font-medium text-muted-foreground">{t('results.empty.title')}</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground/50">{t('results.empty.subtitle')}</p>
+                  <p className="text-sm sm:text-base font-medium text-brand-espresso">{t('results.empty.title')}</p>
+                  <p className="text-xs sm:text-sm text-brand-espresso/60">{t('results.empty.subtitle')}</p>
                 </div>
               </div>
             </motion.div>

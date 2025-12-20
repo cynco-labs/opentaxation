@@ -196,6 +196,74 @@ describe('validateInputs', () => {
       expect(errors.length).toBeGreaterThanOrEqual(4);
     });
   });
+
+  describe('NaN and Infinity handling', () => {
+    it('returns error for NaN businessProfit', () => {
+      const errors = validateInputs({ ...validInputs, businessProfit: NaN });
+      expect(errors).toContainEqual(
+        expect.objectContaining({ 
+          field: 'businessProfit',
+          message: expect.stringContaining('valid number')
+        })
+      );
+    });
+
+    it('returns error for Infinity businessProfit', () => {
+      const errors = validateInputs({ ...validInputs, businessProfit: Infinity });
+      expect(errors).toContainEqual(
+        expect.objectContaining({ 
+          field: 'businessProfit',
+          message: expect.stringContaining('valid number')
+        })
+      );
+    });
+
+    it('returns error for -Infinity businessProfit', () => {
+      const errors = validateInputs({ ...validInputs, businessProfit: -Infinity });
+      expect(errors).toContainEqual(
+        expect.objectContaining({ 
+          field: 'businessProfit',
+          message: expect.stringContaining('valid number')
+        })
+      );
+    });
+
+    it('returns error for NaN in dividendDistributionPercent', () => {
+      const errors = validateInputs({ ...validInputs, dividendDistributionPercent: NaN });
+      expect(errors).toContainEqual(
+        expect.objectContaining({ 
+          field: 'dividendDistributionPercent',
+          message: expect.stringContaining('valid number')
+        })
+      );
+    });
+
+    it('returns error for NaN in auditCriteria', () => {
+      const errors = validateInputs({
+        ...validInputs,
+        auditCriteria: { revenue: NaN, totalAssets: 1000, employees: 5 },
+      });
+      expect(errors).toContainEqual(
+        expect.objectContaining({ 
+          field: 'auditCriteria.revenue',
+          message: expect.stringContaining('valid number')
+        })
+      );
+    });
+
+    it('returns error for non-integer employees', () => {
+      const errors = validateInputs({
+        ...validInputs,
+        auditCriteria: { revenue: 1000, totalAssets: 1000, employees: 5.5 },
+      });
+      expect(errors).toContainEqual(
+        expect.objectContaining({ 
+          field: 'auditCriteria.employees',
+          message: expect.stringContaining('integer')
+        })
+      );
+    });
+  });
 });
 
 describe('sanitizeInputs', () => {
@@ -326,6 +394,74 @@ describe('sanitizeInputs', () => {
         reliefs: reliefs as any,
       });
       expect(result.reliefs).toEqual(reliefs);
+    });
+  });
+
+  describe('NaN and Infinity sanitization', () => {
+    it('replaces NaN businessProfit with 0', () => {
+      const result = sanitizeInputs({ businessProfit: NaN, otherIncome: 0 });
+      expect(result.businessProfit).toBe(0);
+    });
+
+    it('replaces Infinity businessProfit with 0', () => {
+      const result = sanitizeInputs({ businessProfit: Infinity, otherIncome: 0 });
+      expect(result.businessProfit).toBe(0);
+    });
+
+    it('replaces -Infinity businessProfit with 0', () => {
+      const result = sanitizeInputs({ businessProfit: -Infinity, otherIncome: 0 });
+      expect(result.businessProfit).toBe(0);
+    });
+
+    it('replaces NaN in optional fields with 0', () => {
+      const result = sanitizeInputs({
+        businessProfit: 0,
+        otherIncome: 0,
+        monthlySalary: NaN,
+        complianceCosts: NaN,
+        auditCost: NaN,
+      });
+      expect(result.monthlySalary).toBe(0);
+      expect(result.complianceCosts).toBe(0);
+      expect(result.auditCost).toBe(0);
+    });
+
+    it('replaces NaN in auditCriteria with 0', () => {
+      const result = sanitizeInputs({
+        businessProfit: 0,
+        otherIncome: 0,
+        auditCriteria: { revenue: NaN, totalAssets: Infinity, employees: NaN },
+      });
+      expect(result.auditCriteria?.revenue).toBe(0);
+      expect(result.auditCriteria?.totalAssets).toBe(0);
+      expect(result.auditCriteria?.employees).toBe(0);
+    });
+
+    it('replaces NaN in dividendDistributionPercent with 0', () => {
+      const result = sanitizeInputs({
+        businessProfit: 0,
+        otherIncome: 0,
+        dividendDistributionPercent: NaN,
+      });
+      expect(result.dividendDistributionPercent).toBe(0);
+    });
+
+    it('replaces Infinity in dividendDistributionPercent with 100 (clamped)', () => {
+      const result = sanitizeInputs({
+        businessProfit: 0,
+        otherIncome: 0,
+        dividendDistributionPercent: Infinity,
+      });
+      expect(result.dividendDistributionPercent).toBe(100);
+    });
+
+    it('replaces NaN in zakat amountPaid with 0', () => {
+      const result = sanitizeInputs({
+        businessProfit: 0,
+        otherIncome: 0,
+        zakat: { enabled: true, amountPaid: NaN },
+      });
+      expect(result.zakat?.amountPaid).toBe(0);
     });
   });
 });

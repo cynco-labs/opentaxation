@@ -6,6 +6,9 @@
  * - First RM150,000: 15%
  * - Next RM450,000 (RM150,001-RM600,000): 17%
  * - Above RM600,000: 24%
+ *
+ * NOTE: This module now derives brackets from taxYears.ts (single source of truth).
+ * The exported constants are for backward compatibility.
  */
 
 import {
@@ -14,21 +17,31 @@ import {
   calculateProgressiveTax,
   getProgressiveTaxBreakdown,
 } from './progressiveTax';
+import { getCurrentTaxYear } from './taxYears';
 
 // Re-export as CorporateTaxBracket for backward compatibility
 export type CorporateTaxBracket = TaxBracket;
 
-export const CORPORATE_TAX_BRACKETS: CorporateTaxBracket[] = [
-  { min: 0, max: 150000, rate: 0.15 },
-  { min: 150000, max: 600000, rate: 0.17 },
-  { min: 600000, max: null, rate: 0.24 },
-];
+/**
+ * Get corporate SME tax brackets for the current tax year
+ * This is the authoritative source - use this in new code
+ */
+export function getCorporateTaxBrackets(): CorporateTaxBracket[] {
+  return getCurrentTaxYear().corporate.smeBrackets;
+}
+
+/**
+ * Corporate tax brackets for the current tax year
+ * @deprecated Use getCorporateTaxBrackets() for new code to support multiple tax years
+ */
+export const CORPORATE_TAX_BRACKETS: CorporateTaxBracket[] = getCorporateTaxBrackets();
 
 /**
  * Calculate corporate tax for SME companies
+ * Uses current tax year brackets
  */
 export function calculateCorporateTaxFromBrackets(taxableProfit: number): number {
-  return calculateProgressiveTax(taxableProfit, CORPORATE_TAX_BRACKETS);
+  return calculateProgressiveTax(taxableProfit, getCorporateTaxBrackets());
 }
 
 /**
@@ -49,7 +62,7 @@ export interface CorporateTaxBracketBreakdownItem {
 export function getCorporateTaxBracketBreakdown(
   taxableProfit: number
 ): CorporateTaxBracketBreakdownItem[] {
-  const breakdown = getProgressiveTaxBreakdown(taxableProfit, CORPORATE_TAX_BRACKETS);
+  const breakdown = getProgressiveTaxBreakdown(taxableProfit, getCorporateTaxBrackets());
 
   // Map to corporate-tax-specific field names for backward compatibility
   return breakdown.map((item: TaxBracketBreakdownItem) => ({

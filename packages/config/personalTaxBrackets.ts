@@ -1,5 +1,5 @@
 /**
- * Malaysia Personal Income Tax Brackets (YA 2024/2025)
+ * Malaysia Personal Income Tax Brackets
  * Source: LHDN Malaysia
  *
  * Progressive tax brackets - each bracket applies only to income within that range
@@ -8,6 +8,9 @@
  * - RM5,001-RM20,000: 1% = RM150
  * - RM20,001-RM25,000: 3% = RM150
  * Total tax = RM300
+ *
+ * NOTE: This module now derives brackets from taxYears.ts (single source of truth).
+ * The exported constants are for backward compatibility.
  */
 
 import {
@@ -16,28 +19,31 @@ import {
   calculateProgressiveTax,
   getProgressiveTaxBreakdown,
 } from './progressiveTax';
+import { getCurrentTaxYear } from './taxYears';
 
 // Re-export TaxBracket for backward compatibility
 export type { TaxBracket };
 
-export const PERSONAL_TAX_BRACKETS: TaxBracket[] = [
-  { min: 0, max: 5000, rate: 0 },
-  { min: 5000, max: 20000, rate: 0.01 },
-  { min: 20000, max: 35000, rate: 0.03 },
-  { min: 35000, max: 50000, rate: 0.06 },
-  { min: 50000, max: 70000, rate: 0.11 },
-  { min: 70000, max: 100000, rate: 0.19 },
-  { min: 100000, max: 250000, rate: 0.25 },
-  { min: 250000, max: 400000, rate: 0.26 },
-  { min: 400000, max: 600000, rate: 0.28 },
-  { min: 600000, max: null, rate: 0.3 },
-];
+/**
+ * Get personal tax brackets for the current tax year
+ * This is the authoritative source - use this in new code
+ */
+export function getPersonalTaxBrackets(): TaxBracket[] {
+  return getCurrentTaxYear().personal.brackets;
+}
+
+/**
+ * Personal tax brackets for the current tax year
+ * @deprecated Use getPersonalTaxBrackets() for new code to support multiple tax years
+ */
+export const PERSONAL_TAX_BRACKETS: TaxBracket[] = getPersonalTaxBrackets();
 
 /**
  * Calculate personal tax using progressive brackets
+ * Uses current tax year brackets
  */
 export function calculatePersonalTaxFromBrackets(taxableIncome: number): number {
-  return calculateProgressiveTax(taxableIncome, PERSONAL_TAX_BRACKETS);
+  return calculateProgressiveTax(taxableIncome, getPersonalTaxBrackets());
 }
 
 /**
@@ -61,7 +67,7 @@ export type { TaxBracketBreakdownItem };
 export function getPersonalTaxBracketBreakdown(
   taxableIncome: number
 ): PersonalTaxBracketBreakdownItem[] {
-  const breakdown = getProgressiveTaxBreakdown(taxableIncome, PERSONAL_TAX_BRACKETS);
+  const breakdown = getProgressiveTaxBreakdown(taxableIncome, getPersonalTaxBrackets());
 
   // Map to personal-tax-specific field names for backward compatibility
   return breakdown.map((item: TaxBracketBreakdownItem) => ({

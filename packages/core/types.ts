@@ -109,6 +109,9 @@ export interface TaxCalculationInputs {
     totalAssets: number;
     employees: number;
   };
+  paidUpCapital?: number;
+  grossIncome?: number;
+  relatedCompanyShare?: number;
   reliefs?: PersonalReliefs;
   /** Extended relief claims (for Relief Optimizer) */
   extendedReliefs?: ReliefClaimValues;

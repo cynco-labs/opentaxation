@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -208,6 +208,8 @@ function LinkCard({ to, title, description, icon: Icon }: { to: string; title: s
 
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState('overview');
+  const [searchTerm, setSearchTerm] = useState('');
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -229,40 +231,104 @@ export default function DocsPage() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      // Cmd/Ctrl + K focuses the search input
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        searchInputRef.current?.select();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
   const currentCategory = DOC_SECTIONS.find(cat =>
     cat.items.some(item => item.id === activeSection)
   );
 
+  const matchingSections = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return [];
+    return ALL_SECTIONS.filter((item) =>
+      item.label.toLowerCase().includes(q) || item.id.toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [searchTerm]);
+
+  const handleSelectSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveSection(id);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#FAF7F2]">
+    <div className="min-h-screen bg-brand-ivory">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#FAF7F2]/95 backdrop-blur-xl border-b border-[#E8D5C4]">
+      <header className="sticky top-0 z-50 bg-brand-ivory/95 backdrop-blur-xl border-b border-brand-border-ivory">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between h-16 px-6">
           {/* Left */}
           <div className="flex items-center gap-8">
             <Link to="/" className="flex-shrink-0">
               <Logo size="sm" />
             </Link>
-            <span className="hidden sm:block text-sm font-medium text-[#722F37]">Docs</span>
+            <span className="hidden sm:block text-sm font-medium text-brand-burgundy">Docs</span>
           </div>
 
           {/* Center - Search */}
-          <div className="flex-1 max-w-lg mx-8">
-            <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full border border-[#E8D5C4] bg-white/60 hover:bg-white hover:border-[#D4B8A0] transition-all text-left">
-              <MagnifyingGlass weight="regular" className="h-4 w-4 text-[#6B5B5B]" />
-              <span className="flex-1 text-sm text-[#6B5B5B]">Search documentation...</span>
-              <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#FDF5F0] text-[11px] font-mono text-[#6B5B5B] border border-[#E8D5C4]">
+          <div className="flex-1 max-w-lg mx-8 relative">
+            <div className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full border border-brand-border-ivory bg-white/70 hover:bg-white hover:border-brand-rose/40 transition-all text-left shadow-soft">
+              <MagnifyingGlass weight="regular" className="h-4 w-4 text-brand-espresso/70" />
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'a') {
+                    // Explicitly select all text in the input
+                    e.preventDefault();
+                    searchInputRef.current?.select();
+                    return;
+                  }
+                  if (e.key === 'Enter' && matchingSections[0]) {
+                    handleSelectSection(matchingSections[0].id);
+                  }
+                }}
+                ref={searchInputRef}
+                placeholder="Search documentation..."
+                className="flex-1 bg-transparent outline-none text-sm text-brand-espresso placeholder:text-brand-espresso/50"
+                aria-label="Search documentation"
+              />
+              <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-brand-muted-ivory text-[11px] font-mono text-brand-espresso/70 border border-brand-border-ivory">
                 <Command weight="bold" className="h-2.5 w-2.5" />K
               </kbd>
-            </button>
+            </div>
+            {matchingSections.length > 0 && (
+              <div className="absolute top-[110%] left-0 right-0 rounded-2xl border border-brand-border-ivory bg-white shadow-card z-40 overflow-hidden">
+                <ul className="divide-y divide-brand-border-ivory/60">
+                  {matchingSections.map(({ id, label }) => (
+                    <li key={id}>
+                      <button
+                        onClick={() => handleSelectSection(id)}
+                        className="w-full text-left px-4 py-3 hover:bg-brand-muted-ivory transition-colors text-sm text-brand-espresso flex items-center justify-between"
+                      >
+                        <span>{label}</span>
+                        <span className="text-[11px] text-brand-espresso/60 uppercase tracking-wider">{id}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Right */}
           <div className="flex items-center gap-4">
-            <button className="group flex items-center gap-2 px-4 py-2 rounded-full border border-[#E8D5C4] bg-white/60 hover:bg-white hover:border-[#D4B8A0] transition-all">
-              <Sparkle weight="duotone" className="h-4 w-4 text-[#E5A84B]" />
-              <span className="text-sm font-medium text-[#4A2C2A]">Ask AI</span>
-              <span className="text-[11px] text-[#6B5B5B] bg-[#FDF5F0] px-2 py-0.5 rounded-full border border-[#E8D5C4]">Soon</span>
+            <button className="group flex items-center gap-2 px-4 py-2 rounded-full border border-brand-border-ivory bg-white/70 hover:bg-white hover:border-brand-rose/40 transition-all">
+              <Sparkle weight="duotone" className="h-4 w-4 text-brand-gold" />
+              <span className="text-sm font-medium text-brand-espresso">Ask AI</span>
+              <span className="text-[11px] text-brand-espresso/70 bg-brand-muted-ivory px-2 py-0.5 rounded-full border border-brand-border-ivory">Soon</span>
             </button>
           </div>
         </div>
@@ -270,11 +336,11 @@ export default function DocsPage() {
 
       <div className="max-w-[1400px] mx-auto flex">
         {/* Left Sidebar */}
-        <aside className="hidden lg:block w-64 flex-shrink-0 border-r border-[#E8D5C4]">
+        <aside className="hidden lg:block w-64 flex-shrink-0 border-r border-brand-border-ivory">
           <nav className="sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto py-8 px-5">
             {DOC_SECTIONS.map((section) => (
               <div key={section.category} className="mb-8">
-                <p className="text-[11px] font-semibold text-[#6B5B5B] uppercase tracking-wider mb-3 px-3">
+                <p className="text-[11px] font-semibold text-brand-espresso/70 uppercase tracking-wider mb-3 px-3">
                   {section.category}
                 </p>
                 <ul className="space-y-1">
@@ -284,8 +350,8 @@ export default function DocsPage() {
                         href={`#${id}`}
                         className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all ${
                           activeSection === id
-                            ? 'bg-[#722F37] text-white font-medium'
-                            : 'text-[#6B5B5B] hover:text-[#4A2C2A] hover:bg-[#FDF5F0]'
+                            ? 'bg-brand-maroon text-brand-on-maroon font-medium'
+                            : 'text-brand-espresso/70 hover:text-brand-espresso hover:bg-brand-muted-ivory'
                         }`}
                       >
                         <Icon weight={activeSection === id ? 'fill' : 'regular'} className="h-4 w-4" />
@@ -841,16 +907,16 @@ export default function DocsPage() {
                 </Section>
 
                 {/* CTA */}
-                <div className="mt-16 p-8 rounded-3xl bg-[#722F37] text-white">
-                  <h3 className="font-serif text-2xl font-normal mb-2">
+                <div className="mt-16 p-8 sm:p-9 rounded-3xl bg-gradient-to-br from-brand-muted-ivory via-white to-brand-muted-rose/30 border border-brand-border-ivory shadow-soft space-y-3">
+                  <h3 className="font-serif text-2xl font-normal text-brand-espresso tracking-tight">
                     Ready to compare?
                   </h3>
-                  <p className="text-white/70 mb-6">
-                    See which structure saves you more money.
+                  <p className="text-brand-espresso/70 max-w-xl">
+                    See which structure saves you more money with a clean, transparent breakdown.
                   </p>
                   <Link
                     to="/calculator"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#E5A84B] text-[#4A2C2A] font-medium hover:bg-[#D4983C] transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-gold text-brand-espresso font-medium uppercase tracking-[0.08em] hover:bg-brand-gold/90 shadow-sm hover:shadow-soft transition-all"
                   >
                     Open Calculator
                     <ArrowRight weight="bold" className="h-4 w-4" />

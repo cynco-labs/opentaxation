@@ -9,8 +9,11 @@ const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const MAX_COMMENT_LENGTH = 2000;
 
+// Get allowed origin from environment, default to * for development
+const ALLOWED_ORIGIN = Deno.env.get('ALLOWED_ORIGIN') || '*';
+
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -83,6 +86,17 @@ serve(async (req) => {
   const content = payload?.content?.trim();
   if (!payload?.postId || !content || content.length > MAX_COMMENT_LENGTH) {
     return jsonResponse({ error: 'Invalid comment payload.' }, 400);
+  }
+
+  // Validate postId format (should be UUID)
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(payload.postId)) {
+    return jsonResponse({ error: 'Invalid post ID format.' }, 400);
+  }
+
+  // Validate userName length
+  if (payload.userName && payload.userName.length > 120) {
+    return jsonResponse({ error: 'User name too long.' }, 400);
   }
 
   if (!(await verifyTurnstile(payload.captchaToken))) {

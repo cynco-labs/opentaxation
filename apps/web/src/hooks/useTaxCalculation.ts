@@ -3,6 +3,8 @@ import {
   calculateSolePropScenario,
   calculateSdnBhdScenario,
   compareScenarios,
+  sanitizeInputs,
+  validateInputs,
   type TaxCalculationInputs,
   type ComparisonResult,
 } from '@tax-engine/core';
@@ -14,6 +16,7 @@ import {
  * Per React best practices: https://react.dev/learn/you-might-not-need-an-effect
  * - Calculates expensive computations during render (not in Effects)
  * - Uses useMemo to cache results based on primitive dependencies
+ * - Sanitizes and validates inputs before calculation
  */
 export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResult | null {
   // Use primitive values in dependency array instead of the object
@@ -32,33 +35,64 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
     : '';
 
   return useMemo(() => {
-    if (!inputs.businessProfit && inputs.businessProfit !== 0) {
+    // If required businessProfit is missing, bail out early
+    if (inputs.businessProfit === undefined || inputs.businessProfit === null) {
       return null;
     }
 
-    const solePropResult = calculateSolePropScenario({
-      businessProfit: inputs.businessProfit,
-      otherIncome: inputs.otherIncome || 0,
-      reliefs: inputs.reliefs,
-      extendedReliefs: inputs.extendedReliefs,
-      zakat: inputs.zakat,
-    });
+    // Sanitize inputs first (replaces NaN/Infinity with safe defaults)
+    const sanitized = sanitizeInputs(inputs);
+    
+    // Validate inputs (returns errors if any)
+    const validationErrors = validateInputs(sanitized);
+    
+    // If there are validation errors, return null to prevent calculation
+    // In a production app, you might want to log these or show them to the user
+    if (validationErrors.length > 0) {
+      // Log validation errors in development
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Tax calculation inputs validation failed:', validationErrors);
+      }
+      return null;
+    }
 
-    const sdnBhdResult = calculateSdnBhdScenario({
-      businessProfit: inputs.businessProfit,
-      monthlySalary: inputs.monthlySalary || 5000,
-      otherIncome: inputs.otherIncome || 0,
-      complianceCosts: inputs.complianceCosts || 5000,
-      auditCost: inputs.auditCost,
-      auditCriteria: inputs.auditCriteria,
-      reliefs: inputs.reliefs,
-      extendedReliefs: inputs.extendedReliefs,
-      applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
-      dividendDistributionPercent: inputs.dividendDistributionPercent,
-      zakat: inputs.zakat,
-    });
+    // Check if businessProfit is valid (required field)
+    if (!sanitized.businessProfit && sanitized.businessProfit !== 0) {
+      return null;
+    }
 
-    return compareScenarios(solePropResult, sdnBhdResult, inputs.businessProfit, inputs);
+    try {
+      const solePropResult = calculateSolePropScenario({
+        businessProfit: sanitized.businessProfit,
+        otherIncome: sanitized.otherIncome || 0,
+        reliefs: sanitized.reliefs,
+        extendedReliefs: sanitized.extendedReliefs,
+        zakat: sanitized.zakat,
+      });
+
+      const sdnBhdResult = calculateSdnBhdScenario({
+        businessProfit: sanitized.businessProfit,
+        monthlySalary: sanitized.monthlySalary || 5000,
+        otherIncome: sanitized.otherIncome || 0,
+        complianceCosts: sanitized.complianceCosts || 5000,
+        auditCost: sanitized.auditCost,
+        auditCriteria: sanitized.auditCriteria,
+        reliefs: sanitized.reliefs,
+        extendedReliefs: sanitized.extendedReliefs,
+        applyYa2025DividendSurcharge: sanitized.applyYa2025DividendSurcharge,
+        dividendDistributionPercent: sanitized.dividendDistributionPercent,
+        zakat: sanitized.zakat,
+      });
+
+      return compareScenarios(solePropResult, sdnBhdResult, sanitized.businessProfit, sanitized);
+    } catch (error) {
+      // Catch any calculation errors and return null
+      // In production, you might want to log these or show them to the user
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Tax calculation error:', error);
+      }
+      return null;
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- Using primitive values intentionally to avoid unnecessary recalculations from object reference changes
   }, [
     inputs.businessProfit,
@@ -69,6 +103,9 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
     inputs.auditCriteria?.revenue,
     inputs.auditCriteria?.totalAssets,
     inputs.auditCriteria?.employees,
+    inputs.paidUpCapital,
+    inputs.grossIncome,
+    inputs.relatedCompanyShare,
     reliefsKey, // Use serialized reliefs instead of object reference
     extendedReliefsKey, // Use serialized extended reliefs
     inputs.applyYa2025DividendSurcharge,
@@ -76,6 +113,9 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
     inputs.zakat?.enabled,
     inputs.zakat?.autoCalculate,
     inputs.zakat?.amountPaid,
+    inputs.paidUpCapital,
+    inputs.grossIncome,
+    inputs.relatedCompanyShare,
   ]);
 }
 

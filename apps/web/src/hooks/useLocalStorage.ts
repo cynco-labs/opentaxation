@@ -75,6 +75,9 @@ export interface StoredInputs {
   applyYa2025DividendSurcharge: boolean;
   dividendDistributionPercent: number;
   hasForeignOwnership: boolean;
+  paidUpCapital?: number;
+  grossIncome?: number;
+  relatedCompanyShare?: number;
   // Input mode fields
   inputMode: InputMode;
   targetNetIncome: number; // Monthly target take-home
@@ -138,6 +141,9 @@ export function useTaxInputsStorage(defaultInputs: StoredInputs): {
         defaultInputs.dividendDistributionPercent
       ),
       hasForeignOwnership: boolOrDefault(inputs.hasForeignOwnership, defaultInputs.hasForeignOwnership),
+      paidUpCapital: numberOrDefault(inputs.paidUpCapital, defaultInputs.paidUpCapital ?? 0),
+      grossIncome: numberOrDefault(inputs.grossIncome, defaultInputs.grossIncome ?? 0),
+      relatedCompanyShare: numberOrDefault(inputs.relatedCompanyShare, defaultInputs.relatedCompanyShare ?? 0),
       inputMode: inputModeOrDefault(inputs.inputMode, defaultInputs.inputMode),
       targetNetIncome: numberOrDefault(inputs.targetNetIncome, defaultInputs.targetNetIncome),
       zakat,

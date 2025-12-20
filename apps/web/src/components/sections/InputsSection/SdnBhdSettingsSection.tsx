@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import Slider from '@/components/Slider';
 import { SectionHeader, CollapsibleSection } from './shared';
 import type { SdnBhdSettingsSectionProps } from './types';
+import InputField from '@/components/InputField';
 
 export default function SdnBhdSettingsSection({
   inputs,
@@ -95,6 +96,30 @@ export default function SdnBhdSettingsSection({
           {/* Advanced options */}
           <CollapsibleSection title={t('inputs.advanced.title')} defaultOpen={false}>
             <div className="space-y-3">
+              <div className="grid gap-3 sm:grid-cols-3">
+                <InputField
+                  label={t('inputs.advanced.paidUpCapital')}
+                  value={inputs.paidUpCapital || 0}
+                  onChange={(v) => callbacks.onSmePaidUpCapitalChange?.(v)}
+                  prefix="RM"
+                  helperText={t('inputs.advanced.paidUpCapitalHelper')}
+                />
+                <InputField
+                  label={t('inputs.advanced.grossIncome')}
+                  value={inputs.grossIncome || 0}
+                  onChange={(v) => callbacks.onSmeGrossIncomeChange?.(v)}
+                  prefix="RM"
+                  helperText={t('inputs.advanced.grossIncomeHelper')}
+                />
+                <InputField
+                  label={t('inputs.advanced.relatedShare')}
+                  value={inputs.relatedCompanyShare || 0}
+                  onChange={(v) => callbacks.onSmeRelatedShareChange?.(v)}
+                  suffix="%"
+                  helperText={t('inputs.advanced.relatedShareHelper')}
+                  max={100}
+                />
+              </div>
               <label className="flex items-start gap-3 cursor-pointer group py-1">
                 <input
                   type="checkbox"

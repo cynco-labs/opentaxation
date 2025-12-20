@@ -1,36 +1,52 @@
 /**
- * Malaysia Dividend Tax Rules (YA 2025)
+ * Malaysia Dividend Tax Rules
  * 
- * Starting YA 2025, individual taxpayers receiving dividend income exceeding RM100,000
- * annually are subject to an additional 2% tax on the excess amount.
+ * Individual taxpayers receiving dividend income exceeding a threshold
+ * annually are subject to an additional surcharge on the excess amount.
  * 
  * Source: Budget 2025, LHDN Malaysia
+ *
+ * NOTE: This module now derives rates from taxYears.ts (single source of truth).
+ * The exported constants are for backward compatibility.
  */
 
+import { getCurrentTaxYear } from './taxYears';
+
 /**
- * Calculate dividend tax for individuals (YA 2025)
+ * Get dividend tax configuration for the current tax year
+ * This is the authoritative source - use this in new code
+ */
+export function getDividendConfig() {
+  return getCurrentTaxYear().dividend;
+}
+
+/**
+ * Calculate dividend tax for individuals
  * 
  * @param dividendAmount - Total dividend income received
- * @returns Tax amount (2% on excess above RM100,000)
+ * @returns Tax amount (surcharge rate on excess above threshold)
  */
 export function calculateDividendTax(dividendAmount: number): number {
-  if (dividendAmount <= 100000) {
+  const config = getDividendConfig();
+  if (dividendAmount <= config.threshold) {
     return 0;
   }
 
-  const excessAmount = dividendAmount - 100000;
-  const tax = excessAmount * 0.02; // 2% on excess
+  const excessAmount = dividendAmount - config.threshold;
+  const tax = excessAmount * config.surchargeRate;
 
   return Math.round(tax * 100) / 100;
 }
 
 /**
- * Dividend tax threshold
+ * Dividend tax threshold (current tax year)
+ * @deprecated Use getDividendConfig() for new code to support multiple tax years
  */
-export const DIVIDEND_TAX_THRESHOLD = 100000;
+export const DIVIDEND_TAX_THRESHOLD = (() => getDividendConfig().threshold)();
 
 /**
- * Dividend tax rate (on excess above threshold)
+ * Dividend tax rate (on excess above threshold) (current tax year)
+ * @deprecated Use getDividendConfig() for new code to support multiple tax years
  */
-export const DIVIDEND_TAX_RATE = 0.02; // 2%
+export const DIVIDEND_TAX_RATE = (() => getDividendConfig().surchargeRate)();
 
