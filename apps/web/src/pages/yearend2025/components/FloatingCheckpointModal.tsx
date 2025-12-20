@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Check, X, Info, WarningCircle, CheckCircle } from 'phosphor-react';
+import { Check, X } from 'phosphor-react';
 import type { CheckpointData } from '../zakatReceiptChecklist';
 
 interface FloatingCheckpointModalProps {
@@ -18,7 +17,6 @@ export default function FloatingCheckpointModal({
   checkpoint,
   isOpen,
   isCompleted,
-  anchorPosition,
   onClose,
   onComplete,
 }: FloatingCheckpointModalProps) {

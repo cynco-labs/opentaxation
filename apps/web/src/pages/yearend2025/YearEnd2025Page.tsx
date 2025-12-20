@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { CHECKPOINTS, STORAGE_KEY } from './zakatReceiptChecklist';
@@ -52,7 +52,7 @@ export default function YearEnd2025Page() {
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [setState]);
+  }, [setState, state.currentStep]);
 
   // Push history state when step changes
   useEffect(() => {

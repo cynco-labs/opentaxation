@@ -9,7 +9,6 @@ import {
   ArrowCounterClockwise,
 } from 'phosphor-react';
 import { CHECKPOINTS } from '../zakatReceiptChecklist';
-import YearEndLayout from './YearEndLayout';
 import WrappedCard from './WrappedCard';
 
 interface ShareScreenProps {

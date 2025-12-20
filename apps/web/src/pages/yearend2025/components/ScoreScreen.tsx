@@ -2,8 +2,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { ArrowRight, ArrowLeft, X, CheckCircle, WarningCircle, Receipt, Calendar, ArrowSquareOut } from 'phosphor-react';
-import { cn } from '@/lib/utils';
+import { ArrowLeft, CheckCircle, WarningCircle, Receipt, Calendar, ArrowSquareOut } from 'phosphor-react';
 import { CHECKPOINTS } from '../zakatReceiptChecklist';
 
 interface ScoreScreenProps {
