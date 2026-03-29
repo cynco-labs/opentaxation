@@ -86,8 +86,8 @@ export async function getAdminPosts(options: {
 } = {}): Promise<{ posts: BlogPost[]; meta: PaginationMeta }> {
   const client = getClient();
   const result = await client.query(api.blogPosts.listAdmin, {
-    status: options.status as any,
-    locale: options.locale as any,
+    status: options.status as PostStatus,
+    locale: options.locale as Locale,
     page: options.page,
     pageSize: options.pageSize,
   });
@@ -129,8 +129,8 @@ export async function updatePost(id: string, input: Partial<BlogPostInput>): Pro
     excerpt: input.excerpt,
     coverImageId: input.coverImageId as Id<"_storage"> | undefined,
     categoryId: input.categoryId as Id<"blogCategories"> | undefined,
-    status: input.status as any,
-    locale: input.locale as any,
+    status: input.status as PostStatus,
+    locale: input.locale as Locale,
     metaTitle: input.metaTitle,
     metaDescription: input.metaDescription,
     readingTimeMinutes: input.readingTimeMinutes,

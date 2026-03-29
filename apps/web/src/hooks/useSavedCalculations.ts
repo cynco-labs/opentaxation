@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '@convex/_generated/api';
 import { useAuth } from '@/contexts/AuthContext';
+import type { Id } from '@convex/_generated/dataModel';
 
 export function useSavedCalculations() {
   const { isAuthenticated } = useAuth();
@@ -16,7 +17,7 @@ export function useSavedCalculations() {
   const updateMutation = useMutation(api.savedCalculations.update);
 
   const saveCalculation = useCallback(
-    async (name: string, inputs: any, results: any) => {
+    async (name: string, inputs: Record<string, unknown>, results: Record<string, unknown>) => {
       const id = await saveMutation({ name, inputs, results });
       return { id, name, inputs, results };
     },
@@ -25,14 +26,14 @@ export function useSavedCalculations() {
 
   const deleteCalculation = useCallback(
     async (id: string) => {
-      await deleteMutation({ id: id as any });
+      await deleteMutation({ id: id as Id<"savedCalculations"> });
     },
     [deleteMutation],
   );
 
   const updateCalculation = useCallback(
-    async (id: string, updates: { name?: string; inputs?: any; results?: any }) => {
-      await updateMutation({ id: id as any, ...updates });
+    async (id: string, updates: { name?: string; inputs?: Record<string, unknown>; results?: Record<string, unknown> }) => {
+      await updateMutation({ id: id as Id<"savedCalculations">, ...updates });
     },
     [updateMutation],
   );
@@ -45,8 +46,8 @@ export function useSavedCalculations() {
     isAuthenticated,
     saveCalculation,
     deleteCalculation,
-    getCalculation: async () => null, // Use Convex queries directly if needed
+    getCalculation: async () => null,
     updateCalculation,
-    refetch: () => {}, // Convex auto-updates reactively
+    refetch: () => {},
   };
 }

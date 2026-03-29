@@ -22,9 +22,8 @@ export default function SavedCalculations() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const filteredCalculations = useMemo(
-    () => calculations?.filter((calc: any) =>
-      calc.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    ),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    () => calculations?.filter((calc: any) => calc.name.toLowerCase().includes(searchQuery.toLowerCase())),
     [calculations, searchQuery]
   );
 
@@ -88,6 +87,7 @@ export default function SavedCalculations() {
         </div>
       ) : filteredCalculations && filteredCalculations.length > 0 ? (
         <div className="grid gap-3 sm:gap-4">
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {filteredCalculations.map((calc: any) => (
             <CalculationCard
               key={calc._id}
@@ -129,7 +129,8 @@ export default function SavedCalculations() {
 }
 
 interface CalculationCardProps {
-  calculation: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  calculation: Record<string, any>;
   onDelete: (id: string, e: React.MouseEvent) => void;
   isDeleting: boolean;
   formatDate: (timestamp: number) => string;

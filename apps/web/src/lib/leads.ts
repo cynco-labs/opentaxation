@@ -25,8 +25,8 @@ export interface CreateLeadParams {
     email: string;
     leadType: 'incorporation' | 'newsletter' | 'partner_inquiry';
     source?: string;
-    metadata?: any;
-  }) => Promise<any>;
+    metadata?: Record<string, unknown>;
+  }) => Promise<unknown>;
 }
 
 /**

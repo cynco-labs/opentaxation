@@ -176,16 +176,17 @@ export default function BlogAdminEdit() {
         title: post.title,
         excerpt: post.excerpt || '',
         content: post.content,
-        cover_image_url: (post as any).cover_image_url || post.coverImageUrl || '',
-        cover_image_alt: (post as any).cover_image_alt || '',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Convex document shape varies
+        cover_image_url: (post as Record<string, unknown>).cover_image_url as string || post.coverImageUrl || '',
+        cover_image_alt: (post as Record<string, unknown>).cover_image_alt as string || '',
         author_id: post.author?.id || '',
         category_id: post.category?.id || '',
         status: post.status,
-        meta_title: (post as any).meta_title || post.metaTitle || '',
-        meta_description: (post as any).meta_description || post.metaDescription || '',
-        og_image_url: (post as any).og_image_url || '',
-        is_featured: (post as any).is_featured ?? post.isFeatured,
-        tag_ids: (post as any).tag_ids || post.tags?.map((t: any) => t.id) || [],
+        meta_title: (post as Record<string, unknown>).meta_title as string || post.metaTitle || '',
+        meta_description: (post as Record<string, unknown>).meta_description as string || post.metaDescription || '',
+        og_image_url: (post as Record<string, unknown>).og_image_url as string || '',
+        is_featured: (post as Record<string, unknown>).is_featured as boolean ?? post.isFeatured,
+        tag_ids: (post as Record<string, unknown>).tag_ids as string[] || post.tags?.map((t: { id: string }) => t.id) || [],
       });
     } catch {
       setError('Failed to load post');
