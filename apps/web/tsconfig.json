@@ -24,6 +24,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@convex/*": ["../../convex/*"],
       "@tax-engine/core": ["../../packages/core"],
       "@tax-engine/config": ["../../packages/config"]
     }

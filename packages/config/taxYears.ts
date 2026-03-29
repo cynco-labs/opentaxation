@@ -156,10 +156,10 @@ const YA_2024_2025: TaxYearConfig = {
       { min: 35000, max: 50000, rate: 0.06 },
       { min: 50000, max: 70000, rate: 0.11 },
       { min: 70000, max: 100000, rate: 0.19 },
-      { min: 100000, max: 250000, rate: 0.25 },
-      { min: 250000, max: 400000, rate: 0.26 },
-      { min: 400000, max: 600000, rate: 0.28 },
-      { min: 600000, max: null, rate: 0.3 },
+      { min: 100000, max: 400000, rate: 0.25 },
+      { min: 400000, max: 600000, rate: 0.26 },
+      { min: 600000, max: 2000000, rate: 0.28 },
+      { min: 2000000, max: null, rate: 0.30 },
     ],
     reliefLimits: {
       basic: 9000,
@@ -185,7 +185,7 @@ const YA_2024_2025: TaxYearConfig = {
     smeCriteria: {
       maxPaidUpCapital: 2_500_000,
       maxGrossIncome: 50_000_000,
-      maxRelatedCompanyShare: 50, // if related companies hold >50%, disqualify SME
+      maxRelatedCompanyShare: 20, // if related companies/foreign hold >20%, disqualify SME
     },
   },
 
@@ -203,7 +203,7 @@ const YA_2024_2025: TaxYearConfig = {
     wageThreshold: 6000,
     eisEmployerRate: 0.002,
     eisEmployeeRate: 0.002,
-    eisWageCap: 5000,
+    eisWageCap: 6000,
   },
 
   dividend: {

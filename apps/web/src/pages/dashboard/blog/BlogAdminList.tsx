@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -14,10 +14,9 @@ import {
   BlogPost,
   PostStatus,
   Locale,
-  getAdminPosts,
-  deletePost,
   PaginationMeta,
 } from '@/lib/blog';
+import { getAdminPosts, deletePost } from '@/lib/blogCompat';
 import { useAuth } from '@/contexts/AuthContext';
 
 const statusColors: Record<PostStatus, string> = {
@@ -46,7 +45,7 @@ export default function BlogAdminList() {
   const [showFilters, setShowFilters] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const loadPosts = async () => {
+  const loadPosts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -63,12 +62,11 @@ export default function BlogAdminList() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, statusFilter, localeFilter]);
 
   useEffect(() => {
     loadPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, statusFilter, localeFilter]);
+  }, [loadPosts]);
 
   // Redirect if not a blog admin - after all hooks
   if (!authLoading && !isBlogAdmin) {
@@ -107,7 +105,7 @@ export default function BlogAdminList() {
           <p className="text-muted-foreground">Manage your blog content</p>
         </div>
         <Link
-          to="/dashboard/blog/new"
+          to="/admin/blog/new"
           className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
         >
           <Plus weight="bold" className="h-5 w-5" />
@@ -219,7 +217,7 @@ export default function BlogAdminList() {
           <div className="p-8 text-center">
             <p className="text-muted-foreground mb-4">No posts found</p>
             <Link
-              to="/dashboard/blog/new"
+              to="/admin/blog/new"
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium"
             >
               <Plus weight="bold" className="h-4 w-4" />
@@ -307,7 +305,7 @@ export default function BlogAdminList() {
                           </a>
                         )}
                         <Link
-                          to={`/dashboard/blog/${post.id}`}
+                          to={`/admin/blog/${post.id}`}
                           className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors"
                           title="Edit"
                         >

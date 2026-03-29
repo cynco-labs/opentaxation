@@ -13,31 +13,35 @@ import AppShell from './components/layout/AppShell';
 import LandingHub from './pages/LandingHub';
 import CalculatorPage from './pages/CalculatorPage';
 
-// Lazy load other routes
+// Dashboard (lazy loaded)
+const DashboardLayout = lazy(() => import('./pages/dashboard/DashboardLayout'));
+const DashboardOverview = lazy(() => import('./pages/dashboard/DashboardOverview'));
+const DashboardCalendar = lazy(() => import('./pages/dashboard/DashboardCalendar'));
+const SavedCalculations = lazy(() => import('./pages/dashboard/SavedCalculations'));
+const DashboardSettings = lazy(() => import('./pages/dashboard/DashboardSettings'));
+
+// Auth pages
 const AuthPage = lazy(() => import('./pages/AuthPage'));
+
+// Legal pages
 const PrivacyPolicy = lazy(() => import('./components/pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./components/pages/TermsOfService'));
 const Disclaimer = lazy(() => import('./components/pages/Disclaimer'));
 const DocsPage = lazy(() => import('./pages/DocsPage'));
 const PartnersPage = lazy(() => import('./pages/PartnersPage'));
 
-// Tools (lazy loaded)
-const DashboardCalendar = lazy(() => import('./pages/dashboard/DashboardCalendar'));
+// Tools (public, in AppShell)
 const EInvoicingHub = lazy(() => import('./pages/einvoicing/EInvoicingHub'));
 
-// User pages (lazy loaded)
-const SavedCalculations = lazy(() => import('./pages/dashboard/SavedCalculations'));
-const DashboardSettings = lazy(() => import('./pages/dashboard/DashboardSettings'));
-
-// Blog routes
+// Blog (public)
 const BlogListPage = lazy(() => import('./pages/blog/BlogListPage'));
 const BlogPostPage = lazy(() => import('./pages/blog/BlogPostPage'));
 
-// Blog admin routes
+// Blog admin (inside dashboard)
 const BlogAdminList = lazy(() => import('./pages/dashboard/blog/BlogAdminList'));
 const BlogAdminEdit = lazy(() => import('./pages/dashboard/blog/BlogAdminEdit'));
 
-// Special microsites (standalone, hidden)
+// Special microsites
 const YearEnd2025Page = lazy(() => import('./pages/yearend2025/YearEnd2025Page'));
 
 
@@ -60,22 +64,21 @@ function AppRoutes() {
   return (
     <Suspense fallback={<RouteLoading />}>
       <Routes>
-        {/* Main app with persistent navigation */}
+        {/* Public pages with persistent navigation */}
         <Route element={<AppShell />}>
-          {/* Landing hub */}
           <Route index element={<LandingHub />} />
-
-          {/* Tools that use standard layout */}
           <Route path="calendar" element={<DashboardCalendar />} />
           <Route path="e-invoicing" element={<EInvoicingHub />} />
+        </Route>
 
-          {/* User pages */}
-          <Route path="saved" element={<SavedCalculations />} />
+        {/* Dashboard (auth-protected, has its own layout with sidebar) */}
+        <Route path="dashboard" element={<DashboardLayout />}>
+          <Route index element={<DashboardOverview />} />
+          <Route path="calendar" element={<DashboardCalendar />} />
+          <Route path="calculations" element={<SavedCalculations />} />
           <Route path="settings" element={<DashboardSettings />} />
-
-          {/* Blog admin (protected) */}
-          <Route path="admin/blog" element={<BlogAdminList />} />
-          <Route path="admin/blog/:id" element={<BlogAdminEdit />} />
+          <Route path="blog" element={<BlogAdminList />} />
+          <Route path="blog/:id" element={<BlogAdminEdit />} />
         </Route>
 
         {/* Calculator has its own optimized layout */}
@@ -88,7 +91,7 @@ function AppRoutes() {
         <Route path="login" element={<AuthPage />} />
         <Route path="signup" element={<AuthPage />} />
 
-        {/* Legal & info pages (outside AppShell) */}
+        {/* Legal & info pages */}
         <Route path="privacy" element={<PrivacyPolicy />} />
         <Route path="terms" element={<TermsOfService />} />
         <Route path="disclaimer" element={<Disclaimer />} />
@@ -97,15 +100,14 @@ function AppRoutes() {
         {/* Partners page */}
         <Route path="partners" element={<PartnersPage />} />
 
-        {/* Blog (public, outside AppShell for SEO) */}
+        {/* Blog (public) */}
         <Route path="blog" element={<BlogListPage />} />
         <Route path="blog/:slug" element={<BlogPostPage />} />
 
-        {/* Legacy redirects - dashboard routes redirect to new paths */}
-        <Route path="dashboard" element={<Navigate to="/" replace />} />
-        <Route path="dashboard/calendar" element={<Navigate to="/calendar" replace />} />
-        <Route path="dashboard/calculations" element={<Navigate to="/saved" replace />} />
-        <Route path="dashboard/settings" element={<Navigate to="/settings" replace />} />
+        {/* Legacy redirects */}
+        <Route path="saved" element={<Navigate to="/dashboard/calculations" replace />} />
+        <Route path="settings" element={<Navigate to="/dashboard/settings" replace />} />
+        <Route path="admin/blog" element={<Navigate to="/dashboard/blog" replace />} />
       </Routes>
     </Suspense>
   );

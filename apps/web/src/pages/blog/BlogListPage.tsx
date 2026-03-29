@@ -10,12 +10,11 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import {
   BlogPost,
   Category,
-  getPosts,
-  getCategories,
   PaginationMeta,
   getLocalizedField,
   Locale,
 } from '@/lib/blog';
+import { getPosts, getCategories } from '@/lib/blogCompat';
 
 export default function BlogListPage() {
   const { t } = useTranslation();

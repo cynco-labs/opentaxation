@@ -23,14 +23,15 @@ import {
   Category,
   Tag,
   Author,
+} from '@/lib/blog';
+import {
   createPost,
   updatePost,
   deletePost,
   getCategories,
   getTags,
   getAuthors,
-} from '@/lib/blog';
-import { supabase } from '@/lib/supabase';
+} from '@/lib/blogCompat';
 
 // Lazy load heavy components
 const RichTextEditor = lazy(() => import('@/components/blog/RichTextEditor'));
@@ -132,7 +133,7 @@ export default function BlogAdminEdit() {
     const contentWithIds = addIdsToHeadings(formData.content);
     return DOMPurify.sanitize(contentWithIds, {
       ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code', 'pre', 'blockquote', 'img', 'figure', 'figcaption', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'hr'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'title', 'width', 'height', 'style'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'title', 'width', 'height'],
       ALLOW_DATA_ATTR: false,
     });
   }, [formData.content]);
@@ -160,31 +161,13 @@ export default function BlogAdminEdit() {
   const loadPost = async (postId: string) => {
     setIsLoading(true);
     try {
-      // For admin, we need to fetch by ID, not slug
-      // Using direct Supabase query since getPostBySlug only gets published posts
-      if (!supabase) throw new Error('Supabase not configured');
+      const { getPostById } = await import('@/lib/blogCompat');
+      const post = await getPostById(postId);
 
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select(`
-          *,
-          author:blog_authors(*),
-          category:blog_categories(*),
-          tags:blog_post_tags(tag:blog_tags(*))
-        `)
-        .eq('id', postId)
-        .single();
-
-      if (error) throw error;
-      if (!data) {
+      if (!post) {
         setError('Post not found');
         return;
       }
-
-      const post: BlogPost = {
-        ...data,
-        tags: data.tags?.map((t: { tag: Tag }) => t.tag).filter(Boolean) || [],
-      };
 
       setOriginalPost(post);
       setFormData({
@@ -193,16 +176,16 @@ export default function BlogAdminEdit() {
         title: post.title,
         excerpt: post.excerpt || '',
         content: post.content,
-        cover_image_url: post.cover_image_url || '',
-        cover_image_alt: post.cover_image_alt || '',
+        cover_image_url: (post as Record<string, unknown>).cover_image_url as string || post.coverImageUrl || '',
+        cover_image_alt: (post as Record<string, unknown>).cover_image_alt as string || '',
         author_id: post.author?.id || '',
         category_id: post.category?.id || '',
         status: post.status,
-        meta_title: post.meta_title || '',
-        meta_description: post.meta_description || '',
-        og_image_url: post.og_image_url || '',
-        is_featured: post.is_featured,
-        tag_ids: post.tags.map((t) => t.id),
+        meta_title: (post as Record<string, unknown>).meta_title as string || post.metaTitle || '',
+        meta_description: (post as Record<string, unknown>).meta_description as string || post.metaDescription || '',
+        og_image_url: (post as Record<string, unknown>).og_image_url as string || '',
+        is_featured: (post as Record<string, unknown>).is_featured as boolean ?? post.isFeatured,
+        tag_ids: (post as Record<string, unknown>).tag_ids as string[] || post.tags?.map((t: { id: string }) => t.id) || [],
       });
     } catch {
       setError('Failed to load post');
@@ -241,7 +224,7 @@ export default function BlogAdminEdit() {
 
       if (isNew) {
         const newPost = await createPost(postData);
-        navigate(`/dashboard/blog/${newPost.id}`);
+        navigate(`/admin/blog/${newPost.id}`);
       } else if (id) {
         await updatePost(id, postData);
         await loadPost(id);
@@ -259,7 +242,7 @@ export default function BlogAdminEdit() {
 
     try {
       await deletePost(id);
-      navigate('/dashboard/blog');
+      navigate('/admin/blog');
     } catch {
       setError('Failed to delete post');
     }
@@ -288,7 +271,7 @@ export default function BlogAdminEdit() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
-            to="/dashboard/blog"
+            to="/admin/blog"
             className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           >
             <ArrowLeft weight="bold" className="h-5 w-5" />

@@ -11,6 +11,7 @@ import {
   calculateMaxAffordableSalary,
   EPF_RATES,
 } from '../epfRules';
+import { calculateEmployerSOCSO, calculateEmployerEIS } from '../socsoRules';
 
 describe('calculateEmployerEPF', () => {
   it('returns 0 for zero salary', () => {
@@ -92,40 +93,36 @@ describe('calculateMaxAffordableSalary', () => {
     expect(calculateMaxAffordableSalary(-10000)).toBe(0);
   });
 
-  it('calculates correctly for profit where salary > RM5k/month (12% rate)', () => {
-    // If max salary / 12 > 5000, use 12% rate
-    // maxSalary = profit / 1.12
+  it('calculates correctly for profit where salary > RM5k/month', () => {
     const profit = 100000;
-    const expectedMax = profit / 1.12;
+    const result = calculateMaxAffordableSalary(profit);
 
-    // Monthly should be > 5000 to use 12% rate
-    if (expectedMax / 12 > EPF_RATES.employer.threshold) {
-      const result = calculateMaxAffordableSalary(profit);
-      expect(result).toBeCloseTo(expectedMax, 0);
-    }
+    // Result must be less than EPF-only estimate since SOCSO+EIS are now included
+    const epfOnlyMax = profit / 1.12;
+    expect(result).toBeLessThan(epfOnlyMax);
+    expect(result).toBeGreaterThan(0);
   });
 
-  it('calculates correctly for profit where salary <= RM5k/month (13% rate)', () => {
-    // Small profit = small salary = 13% rate
-    // maxSalary = profit / 1.13
+  it('calculates correctly for profit where salary <= RM5k/month', () => {
     const profit = 50000;
-    const expectedWith13 = profit / 1.13;
-    const expectedWith12 = profit / 1.12;
+    const result = calculateMaxAffordableSalary(profit);
 
-    // Monthly should be <= 5000 to use 13% rate
-    if (expectedWith12 / 12 <= EPF_RATES.employer.threshold) {
-      const result = calculateMaxAffordableSalary(profit);
-      expect(result).toBeCloseTo(expectedWith13, 0);
-    }
+    // Result must be less than EPF-only estimate since SOCSO+EIS are now included
+    const epfOnlyMax = profit / 1.13;
+    expect(result).toBeLessThan(epfOnlyMax);
+    expect(result).toBeGreaterThan(0);
   });
 
-  it('verifies max salary + EPF equals profit', () => {
+  it('verifies max salary + EPF + SOCSO + EIS equals profit', () => {
     const profit = 150000;
     const maxSalary = calculateMaxAffordableSalary(profit);
     const epf = calculateEmployerEPF(maxSalary);
+    const monthlySalary = maxSalary / 12;
+    const socso = calculateEmployerSOCSO(monthlySalary) * 12;
+    const eis = calculateEmployerEIS(monthlySalary) * 12;
 
-    // Salary + EPF should approximately equal profit
-    expect(maxSalary + epf).toBeCloseTo(profit, 0);
+    // Total cost (salary + EPF + SOCSO + EIS) should approximately equal profit
+    expect(maxSalary + epf + socso + eis).toBeCloseTo(profit, 0);
   });
 
   it('rounds to 2 decimal places', () => {

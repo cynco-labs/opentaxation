@@ -8,6 +8,7 @@
  */
 
 import { getCurrentTaxYear } from './taxYears';
+import { calculateEmployerSOCSO, calculateEmployerEIS } from './socsoRules';
 
 /**
  * Get EPF configuration for the current tax year
@@ -69,26 +70,35 @@ export const EPF_RATES = (() => {
 /**
  * Calculate maximum affordable annual salary given business profit
  *
- * This is the salary where: salary + employer EPF = businessProfit exactly
- * Formula: maxSalary = businessProfit / (1 + employerEPFRate)
+ * Total cost = salary + employer EPF + employer SOCSO + employer EIS
+ * We find the salary where total cost = businessProfit exactly.
  *
- * Note: EPF rate depends on salary level, so we need to check which rate applies
+ * Uses iterative refinement since SOCSO/EIS have salary caps and step changes.
  */
 export function calculateMaxAffordableSalary(businessProfit: number): number {
   if (businessProfit <= 0) return 0;
 
-  // First try with lower EPF rate (12% for salary > RM5k/month)
-  // maxSalary = businessProfit / (1 + 0.12) = businessProfit / 1.12
-  const maxWithLowerRate = businessProfit / 1.12;
-  const monthlyWithLowerRate = maxWithLowerRate / 12;
-
-  // If monthly salary would be > threshold, the high rate applies
   const config = getEPFConfig();
-  if (monthlyWithLowerRate > config.salaryThreshold) {
-    return Math.round(maxWithLowerRate * 100) / 100;
+
+  // Start with EPF-only estimate
+  const epfRate = (businessProfit / 12) > config.salaryThreshold
+    ? config.employerRateHigh
+    : config.employerRateLow;
+  let salary = businessProfit / (1 + epfRate);
+
+  // Iteratively refine to account for SOCSO + EIS
+  for (let i = 0; i < 10; i++) {
+    const monthlySalary = salary / 12;
+    const epf = calculateEmployerEPF(salary);
+    const socso = calculateEmployerSOCSO(monthlySalary) * 12;
+    const eis = calculateEmployerEIS(monthlySalary) * 12;
+    const totalCost = salary + epf + socso + eis;
+    const overshoot = totalCost - businessProfit;
+
+    if (Math.abs(overshoot) < 1) break; // converged within RM1
+    salary -= overshoot * 0.9; // damped correction
+    salary = Math.max(0, salary);
   }
 
-  // Otherwise, use higher rate (for salary <= threshold/month)
-  // maxSalary = businessProfit / (1 + employerRateLow)
-  return Math.round((businessProfit / (1 + config.employerRateLow)) * 100) / 100;
+  return Math.round(salary * 100) / 100;
 }

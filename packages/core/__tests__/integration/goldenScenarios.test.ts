@@ -63,10 +63,9 @@ describe('Golden Scenarios - Enterprise (Sole Prop)', () => {
    *   - RM35,001-50,000: 6% = RM900
    *   - RM50,001-70,000: 11% = RM2,200
    *   - RM70,001-100,000: 19% = RM5,700
-   *   - RM100,001-250,000: 25% = RM37,500
-   *   - RM250,001-276,000: 26% = RM6,760
-   *   - Total Tax: RM53,660
-   * - Net Cash: RM300,000 - RM53,660 = RM246,340
+   *   - RM100,001-276,000: 25% = RM44,000
+   *   - Total Tax: RM53,400
+   * - Net Cash: RM300,000 - RM53,400 = RM246,600
    */
   it('RM300k profit with full reliefs', () => {
     const result = calculateSolePropScenario({
@@ -75,8 +74,8 @@ describe('Golden Scenarios - Enterprise (Sole Prop)', () => {
       reliefs: { basic: 9000, epfAndLifeInsurance: 7000, medical: 8000 },
     });
 
-    expect(result.personalTax).toBeCloseTo(53660, 0);
-    expect(result.netCash).toBeCloseTo(246340, 0);
+    expect(result.personalTax).toBeCloseTo(53400, 0);
+    expect(result.netCash).toBeCloseTo(246600, 0);
     expect(result.effectiveTaxRate).toBeLessThan(0.19); // Should be below 19%
   });
 

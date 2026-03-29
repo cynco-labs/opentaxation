@@ -386,14 +386,20 @@ describe('sanitizeInputs', () => {
   });
 
   describe('reliefs passthrough', () => {
-    it('preserves reliefs object as-is', () => {
+    it('preserves custom relief fields and adds defaults for standard fields', () => {
       const reliefs = { personal: 9000, education: 2000 };
       const result = sanitizeInputs({
         businessProfit: 0,
         otherIncome: 0,
         reliefs: reliefs as any,
       });
-      expect(result.reliefs).toEqual(reliefs);
+      // Custom fields are preserved via spread
+      expect(result.reliefs?.personal).toBe(9000);
+      expect(result.reliefs?.education).toBe(2000);
+      // Standard fields get defaults when not provided
+      expect(result.reliefs?.basic).toBeDefined();
+      expect(result.reliefs?.epfAndLifeInsurance).toBeDefined();
+      expect(result.reliefs?.medical).toBeDefined();
     });
   });
 

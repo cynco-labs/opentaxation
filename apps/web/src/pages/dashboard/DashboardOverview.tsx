@@ -15,7 +15,7 @@ import { formatCurrency } from '@/lib/utils';
 export default function DashboardOverview() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { calculations, isLoading, isConfigured } = useSavedCalculations();
+  const { calculations, isLoading } = useSavedCalculations();
 
   const recentCalculations = calculations?.slice(0, 3) ?? [];
   const totalCalculations = calculations?.length ?? 0;
@@ -32,7 +32,7 @@ export default function DashboardOverview() {
       {/* Welcome header */}
       <div>
         <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
-          Welcome back{user?.user_metadata?.full_name ? `, ${user.user_metadata.full_name.split(' ')[0]}` : ''}
+          Welcome back{user?.name ? `, ${user.name.split(' ')[0]}` : ''}
         </h1>
         <p className="text-sm sm:text-base text-muted-foreground mt-1">
           Manage your saved calculations and track your tax planning.
@@ -89,30 +89,6 @@ export default function DashboardOverview() {
           </div>
         </Card>
       </div>
-
-      {/* Supabase not configured warning */}
-      {!isConfigured && (
-        <Card className="p-4 sm:p-6 border-amber-500/50 bg-amber-500/5">
-          <div className="flex gap-3 sm:gap-4">
-            <div className="flex-1">
-              <h3 className="font-semibold text-sm sm:text-base text-amber-600 dark:text-amber-400">
-                Database Not Configured
-              </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Add your Supabase credentials to enable saving calculations. Set{' '}
-                <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                  VITE_SUPABASE_URL
-                </code>{' '}
-                and{' '}
-                <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                  VITE_SUPABASE_ANON_KEY
-                </code>{' '}
-                in your .env.local file.
-              </p>
-            </div>
-          </div>
-        </Card>
-      )}
 
       {/* Recent calculations */}
       <div>

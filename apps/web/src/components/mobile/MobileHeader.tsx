@@ -127,10 +127,10 @@ function MobileHeader({ title = 'Tax Calculator', onClearInputs }: MobileHeaderP
         {/* Left: User avatar or guest icon */}
         <div className="flex items-center">
           {isSignedIn ? (
-            user?.user_metadata?.avatar_url ? (
+            user?.image ? (
               <img
-                src={user.user_metadata.avatar_url}
-                alt={user.user_metadata?.full_name || 'User avatar'}
+                src={user.image}
+                alt={user.name || 'User avatar'}
                 className="w-8 h-8 rounded-full ring-2 ring-primary/30"
               />
             ) : (

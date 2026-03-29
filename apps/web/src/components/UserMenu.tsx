@@ -33,8 +33,8 @@ export function UserMenu() {
     );
   }
 
-  const userImage = user.user_metadata?.avatar_url || user.user_metadata?.picture;
-  const userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0];
+  const userImage = user.image;
+  const userName = user.name || user.email?.split('@')[0];
   const userEmail = user.email;
 
   return (

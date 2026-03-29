@@ -1,121 +1,52 @@
-/* eslint-disable react-refresh/only-export-components -- Provider and hook exported together by design */
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import type { User, Session } from '@supabase/supabase-js';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, type ReactNode } from 'react';
+import { useQuery } from 'convex/react';
+import { api } from '@convex/_generated/api';
+import { authClient } from '@/lib/auth-client';
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: { id: string; name?: string; email?: string; image?: string } | null;
   isLoading: boolean;
-  isConfigured: boolean;
+  isAuthenticated: boolean;
   isBlogAdmin: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => void;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isBlogAdmin, setIsBlogAdmin] = useState(false);
+  const { data: session, isPending } = authClient.useSession();
 
-  // Check if user is a blog admin (exists in blog_authors table)
-  // Note: User-to-author linking is handled by SQL trigger (link_user_to_author)
-  const checkBlogAdmin = async (userId: string | undefined, email: string | undefined) => {
-    if (!supabase || (!userId && !email)) {
-      setIsBlogAdmin(false);
-      return;
-    }
-
-    try {
-      // Check by user_id first, then by email as fallback
-      let query = supabase
-        .from('blog_authors')
-        .select('id, user_id')
-        .eq('is_active', true);
-
-      if (userId && email) {
-        query = query.or(`user_id.eq.${userId},email.eq.${email}`);
-      } else if (userId) {
-        query = query.eq('user_id', userId);
-      } else if (email) {
-        query = query.eq('email', email);
+  const user = session?.user
+    ? {
+        id: session.user.id,
+        name: session.user.name ?? undefined,
+        email: session.user.email ?? undefined,
+        image: session.user.image ?? undefined,
       }
+    : null;
 
-      const { data, error } = await query.single();
+  const isBlogAdmin = useQuery(
+    api.blogAuthors.isBlogAdmin,
+    user ? {} : "skip",
+  ) ?? false;
 
-      if (error && error.code !== 'PGRST116') {
-        // Silently fail - blog admin check is not critical for app function
-      }
-
-      setIsBlogAdmin(!!data);
-    } catch {
-      setIsBlogAdmin(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!isSupabaseConfigured || !supabase) {
-      setIsLoading(false);
-      return;
-    }
-
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      checkBlogAdmin(session?.user?.id, session?.user?.email);
-      setIsLoading(false);
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      checkBlogAdmin(session?.user?.id, session?.user?.email);
-      setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const signInWithGoogle = async () => {
-    if (!isSupabaseConfigured || !supabase) {
-      return;
-    }
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/dashboard`,
-      },
-    });
-
-    if (error) {
-      throw error;
-    }
+  const signInWithGoogle = () => {
+    authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
   };
 
   const signOut = async () => {
-    if (!isSupabaseConfigured || !supabase) return;
-
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      throw error;
-    }
+    await authClient.signOut();
+    window.location.href = '/';
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        session,
-        isLoading,
-        isConfigured: isSupabaseConfigured,
+        isLoading: isPending,
+        isAuthenticated: !!user,
         isBlogAdmin,
         signInWithGoogle,
         signOut,

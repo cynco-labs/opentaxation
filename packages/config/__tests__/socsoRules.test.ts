@@ -94,16 +94,16 @@ describe('SOCSO_RATES constant', () => {
   it('has EIS rates and cap', () => {
     expect(SOCSO_RATES.eis.employer).toBe(0.002);
     expect(SOCSO_RATES.eis.employee).toBe(0.002);
-    expect(SOCSO_RATES.eis.wageCap).toBe(5000);
+    expect(SOCSO_RATES.eis.wageCap).toBe(6000);
   });
 });
 
 describe('EIS calculations', () => {
   it('applies EIS up to wage cap', () => {
-    const employer = calculateEmployerEIS(6000); // capped at 5k * 0.2%
+    const employer = calculateEmployerEIS(6000); // capped at 6k * 0.2%
     const employee = calculateEmployeeEIS(6000);
-    expect(employer).toBeCloseTo(10, 1);
-    expect(employee).toBeCloseTo(10, 1);
+    expect(employer).toBeCloseTo(12, 1);
+    expect(employee).toBeCloseTo(12, 1);
   });
 
   it('returns 0 for non-positive salary', () => {

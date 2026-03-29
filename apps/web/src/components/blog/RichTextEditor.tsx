@@ -29,7 +29,8 @@ import {
   Upload,
   Spinner,
 } from 'phosphor-react';
-import { supabase } from '@/lib/supabase';
+import { useMutation } from 'convex/react';
+import { api } from '@convex/_generated/api';
 
 const lowlight = createLowlight(common);
 
@@ -81,6 +82,7 @@ function ImageModal({
   const [url, setUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (file: File) => {
@@ -98,22 +100,19 @@ function ImageModal({
     setError(null);
 
     try {
-      if (!supabase) throw new Error('Supabase not configured');
+      // Upload via Convex storage
+      const uploadUrl = await generateUploadUrl();
+      const result = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+      if (!result.ok) throw new Error('Upload failed');
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `content/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('blog-images')
-        .upload(fileName, file, { cacheControl: '3600', upsert: false });
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('blog-images')
-        .getPublicUrl(fileName);
-
-      onInsert(publicUrl);
+      // Use a temporary object URL for the editor preview
+      // The storage ID can be resolved server-side when needed
+      const blobUrl = URL.createObjectURL(file);
+      onInsert(blobUrl);
       onClose();
       setUrl('');
     } catch {

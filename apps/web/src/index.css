@@ -138,8 +138,22 @@
     color-scheme: dark;
   }
 
-  /* Override common rounded utilities to enforce the 0.2px radius everywhere */
-  :where(.rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-full, .rounded-pill, .rounded-card, .rounded-none) {
+  /* Override rounded utilities (including arbitrary values) to enforce the 0.2px radius everywhere */
+  :where(
+    [class*="rounded-["],
+    [class*="rounded-"],
+    .rounded,
+    .rounded-sm,
+    .rounded-md,
+    .rounded-lg,
+    .rounded-xl,
+    .rounded-2xl,
+    .rounded-3xl,
+    .rounded-full,
+    .rounded-pill,
+    .rounded-card,
+    .rounded-none
+  ) {
     border-radius: 0.2px !important;
   }
 

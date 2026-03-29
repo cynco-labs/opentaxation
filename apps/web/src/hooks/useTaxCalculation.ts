@@ -113,9 +113,6 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
     inputs.zakat?.enabled,
     inputs.zakat?.autoCalculate,
     inputs.zakat?.amountPaid,
-    inputs.paidUpCapital,
-    inputs.grossIncome,
-    inputs.relatedCompanyShare,
   ]);
 }
 

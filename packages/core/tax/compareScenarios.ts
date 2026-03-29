@@ -55,7 +55,8 @@ export function compareScenarios(
     );
   } else {
     // Check for tight margin - salary is affordable but leaves little for dividends
-    const salaryCostRatio = (sdnBhdResult.breakdown.annualSalary + sdnBhdResult.employerEPF + sdnBhdResult.employerSOCSO) / businessProfit;
+    const totalEmployerCost = sdnBhdResult.breakdown.annualSalary + sdnBhdResult.employerEPF + sdnBhdResult.employerSOCSO;
+    const salaryCostRatio = totalEmployerCost / businessProfit;
     if (salaryCostRatio > 0.8 && businessProfit > 0) {
       const percentUsed = Math.round(salaryCostRatio * 100);
       warnings.push(

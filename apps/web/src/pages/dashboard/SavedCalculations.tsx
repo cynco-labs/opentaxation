@@ -14,18 +14,16 @@ import {
 } from 'phosphor-react';
 import { useSavedCalculations } from '@/hooks/useSavedCalculations';
 import { formatCurrency } from '@/lib/utils';
-import type { SavedCalculation } from '@/types/database';
 
 export default function SavedCalculations() {
   const navigate = useNavigate();
-  const { calculations, isLoading, isConfigured, deleteCalculation } = useSavedCalculations();
+  const { calculations, isLoading, deleteCalculation } = useSavedCalculations();
   const [searchQuery, setSearchQuery] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const filteredCalculations = useMemo(
-    () => calculations?.filter((calc) =>
-      calc.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    ),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    () => calculations?.filter((calc: any) => calc.name.toLowerCase().includes(searchQuery.toLowerCase())),
     [calculations, searchQuery]
   );
 
@@ -38,32 +36,13 @@ export default function SavedCalculations() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-MY', {
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp).toLocaleDateString('en-MY', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     });
   };
-
-  if (!isConfigured) {
-    return (
-      <div className="space-y-5 sm:space-y-6">
-        <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
-          Saved Calculations
-        </h1>
-        <Card className="p-6 sm:p-8 text-center">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-3 sm:mb-4">
-            <Calculator weight="duotone" className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground" />
-          </div>
-          <h3 className="font-semibold text-sm sm:text-base mb-1">Database Not Configured</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
-            To save calculations, configure your Supabase credentials in the .env.local file.
-          </p>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -108,14 +87,15 @@ export default function SavedCalculations() {
         </div>
       ) : filteredCalculations && filteredCalculations.length > 0 ? (
         <div className="grid gap-3 sm:gap-4">
-          {filteredCalculations.map((calc) => (
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {filteredCalculations.map((calc: any) => (
             <CalculationCard
-              key={calc.id}
+              key={calc._id}
               calculation={calc}
               onDelete={handleDelete}
-              isDeleting={deletingId === calc.id}
+              isDeleting={deletingId === calc._id}
               formatDate={formatDate}
-              onClick={() => navigate(`/dashboard/calculations/${calc.id}`)}
+              onClick={() => navigate(`/dashboard/calculations/${calc._id}`)}
             />
           ))}
         </div>
@@ -149,10 +129,11 @@ export default function SavedCalculations() {
 }
 
 interface CalculationCardProps {
-  calculation: SavedCalculation;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  calculation: Record<string, any>;
   onDelete: (id: string, e: React.MouseEvent) => void;
   isDeleting: boolean;
-  formatDate: (date: string) => string;
+  formatDate: (timestamp: number) => string;
   onClick: () => void;
 }
 
@@ -163,7 +144,7 @@ function CalculationCard({
   formatDate,
   onClick,
 }: CalculationCardProps) {
-  const { name, inputs, results, created_at } = calculation;
+  const { name, inputs, results, _creationTime } = calculation;
 
   const RecommendedIcon = results.recommendation === 'sdn-bhd' ? Buildings : User;
 
@@ -187,7 +168,7 @@ function CalculationCard({
             Profit: {formatCurrency(inputs.businessProfit)}
             {inputs.directorSalary > 0 && ` • Salary: ${formatCurrency(inputs.directorSalary)}`}
           </p>
-          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{formatDate(created_at)}</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{formatDate(_creationTime)}</p>
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
@@ -202,7 +183,7 @@ function CalculationCard({
             variant="ghost"
             size="icon"
             className="h-9 w-9 sm:h-8 sm:w-8 text-muted-foreground hover:text-destructive touch-manipulation"
-            onClick={(e) => onDelete(calculation.id, e)}
+            onClick={(e) => onDelete(calculation._id, e)}
             disabled={isDeleting}
           >
             <Trash weight="bold" className="h-4 w-4" />
