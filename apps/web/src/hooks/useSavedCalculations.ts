@@ -4,7 +4,7 @@ import { api } from '@convex/_generated/api';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function useSavedCalculations() {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const calculations = useQuery(
     api.savedCalculations.list,
