@@ -176,7 +176,6 @@ export default function BlogAdminEdit() {
         title: post.title,
         excerpt: post.excerpt || '',
         content: post.content,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Convex document shape varies
         cover_image_url: (post as Record<string, unknown>).cover_image_url as string || post.coverImageUrl || '',
         cover_image_alt: (post as Record<string, unknown>).cover_image_alt as string || '',
         author_id: post.author?.id || '',
