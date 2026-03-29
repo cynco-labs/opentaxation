@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, useId, memo } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -54,7 +54,8 @@ function InputField({
 }: InputFieldProps) {
   // _step is available for future use (e.g., keyboard increment/decrement)
   void _step;
-  const fieldId = label.replace(/\s+/g, '-').toLowerCase();
+  const uid = useId();
+  const fieldId = `${label.replace(/\s+/g, '-').toLowerCase()}-${uid}`;
   const tooltipId = `${fieldId}-tooltip`;
   const helperId = `${fieldId}-helper`;
   const ariaDescribedBy = [tooltip && tooltipId, helperText && helperId].filter(Boolean).join(' ') || undefined;
@@ -108,8 +109,6 @@ function InputField({
                 type="button"
                 className="h-5 w-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors touch-target"
                 aria-label={`Help for ${label}`}
-                aria-describedby={tooltipId}
-                id={tooltipId}
               >
                 <Question weight="duotone" className="h-3.5 w-3.5" />
               </button>

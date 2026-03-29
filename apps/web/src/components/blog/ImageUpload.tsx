@@ -1,12 +1,11 @@
 import { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Spinner } from 'phosphor-react';
-import { supabase } from '@/lib/supabase';
+import { useMutation } from 'convex/react';
+import { api } from '@convex/_generated/api';
 
 interface ImageUploadProps {
   value: string;
-  onChange: (url: string) => void;
-  bucket?: string;
-  folder?: string;
+  onChange: (url: string, storageId?: string) => void;
   aspectRatio?: string;
   placeholder?: string;
 }
@@ -14,8 +13,6 @@ interface ImageUploadProps {
 export default function ImageUpload({
   value,
   onChange,
-  bucket = 'blog-images',
-  folder = 'posts',
   aspectRatio = 'aspect-video',
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
@@ -24,6 +21,7 @@ export default function ImageUpload({
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [urlInput, setUrlInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
 
   const handleFileSelect = async (file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -40,25 +38,23 @@ export default function ImageUpload({
     setError(null);
 
     try {
-      if (!supabase) throw new Error('Supabase not configured');
+      // Step 1: Get upload URL from Convex
+      const uploadUrl = await generateUploadUrl();
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      // Step 2: Upload the file
+      const result = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
 
-      const { error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false,
-        });
+      if (!result.ok) throw new Error('Upload failed');
 
-      if (uploadError) throw uploadError;
+      const { storageId } = await result.json();
 
-      const { data: { publicUrl } } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(fileName);
-
-      onChange(publicUrl);
+      // Step 3: Return the storage ID — the consuming component saves it to the post
+      // For preview, construct a temporary URL
+      onChange(URL.createObjectURL(file), storageId);
     } catch {
       setError('Failed to upload image. Try pasting a URL instead.');
     } finally {

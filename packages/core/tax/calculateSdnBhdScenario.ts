@@ -186,8 +186,9 @@ export function calculateSdnBhdScenario(
   const salaryAfterEPF = annualSalary - employeeEPF - employeeSOCSO - employeeEIS;
 
   // Auto-calculate EPF relief from actual employee EPF contributions
-  // EPF relief is capped at RM7,000 per Malaysian tax law
-  const actualEpfRelief = Math.min(employeeEPF, RELIEF_LIMITS.epfAndLifeInsurance);
+  // EPF-only relief is capped at RM4,000 per LHDN (within the RM7,000 EPF+Life Insurance combined cap)
+  const EPF_ONLY_CAP = 4000;
+  const actualEpfRelief = Math.min(employeeEPF, EPF_ONLY_CAP);
 
   // Personal tax on salary + other income
   // In Malaysia, personal tax is calculated on gross income, with EPF claimed as relief
@@ -299,6 +300,7 @@ export function calculateSdnBhdScenario(
     { label: 'Salary (gross)', amount: annualSalary, type: 'add' },
     { label: 'Employee EPF (11%)', amount: employeeEPF, type: 'subtract', indent: true },
     { label: 'Employee SOCSO', amount: employeeSOCSO, type: 'subtract', indent: true },
+    { label: 'Employee EIS', amount: employeeEIS, type: 'subtract', indent: true },
     { label: 'Salary Take-Home', amount: salaryAfterEPF, type: 'equals' },
   ];
 

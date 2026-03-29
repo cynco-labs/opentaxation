@@ -56,6 +56,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@convex': path.resolve(__dirname, '../../convex'),
       '@tax-engine/core': path.resolve(__dirname, '../../packages/core'),
       '@tax-engine/config': path.resolve(__dirname, '../../packages/config'),
     },

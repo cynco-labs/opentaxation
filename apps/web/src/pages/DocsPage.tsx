@@ -98,47 +98,47 @@ function Section({ id, children }: { id: string; children: React.ReactNode }) {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#4A2C2A] mb-4 tracking-tight">
+    <h2 className="font-serif text-2xl sm:text-3xl font-normal text-brand-espresso mb-4 tracking-tight">
       {children}
     </h2>
   );
 }
 
 function SectionDesc({ children }: { children: React.ReactNode }) {
-  return <p className="text-[#6B5B5B] leading-relaxed mb-6">{children}</p>;
+  return <p className="text-brand-espresso/70 leading-relaxed mb-6">{children}</p>;
 }
 
 function Highlight({ children }: { children: React.ReactNode }) {
-  return <span className="font-medium text-[#4A2C2A]">{children}</span>;
+  return <span className="font-medium text-brand-espresso">{children}</span>;
 }
 
 function InfoBox({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
-    <div className="my-6 p-5 rounded-2xl bg-[#FDF5F0] border border-[#E8D5C4]">
-      {title && <p className="font-medium text-[#4A2C2A] text-sm mb-2">{title}</p>}
-      <div className="text-sm text-[#6B5B5B]">{children}</div>
+    <div className="my-6 p-5 rounded-2xl bg-brand-muted-ivory border border-brand-border-ivory">
+      {title && <p className="font-medium text-brand-espresso text-sm mb-2">{title}</p>}
+      <div className="text-sm text-brand-espresso/75">{children}</div>
     </div>
   );
 }
 
 function WarningBox({ children }: { children: React.ReactNode }) {
   return (
-    <div className="my-6 p-5 rounded-2xl bg-[#FEF3E2] border border-[#E5C9A8]">
-      <div className="text-sm text-[#6B5B5B]">{children}</div>
+    <div className="my-6 p-5 rounded-2xl bg-brand-muted-rose/30 border border-brand-border-ivory">
+      <div className="text-sm text-brand-espresso/75">{children}</div>
     </div>
   );
 }
 
 function FeatureCard({ title, description, icon: Icon }: { title: string; description: string; icon: React.ElementType }) {
   return (
-    <div className="p-4 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9] hover:bg-[#FDF5F0] transition-colors">
+    <div className="p-4 rounded-2xl border border-brand-border-ivory bg-white hover:bg-brand-muted-ivory transition-colors">
       <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-[#722F37]/10 flex items-center justify-center flex-shrink-0">
-          <Icon weight="duotone" className="h-4 w-4 text-[#722F37]" />
+        <div className="w-9 h-9 rounded-xl bg-brand-rose/10 flex items-center justify-center flex-shrink-0">
+          <Icon weight="duotone" className="h-4 w-4 text-brand-rose" />
         </div>
         <div>
-          <p className="font-medium text-[#4A2C2A] text-sm">{title}</p>
-          <p className="text-xs text-[#6B5B5B] mt-0.5">{description}</p>
+          <p className="font-medium text-brand-espresso text-sm">{title}</p>
+          <p className="text-xs text-brand-espresso/70 mt-0.5">{description}</p>
         </div>
       </div>
     </div>
@@ -147,20 +147,20 @@ function FeatureCard({ title, description, icon: Icon }: { title: string; descri
 
 function TaxTable({ data }: { data: { range: string; rate: string; notes?: string }[] }) {
   return (
-    <div className="my-6 overflow-x-auto rounded-2xl border border-[#E8D5C4]">
+    <div className="my-6 overflow-x-auto rounded-2xl border border-brand-border-ivory">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-[#FDF5F0]">
-            <th className="text-left py-3 px-4 font-medium text-[#4A2C2A]">Income Range</th>
-            <th className="text-left py-3 px-4 font-medium text-[#4A2C2A]">Rate</th>
-            <th className="text-left py-3 px-4 font-medium text-[#4A2C2A]">Notes</th>
+          <tr className="bg-brand-muted-ivory">
+            <th className="text-left py-3 px-4 font-medium text-brand-espresso">Income Range</th>
+            <th className="text-left py-3 px-4 font-medium text-brand-espresso">Rate</th>
+            <th className="text-left py-3 px-4 font-medium text-brand-espresso">Notes</th>
           </tr>
         </thead>
-        <tbody className="text-[#6B5B5B]">
+        <tbody className="text-brand-espresso/75">
           {data.map((row, i) => (
-            <tr key={i} className="border-t border-[#E8D5C4]">
+            <tr key={i} className="border-t border-brand-border-ivory/80">
               <td className="py-3 px-4 font-mono text-xs">{row.range}</td>
-              <td className="py-3 px-4 font-medium text-[#722F37]">{row.rate}</td>
+              <td className="py-3 px-4 font-medium text-brand-rose">{row.rate}</td>
               <td className="py-3 px-4 text-xs">{row.notes || '—'}</td>
             </tr>
           ))}
@@ -268,7 +268,7 @@ export default function DocsPage() {
     <div className="min-h-screen bg-brand-ivory">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-brand-ivory/95 backdrop-blur-xl border-b border-brand-border-ivory">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between h-16 px-6">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
           {/* Left */}
           <div className="flex items-center gap-8">
             <Link to="/" className="flex-shrink-0">
@@ -278,7 +278,7 @@ export default function DocsPage() {
           </div>
 
           {/* Center - Search */}
-          <div className="flex-1 max-w-lg mx-8 relative">
+          <div className="flex-1 max-w-lg mx-4 sm:mx-8 relative">
             <div className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full border border-brand-border-ivory bg-white/70 hover:bg-white hover:border-brand-rose/40 transition-all text-left shadow-soft">
               <MagnifyingGlass weight="regular" className="h-4 w-4 text-brand-espresso/70" />
               <input
@@ -324,7 +324,7 @@ export default function DocsPage() {
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button className="group flex items-center gap-2 px-4 py-2 rounded-full border border-brand-border-ivory bg-white/70 hover:bg-white hover:border-brand-rose/40 transition-all">
               <Sparkle weight="duotone" className="h-4 w-4 text-brand-gold" />
               <span className="text-sm font-medium text-brand-espresso">Ask AI</span>
@@ -369,12 +369,12 @@ export default function DocsPage() {
         <main className="flex-1 min-w-0">
           <div className="flex">
             {/* Content Area */}
-            <div className="flex-1 min-w-0 px-8 lg:px-16 py-10">
+            <div className="flex-1 min-w-0 px-4 sm:px-6 lg:px-12 py-8 sm:py-10">
               {/* Mobile back */}
               <div className="lg:hidden mb-6">
                 <Link
                   to="/"
-                  className="inline-flex items-center gap-2 text-sm text-[#6B5B5B] hover:text-[#4A2C2A] transition-colors"
+                  className="inline-flex items-center gap-2 text-sm text-brand-espresso/70 hover:text-brand-espresso transition-colors"
                 >
                   <ArrowLeft weight="bold" className="h-4 w-4" />
                   Back
@@ -387,7 +387,7 @@ export default function DocsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-2"
               >
-                <p className="text-sm font-medium text-[#722F37]">{currentCategory?.category || 'Getting Started'}</p>
+                <p className="text-sm font-medium text-brand-rose">{currentCategory?.category || 'Getting Started'}</p>
               </motion.div>
 
               <div className="max-w-2xl">
@@ -399,15 +399,15 @@ export default function DocsPage() {
                   </SectionDesc>
 
                   <div className="grid sm:grid-cols-2 gap-4 my-8">
-                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#FDF5F0] to-[#F5E6D8] border border-[#E8D5C4]">
-                      <p className="font-serif font-semibold text-[#4A2C2A] mb-2">Enterprise</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                    <div className="p-6 rounded-2xl bg-gradient-to-br from-white to-brand-muted-ivory border border-brand-border-ivory">
+                      <p className="font-serif font-semibold text-brand-espresso mb-2">Enterprise</p>
+                      <p className="text-sm text-brand-espresso/75">
                         Business profit flows directly to you. Pay personal income tax (0-30%) on the total. Minimal compliance, unlimited liability.
                       </p>
                     </div>
-                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#722F37]/5 to-[#722F37]/10 border border-[#722F37]/20">
-                      <p className="font-serif font-semibold text-[#4A2C2A] mb-2">Sdn Bhd</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                    <div className="p-6 rounded-2xl bg-gradient-to-br from-brand-rose/10 to-brand-muted-rose/60 border border-brand-border-ivory">
+                      <p className="font-serif font-semibold text-brand-espresso mb-2">Sdn Bhd</p>
+                      <p className="text-sm text-brand-espresso/75">
                         Company pays corporate tax (15-24%). You receive salary + dividends, each taxed separately. Limited liability, mandatory EPF.
                       </p>
                     </div>
@@ -838,7 +838,7 @@ export default function DocsPage() {
                     <FeatureCard title="Cloud Sync" description="Access from any device, anytime" icon={CloudArrowUp} />
                     <FeatureCard title="Calculation History" description="Review past scenarios" icon={FileText} />
                     <FeatureCard title="Quick Resume" description="Pick up where you left off" icon={Rocket} />
-                    <FeatureCard title="Secure Storage" description="Encrypted with Supabase" icon={ShieldCheck} />
+                    <FeatureCard title="Secure Storage" description="Encrypted with Convex" icon={ShieldCheck} />
                   </div>
                 </Section>
 

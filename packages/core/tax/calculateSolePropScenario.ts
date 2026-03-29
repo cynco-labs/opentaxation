@@ -6,6 +6,8 @@ import {
   calculateIndividualZakatRebate,
   meetsNisabThreshold,
   calculatePersonalTaxFromBrackets,
+  getDefaultReliefs,
+  calculateTotalReliefs,
 } from '@tax-engine/config';
 import type { TaxCalculationInputs, SolePropScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult, ReliefClaimValues } from '../types';
 
@@ -63,7 +65,7 @@ export function calculateSolePropScenario(
     // Fall back to legacy reliefs calculation
     totalReliefsAmount = reliefs
       ? Object.values(reliefs).reduce((sum: number, v) => sum + (typeof v === 'number' ? v : 0), 0)
-      : 24000; // Default: basic (9000) + EPF (7000) + medical (8000)
+      : calculateTotalReliefs(getDefaultReliefs());
   }
 
   // Calculate personal tax on total income with the determined relief total

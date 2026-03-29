@@ -57,9 +57,9 @@ function GoogleLoginButton() {
           onClick={() => setShowMenu(!showMenu)}
           className="relative flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-muted/30 hover:bg-muted/50 border border-border/40 hover:border-border/60 transition-all duration-200"
         >
-          {user.user_metadata?.avatar_url ? (
+          {user.image ? (
             <img
-              src={user.user_metadata.avatar_url}
+              src={user.image}
               alt=""
               className="w-7 h-7 rounded-full ring-2 ring-background"
             />
@@ -83,7 +83,7 @@ function GoogleLoginButton() {
             >
               <div className="px-3 py-2 border-b border-border/50">
                 <p className="text-sm font-medium text-foreground truncate">
-                  {user.user_metadata?.full_name || 'User'}
+                  {user.name || 'User'}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
                   {user.email}

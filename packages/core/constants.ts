@@ -28,7 +28,7 @@ export const SME_THRESHOLDS = {
   /** Maximum paid-up capital to qualify for SME rates (RM2.5 million) */
   MAX_PAID_UP_CAPITAL: 2_500_000,
   /** Maximum related-company shareholding (%) to still qualify */
-  MAX_RELATED_COMPANY_SHARE: 50,
+  MAX_RELATED_COMPANY_SHARE: 20,
 } as const;
 
 /**

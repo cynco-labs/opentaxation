@@ -36,10 +36,8 @@ export interface ProgressiveTaxResult {
 /**
  * Calculate tax using progressive brackets
  *
- * This function correctly calculates progressive tax by:
- * 1. Determining how much taxable amount falls in each bracket
- * 2. Applying the bracket rate only to the amount within that bracket
- * 3. Summing all bracket taxes
+ * Delegates to calculateProgressiveTaxWithBreakdown to ensure the total
+ * always matches the sum of individual bracket taxes shown to users.
  *
  * @param taxableAmount - The taxable income or profit
  * @param brackets - The tax brackets to apply
@@ -49,28 +47,7 @@ export function calculateProgressiveTax(
   taxableAmount: number,
   brackets: readonly TaxBracket[]
 ): number {
-  if (taxableAmount <= 0) return 0;
-
-  let tax = 0;
-  let remaining = taxableAmount;
-
-  for (const bracket of brackets) {
-    if (remaining <= bracket.min) break;
-
-    const bracketMax = bracket.max ?? Infinity;
-
-    // Calculate how much falls in this bracket
-    const amountInBracket = Math.min(
-      remaining - bracket.min,
-      bracketMax - bracket.min
-    );
-
-    if (amountInBracket > 0) {
-      tax += amountInBracket * bracket.rate;
-    }
-  }
-
-  return Math.round(tax * 100) / 100;
+  return calculateProgressiveTaxWithBreakdown(taxableAmount, brackets).tax;
 }
 
 /**
@@ -90,16 +67,15 @@ export function getProgressiveTaxBreakdown(
   if (taxableAmount <= 0) return [];
 
   const breakdown: TaxBracketBreakdownItem[] = [];
-  let remaining = taxableAmount;
 
   for (const bracket of brackets) {
-    if (remaining <= bracket.min) break;
+    // taxableAmount is the cumulative total — compare against bracket floor
+    if (taxableAmount <= bracket.min) break;
 
     const bracketMax = bracket.max ?? Infinity;
 
-    // Calculate how much falls in this bracket
     const amountInBracket = Math.min(
-      remaining - bracket.min,
+      taxableAmount - bracket.min,
       bracketMax - bracket.min
     );
 
@@ -138,15 +114,14 @@ export function calculateProgressiveTaxWithBreakdown(
 
   const breakdown: TaxBracketBreakdownItem[] = [];
   let tax = 0;
-  let remaining = taxableAmount;
 
   for (const bracket of brackets) {
-    if (remaining <= bracket.min) break;
+    if (taxableAmount <= bracket.min) break;
 
     const bracketMax = bracket.max ?? Infinity;
 
     const amountInBracket = Math.min(
-      remaining - bracket.min,
+      taxableAmount - bracket.min,
       bracketMax - bracket.min
     );
 

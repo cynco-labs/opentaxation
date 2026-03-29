@@ -22,7 +22,7 @@ export default function ProfitInputSection({
       transition={{ delay: 0.02, duration: 0.3 }}
     >
       <Card className="border-border/50 shadow-sm overflow-hidden">
-        <CardContent className="p-5 sm:p-5 space-y-4">
+        <CardContent className="p-4 sm:p-5 space-y-4">
           <SectionHeader
             title={t('inputs.profit.title')}
             subtitle={t('inputs.profit.subtitle')}
@@ -35,7 +35,7 @@ export default function ProfitInputSection({
               <button
                 type="button"
                 onClick={() => callbacks.onInputModeChange?.('profit')}
-                className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-lg text-[13px] sm:text-sm font-medium transition-all duration-200 min-h-[48px] ${
+                className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-lg text-[13px] sm:text-sm font-medium transition-all duration-200 min-h-[44px] ${
                   inputMode === 'profit'
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground active:scale-[0.98]'
@@ -47,7 +47,7 @@ export default function ProfitInputSection({
               <button
                 type="button"
                 onClick={() => callbacks.onInputModeChange?.('target')}
-                className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-4 rounded-lg text-[13px] sm:text-sm font-medium transition-all duration-200 min-h-[48px] ${
+                className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-lg text-[13px] sm:text-sm font-medium transition-all duration-200 min-h-[44px] ${
                   inputMode === 'target'
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground active:scale-[0.98]'

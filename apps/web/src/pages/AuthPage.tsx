@@ -158,7 +158,7 @@ export default function AuthPage() {
               {/* Google Sign In */}
               <motion.button
                 onClick={signInWithGoogle}
-                disabled={isLoading}
+                disabled={false}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
                 className="w-full h-12 rounded-xl bg-[#FAF7F2] border border-[#E8D5C4] hover:border-[#D4B8A0] hover:bg-white transition-all duration-200 flex items-center justify-center gap-3"

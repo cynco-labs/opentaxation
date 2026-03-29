@@ -19,14 +19,14 @@ export default function SdnBhdSettingsSection({
       transition={{ delay: 0.04, duration: 0.3 }}
     >
       <Card className="border-border/50 shadow-sm overflow-hidden">
-        <CardContent className="p-5 sm:p-5 space-y-4">
+        <CardContent className="p-4 sm:p-5 space-y-4">
           <SectionHeader
             title={t('inputs.sdnbhd.title')}
             subtitle={t('inputs.sdnbhd.subtitle')}
             tip={t('inputs.sdnbhd.tip')}
           />
 
-          <div className="space-y-5">
+          <div className="space-y-3 sm:space-y-4">
             <div className="space-y-2">
               <Slider
                 label={t('inputs.salary.label')}
@@ -36,6 +36,7 @@ export default function SdnBhdSettingsSection({
                 max={20000}
                 step={500}
                 tooltip={t('inputs.salary.tooltip')}
+                compact
               />
               <p className="text-xs text-muted-foreground pl-1">
                 {t('inputs.salary.helper')}
@@ -62,6 +63,7 @@ export default function SdnBhdSettingsSection({
                 max={15000}
                 step={500}
                 tooltip={t('inputs.compliance.tooltip')}
+                compact
               />
               <p className="text-xs text-muted-foreground pl-1">
                 {t('inputs.compliance.helper')}
@@ -79,6 +81,7 @@ export default function SdnBhdSettingsSection({
                 prefix=""
                 formatValue={(v) => `${v}%`}
                 tooltip={t('inputs.dividend.tooltip')}
+                compact
               />
               <p className="text-xs text-muted-foreground pl-1">
                 {t('inputs.dividend.helper')}

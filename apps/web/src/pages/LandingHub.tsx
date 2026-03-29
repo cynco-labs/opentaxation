@@ -334,7 +334,7 @@ export default function LandingHub() {
               className="relative w-full overflow-hidden"
             >
               {/* Carousel navigation */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 px-1 sm:px-0">
                 <p className="text-sm font-medium text-brand-espresso/60">Explore Tools</p>
                 <div className="flex gap-2">
                   <button
@@ -357,7 +357,7 @@ export default function LandingHub() {
               {/* Carousel container */}
               <div
                 ref={carouselRef}
-                className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 -mx-6 px-6 lg:mx-0 lg:px-0"
+                className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {TOOL_APPS.map((app) => {
@@ -368,7 +368,7 @@ export default function LandingHub() {
                       onClick={() => navigate(app.path)}
                       whileHover={{ scale: 1.02, y: -4 }}
                       whileTap={{ scale: 0.98 }}
-                      className="relative flex-shrink-0 w-[260px] sm:w-[280px] h-[320px] sm:h-[340px] rounded-3xl overflow-hidden snap-start cursor-pointer group bg-gradient-to-br from-white to-brand-muted-ivory text-brand-espresso shadow-card border border-brand-border-ivory"
+                      className="relative flex-shrink-0 w-[240px] sm:w-[260px] h-[300px] sm:h-[320px] rounded-3xl overflow-hidden snap-start cursor-pointer group bg-gradient-to-br from-white to-brand-muted-ivory text-brand-espresso shadow-card border border-brand-border-ivory"
                     >
                       {/* NEW badge */}
                       {app.isNew && (
@@ -385,7 +385,7 @@ export default function LandingHub() {
                         </div>
 
                         {/* Bottom label */}
-                        <div className="p-4 pt-0 flex items-center justify-between">
+                        <div className="p-3.5 sm:p-4 pt-0 flex items-center justify-between">
                           <div>
                             <p className="font-serif text-base font-medium text-brand-on-maroon">
                               {app.title}
@@ -406,13 +406,13 @@ export default function LandingHub() {
               </div>
 
               {/* Carousel dots */}
-              <div className="flex justify-center gap-2 mt-2">
+              <div className="flex justify-center gap-1.5 sm:gap-2 mt-2">
                 {TOOL_APPS.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => scrollTo(index)}
                     className={`h-1.5 rounded-full transition-all ${
-                      index === activeIndex ? 'w-6 bg-brand-espresso' : 'w-1.5 bg-brand-border-ivory'
+                      index === activeIndex ? 'w-5 sm:w-6 bg-brand-espresso' : 'w-1.5 bg-brand-border-ivory'
                     }`}
                   />
                 ))}

@@ -27,15 +27,17 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   BlogPost,
+  formatBlogDate,
+  getLocalizedField,
+  Locale,
+} from '@/lib/blog';
+import {
   getPostBySlug,
   getRelatedPosts,
   incrementViewCount,
-  formatBlogDate,
-  getLocalizedField,
   isBookmarked,
   toggleBookmark,
-  Locale,
-} from '@/lib/blog';
+} from '@/lib/blogCompat';
 
 export default function BlogPostPage() {
   const { t } = useTranslation();
@@ -140,7 +142,7 @@ export default function BlogPostPage() {
     const contentWithIds = addIdsToHeadings(article.content);
     return DOMPurify.sanitize(contentWithIds, {
       ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code', 'pre', 'blockquote', 'img', 'figure', 'figcaption', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'hr'],
-      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'title', 'width', 'height', 'style'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'title', 'width', 'height'],
       ALLOW_DATA_ATTR: false,
     });
   }, [article?.content]);

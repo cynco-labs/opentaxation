@@ -64,7 +64,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl font-display font-semibold mb-3">4. Data Storage and Security</h2>
               <p>
                 All calculations are performed client-side. We do not store your financial data on our servers. 
-                Your authentication data is managed securely by Supabase and Google OAuth.
+                Your authentication data is managed securely by Convex and Google OAuth.
               </p>
             </section>
 
@@ -72,7 +72,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl font-display font-semibold mb-3">5. Third-Party Services</h2>
               <p>We use the following third-party services:</p>
               <ul className="list-disc pl-6 space-y-1">
-                <li><strong>Supabase:</strong> Database and authentication</li>
+                <li><strong>Convex:</strong> Database and authentication</li>
                 <li><strong>Google OAuth:</strong> Sign-in provider</li>
                 <li><strong>Sentry:</strong> Error tracking and monitoring</li>
                 <li><strong>Google Fonts:</strong> Font delivery</li>
