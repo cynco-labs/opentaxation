@@ -12,14 +12,25 @@ export const list = query({
   },
 });
 
+async function requireBlogAdmin(ctx: any) {
+  const userId = await getAuthUserId(ctx);
+  if (!userId) throw new Error("Not authenticated");
+
+  const author = await ctx.db
+    .query("blogAuthors")
+    .withIndex("by_userId", (q: any) => q.eq("userId", userId))
+    .first();
+
+  if (!author?.isActive) throw new Error("Not a blog admin");
+}
+
 export const upsert = mutation({
   args: {
     name: v.string(),
     slug: v.string(),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Not authenticated");
+    await requireBlogAdmin(ctx);
 
     const existing = await ctx.db
       .query("blogTags")

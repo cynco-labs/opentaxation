@@ -36,6 +36,14 @@ export const add = mutation({
       throw new Error("Post not found");
     }
 
+    // Validate parentId belongs to same post
+    if (args.parentId) {
+      const parent = await ctx.db.get(args.parentId);
+      if (!parent || parent.postId !== args.postId) {
+        throw new Error("Invalid parent comment");
+      }
+    }
+
     return await ctx.db.insert("blogComments", {
       postId: args.postId,
       userId,

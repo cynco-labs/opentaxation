@@ -1,5 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, type ReactNode } from 'react';
+import { useQuery } from 'convex/react';
+import { api } from '@convex/_generated/api';
 import { authClient } from '@/lib/auth-client';
 
 interface AuthContextType {
@@ -25,6 +27,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     : null;
 
+  const isBlogAdmin = useQuery(
+    api.blogAuthors.isBlogAdmin,
+    user ? {} : "skip",
+  ) ?? false;
+
   const signInWithGoogle = () => {
     authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
   };
@@ -40,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading: isPending,
         isAuthenticated: !!user,
-        isBlogAdmin: false,
+        isBlogAdmin,
         signInWithGoogle,
         signOut,
       }}

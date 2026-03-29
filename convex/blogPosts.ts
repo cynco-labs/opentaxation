@@ -76,6 +76,8 @@ export const listPublished = query({
       );
     }
 
+    const totalCount = posts.length;
+
     // Paginate via cursor (using _creationTime as cursor)
     if (args.cursor) {
       const cursorTime = parseFloat(args.cursor);
@@ -114,7 +116,7 @@ export const listPublished = query({
         page.length === limit
           ? String(page[page.length - 1]._creationTime)
           : null,
-      totalCount: posts.length + page.length, // approximate
+      totalCount,
     };
   },
 });

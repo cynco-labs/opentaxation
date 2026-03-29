@@ -42,8 +42,8 @@ export async function createLead(params: CreateLeadParams): Promise<{ success: b
   }
 
   if (!params.submitLead) {
-    // No mutation available — dev mode or not wired up
-    return { success: true };
+    console.warn('[Leads] submitLead mutation not provided — submission dropped');
+    return { success: false, error: 'Lead submission is not configured' };
   }
 
   try {

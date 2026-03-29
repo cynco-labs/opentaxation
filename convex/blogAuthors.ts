@@ -25,7 +25,7 @@ export const getByUserId = query({
       .first();
     if (byId?.isActive) return byId;
 
-    // Check by email as fallback
+    // Check by email as fallback (read-only — linking is done via mutation)
     const user = await ctx.db.get(userId);
     if (!user?.email) return null;
 
@@ -34,15 +34,28 @@ export const getByUserId = query({
       .withIndex("by_email", (q) => q.eq("email", user.email as string))
       .first();
 
-    if (byEmail?.isActive) {
-      // Link user to author if not already linked
-      if (!byEmail.userId) {
-        await ctx.db.patch(byEmail._id, { userId });
-      }
-      return byEmail;
-    }
+    return byEmail?.isActive ? byEmail : null;
+  },
+});
 
-    return null;
+// Mutation to link a user to their author record (called when needed)
+export const linkToAuthor = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+
+    const user = await ctx.db.get(userId);
+    if (!user?.email) return;
+
+    const byEmail = await ctx.db
+      .query("blogAuthors")
+      .withIndex("by_email", (q) => q.eq("email", user.email as string))
+      .first();
+
+    if (byEmail?.isActive && !byEmail.userId) {
+      await ctx.db.patch(byEmail._id, { userId });
+    }
   },
 });
 
