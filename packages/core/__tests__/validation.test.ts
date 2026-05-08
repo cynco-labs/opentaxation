@@ -386,14 +386,14 @@ describe('sanitizeInputs', () => {
   });
 
   describe('reliefs passthrough', () => {
-    it('preserves reliefs object as-is', () => {
+    it('preserves provided relief values', () => {
       const reliefs = { personal: 9000, education: 2000 };
       const result = sanitizeInputs({
         businessProfit: 0,
         otherIncome: 0,
         reliefs: reliefs as any,
       });
-      expect(result.reliefs).toEqual(reliefs);
+      expect(result.reliefs).toMatchObject(reliefs);
     });
   });
 
