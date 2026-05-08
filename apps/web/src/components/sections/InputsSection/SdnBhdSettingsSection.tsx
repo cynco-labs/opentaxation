@@ -100,21 +100,21 @@ export default function SdnBhdSettingsSection({
                 <InputField
                   label={t('inputs.advanced.paidUpCapital')}
                   value={inputs.paidUpCapital || 0}
-                  onChange={(v) => callbacks.onSmePaidUpCapitalChange?.(v)}
+                  onChange={(v) => { callbacks.onSmePaidUpCapitalChange?.(v); }}
                   prefix="RM"
                   helperText={t('inputs.advanced.paidUpCapitalHelper')}
                 />
                 <InputField
                   label={t('inputs.advanced.grossIncome')}
                   value={inputs.grossIncome || 0}
-                  onChange={(v) => callbacks.onSmeGrossIncomeChange?.(v)}
+                  onChange={(v) => { callbacks.onSmeGrossIncomeChange?.(v); }}
                   prefix="RM"
                   helperText={t('inputs.advanced.grossIncomeHelper')}
                 />
                 <InputField
                   label={t('inputs.advanced.relatedShare')}
                   value={inputs.relatedCompanyShare || 0}
-                  onChange={(v) => callbacks.onSmeRelatedShareChange?.(v)}
+                  onChange={(v) => { callbacks.onSmeRelatedShareChange?.(v); }}
                   suffix="%"
                   helperText={t('inputs.advanced.relatedShareHelper')}
                   max={100}

@@ -9,54 +9,28 @@ import {
   type ComparisonResult,
 } from '@tax-engine/core';
 
-/**
- * Custom hook for tax calculations
- * Uses useMemo with primitive dependencies to avoid unnecessary recalculations
- * 
- * Per React best practices: https://react.dev/learn/you-might-not-need-an-effect
- * - Calculates expensive computations during render (not in Effects)
- * - Uses useMemo to cache results based on primitive dependencies
- * - Sanitizes and validates inputs before calculation
- */
 export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResult | null {
-  // Use primitive values in dependency array instead of the object
-  // This ensures memoization works correctly
-  // Extract reliefs values for dependency array
-  // Using individual properties ensures proper memoization
   const reliefs = inputs.reliefs;
   const reliefsKey = reliefs
     ? `${reliefs.basic || 0}-${reliefs.epfAndLifeInsurance || 0}-${reliefs.medical || 0}-${reliefs.spouse || 0}-${reliefs.children || 0}-${reliefs.education || 0}`
     : '';
 
-  // Create a stable key for extended reliefs
-  const extendedReliefs = inputs.extendedReliefs;
-  const extendedReliefsKey = extendedReliefs
-    ? JSON.stringify(extendedReliefs)
+  const extendedReliefsKey = inputs.extendedReliefs
+    ? JSON.stringify(inputs.extendedReliefs)
     : '';
 
   return useMemo(() => {
-    // If required businessProfit is missing, bail out early
     if (inputs.businessProfit === undefined || inputs.businessProfit === null) {
       return null;
     }
 
-    // Sanitize inputs first (replaces NaN/Infinity with safe defaults)
     const sanitized = sanitizeInputs(inputs);
-    
-    // Validate inputs (returns errors if any)
     const validationErrors = validateInputs(sanitized);
-    
-    // If there are validation errors, return null to prevent calculation
-    // In a production app, you might want to log these or show them to the user
+
     if (validationErrors.length > 0) {
-      // Log validation errors in development
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('Tax calculation inputs validation failed:', validationErrors);
-      }
       return null;
     }
 
-    // Check if businessProfit is valid (required field)
     if (!sanitized.businessProfit && sanitized.businessProfit !== 0) {
       return null;
     }
@@ -85,15 +59,10 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
       });
 
       return compareScenarios(solePropResult, sdnBhdResult, sanitized.businessProfit, sanitized);
-    } catch (error) {
-      // Catch any calculation errors and return null
-      // In production, you might want to log these or show them to the user
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Tax calculation error:', error);
-      }
+    } catch {
       return null;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- Using primitive values intentionally to avoid unnecessary recalculations from object reference changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     inputs.businessProfit,
     inputs.otherIncome,
@@ -106,16 +75,13 @@ export function useTaxCalculation(inputs: TaxCalculationInputs): ComparisonResul
     inputs.paidUpCapital,
     inputs.grossIncome,
     inputs.relatedCompanyShare,
-    reliefsKey, // Use serialized reliefs instead of object reference
-    extendedReliefsKey, // Use serialized extended reliefs
+    reliefsKey,
+    extendedReliefsKey,
     inputs.applyYa2025DividendSurcharge,
     inputs.dividendDistributionPercent,
     inputs.zakat?.enabled,
     inputs.zakat?.autoCalculate,
     inputs.zakat?.amountPaid,
-    inputs.paidUpCapital,
-    inputs.grossIncome,
-    inputs.relatedCompanyShare,
   ]);
 }
 

@@ -12,11 +12,13 @@ export interface InputCallbacks {
   onAuditEmployeesChange: (value: number) => void;
   onAuditCostChange: (value: number) => void;
   onReliefsChange: (reliefs: PersonalReliefs) => void;
-  /** Callback for extended relief optimizer claims */
   onExtendedReliefsChange?: (claims: ReliefClaimValues) => void;
   onApplyYa2025DividendSurchargeChange: (value: boolean) => void;
   onDividendDistributionPercentChange: (value: number) => void;
   onForeignOwnershipChange: (value: boolean) => void;
+  onSmePaidUpCapitalChange?: (value: number) => void;
+  onSmeGrossIncomeChange?: (value: number) => void;
+  onSmeRelatedShareChange?: (value: number) => void;
   onClearInputs?: () => void;
   onInputModeChange?: (mode: InputMode) => void;
   onTargetNetIncomeChange?: (value: number) => void;

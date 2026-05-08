@@ -12,7 +12,6 @@ import InputsSection, { type InputCallbacks } from '@/components/sections/Inputs
 import ResultsSection from '@/components/sections/ResultsSection';
 import { MobileUnifiedLayout } from '@/components/mobile';
 
-// Default values for tax inputs
 const DEFAULT_INPUTS: StoredInputs = {
   businessProfit: 0,
   otherIncome: 0,
@@ -38,104 +37,63 @@ export default function CalculatorPage() {
   const isSignedIn = !!user;
   const isMobile = useIsMobile();
 
-  // Use localStorage persistence for all inputs
   const { inputs: storedInputs, updateInput, updateAllInputs, clearInputs } = useTaxInputsStorage(DEFAULT_INPUTS);
-
-  // Relief state kept separate since it has a different structure
   const [reliefs, setReliefs] = useState<PersonalReliefs>(getDefaultReliefs());
 
-  // Handler for loading shared inputs from URL
   const handleLoadSharedInputs = useCallback((sharedInputs: Partial<StoredInputs>) => {
-    updateAllInputs({
-      ...storedInputs,
-      ...sharedInputs,
-    });
+    updateAllInputs({ ...storedInputs, ...sharedInputs });
   }, [updateAllInputs, storedInputs]);
 
-  // Shareable link functionality
   const { generateShareableLink } = useShareableLink(storedInputs, handleLoadSharedInputs);
 
-  // Create wrapper setters that update localStorage
-  const setBusinessProfit = useCallback((value: number) => updateInput('businessProfit', value), [updateInput]);
-  const setOtherIncome = useCallback((value: number) => updateInput('otherIncome', value), [updateInput]);
-  const setMonthlySalary = useCallback((value: number) => updateInput('monthlySalary', value), [updateInput]);
-  const setComplianceCosts = useCallback((value: number) => updateInput('complianceCosts', value), [updateInput]);
-  const setAuditRevenue = useCallback((value: number) => updateInput('auditRevenue', value), [updateInput]);
-  const setAuditAssets = useCallback((value: number) => updateInput('auditAssets', value), [updateInput]);
-  const setAuditEmployees = useCallback((value: number) => updateInput('auditEmployees', value), [updateInput]);
-  const setAuditCost = useCallback((value: number) => updateInput('auditCost', value), [updateInput]);
-  const setApplyYa2025DividendSurcharge = useCallback((value: boolean) => updateInput('applyYa2025DividendSurcharge', value), [updateInput]);
-  const setDividendDistributionPercent = useCallback((value: number) => updateInput('dividendDistributionPercent', value), [updateInput]);
-  const setHasForeignOwnership = useCallback((value: boolean) => updateInput('hasForeignOwnership', value), [updateInput]);
-  const setPaidUpCapital = useCallback((value: number) => updateInput('paidUpCapital', value), [updateInput]);
-  const setGrossIncome = useCallback((value: number) => updateInput('grossIncome', value), [updateInput]);
-  const setRelatedCompanyShare = useCallback((value: number) => updateInput('relatedCompanyShare', value), [updateInput]);
-  const setInputMode = useCallback((value: InputMode) => updateInput('inputMode', value), [updateInput]);
-  const setTargetNetIncome = useCallback((value: number) => updateInput('targetNetIncome', value), [updateInput]);
-  const setZakat = useCallback((value: ZakatInput) => updateInput('zakat', value), [updateInput]);
-  const setExtendedReliefs = useCallback((value: ReliefClaimValues) => updateInput('extendedReliefs', value), [updateInput]);
-
-  // Handler to reset all inputs to defaults
   const handleClearInputs = useCallback(() => {
     clearInputs();
     setReliefs(getDefaultReliefs());
   }, [clearInputs]);
 
-  // Create callbacks object for InputsSection
   const inputCallbacks: InputCallbacks = useMemo(() => ({
-    onBusinessProfitChange: setBusinessProfit,
-    onOtherIncomeChange: setOtherIncome,
-    onMonthlySalaryChange: setMonthlySalary,
-    onComplianceCostsChange: setComplianceCosts,
-    onAuditRevenueChange: setAuditRevenue,
-    onAuditAssetsChange: setAuditAssets,
-    onAuditEmployeesChange: setAuditEmployees,
-    onAuditCostChange: setAuditCost,
+    onBusinessProfitChange: (v: number) => updateInput('businessProfit', v),
+    onOtherIncomeChange: (v: number) => updateInput('otherIncome', v),
+    onMonthlySalaryChange: (v: number) => updateInput('monthlySalary', v),
+    onComplianceCostsChange: (v: number) => updateInput('complianceCosts', v),
+    onAuditRevenueChange: (v: number) => updateInput('auditRevenue', v),
+    onAuditAssetsChange: (v: number) => updateInput('auditAssets', v),
+    onAuditEmployeesChange: (v: number) => updateInput('auditEmployees', v),
+    onAuditCostChange: (v: number) => updateInput('auditCost', v),
     onReliefsChange: setReliefs,
-    onExtendedReliefsChange: setExtendedReliefs,
-    onApplyYa2025DividendSurchargeChange: setApplyYa2025DividendSurcharge,
-    onDividendDistributionPercentChange: setDividendDistributionPercent,
-    onForeignOwnershipChange: setHasForeignOwnership,
-    onSmePaidUpCapitalChange: setPaidUpCapital,
-    onSmeGrossIncomeChange: setGrossIncome,
-    onSmeRelatedShareChange: setRelatedCompanyShare,
+    onExtendedReliefsChange: (v: ReliefClaimValues) => updateInput('extendedReliefs', v),
+    onApplyYa2025DividendSurchargeChange: (v: boolean) => updateInput('applyYa2025DividendSurcharge', v),
+    onDividendDistributionPercentChange: (v: number) => updateInput('dividendDistributionPercent', v),
+    onForeignOwnershipChange: (v: boolean) => updateInput('hasForeignOwnership', v),
+    onSmePaidUpCapitalChange: (v: number) => updateInput('paidUpCapital', v),
+    onSmeGrossIncomeChange: (v: number) => updateInput('grossIncome', v),
+    onSmeRelatedShareChange: (v: number) => updateInput('relatedCompanyShare', v),
     onClearInputs: handleClearInputs,
-    onInputModeChange: setInputMode,
-    onTargetNetIncomeChange: setTargetNetIncome,
-    onZakatChange: setZakat,
-  }), [
-    setBusinessProfit, setOtherIncome, setMonthlySalary, setComplianceCosts,
-    setAuditRevenue, setAuditAssets, setAuditEmployees, setAuditCost,
-    setReliefs, setExtendedReliefs, setApplyYa2025DividendSurcharge, setDividendDistributionPercent,
-    setHasForeignOwnership, setPaidUpCapital, setGrossIncome, setRelatedCompanyShare,
-    handleClearInputs, setInputMode, setTargetNetIncome, setZakat,
-  ]);
+    onInputModeChange: (v: InputMode) => updateInput('inputMode', v),
+    onTargetNetIncomeChange: (v: number) => updateInput('targetNetIncome', v),
+    onZakatChange: (v: ZakatInput) => updateInput('zakat', v),
+  }), [updateInput, setReliefs, handleClearInputs]);
 
-  // Calculate derived state
   const auditRequired = !isAuditExempt({
     revenue: storedInputs.auditRevenue,
     totalAssets: storedInputs.auditAssets,
     employees: storedInputs.auditEmployees,
   });
 
-  // Calculate total reliefs for reverse calculation
   const hasExtendedReliefs = storedInputs.extendedReliefs && Object.keys(storedInputs.extendedReliefs).length > 0;
   const totalReliefs = hasExtendedReliefs
     ? getTotalReliefsFromExtended(storedInputs.extendedReliefs!)
     : calculateTotalReliefs(reliefs);
 
-  // Calculate required income for target mode
   const annualTargetNetIncome = (storedInputs.targetNetIncome || 10000) * 12;
   const requiredGrossIncome = storedInputs.inputMode === 'target'
     ? calculateRequiredIncomeForNetCash(annualTargetNetIncome, totalReliefs)
     : 0;
 
-  // Calculate effective business profit based on input mode
   const effectiveBusinessProfit = storedInputs.inputMode === 'target'
     ? Math.max(0, requiredGrossIncome - storedInputs.otherIncome)
     : storedInputs.businessProfit;
 
-  // Create inputs object
   const inputs: TaxCalculationInputs = {
     businessProfit: effectiveBusinessProfit,
     otherIncome: storedInputs.otherIncome,

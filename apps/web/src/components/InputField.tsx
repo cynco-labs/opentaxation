@@ -15,6 +15,7 @@ interface InputFieldProps {
   placeholder?: string;
   tooltip?: string;
   prefix?: string;
+  suffix?: string;
   min?: number;
   max?: number;
   step?: number;
@@ -46,6 +47,7 @@ function InputField({
   placeholder,
   tooltip,
   prefix = 'RM',
+  suffix,
   min = 0,
   max,
   step: _step = 1000,
@@ -121,7 +123,7 @@ function InputField({
         )}
       </div>
       <div className="relative">
-        {prefix && (
+        {prefix && !suffix && (
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none" aria-hidden="true">
             {prefix}
           </span>
@@ -136,9 +138,10 @@ function InputField({
           onBlur={handleBlur}
           placeholder={placeholder}
           aria-describedby={ariaDescribedBy}
-          aria-label={prefix ? `${label} in ${prefix}` : label}
+          aria-label={suffix ? `${label} in ${suffix}` : prefix ? `${label} in ${prefix}` : label}
           className={cn(
-            prefix && "pl-10",
+            prefix && !suffix && "pl-10",
+            suffix && "pr-10",
             "h-12 sm:h-11 text-base sm:text-sm touch-target",
             "focus:ring-2 focus:ring-offset-0",
             "transition-all duration-200",
@@ -146,6 +149,11 @@ function InputField({
             "font-numbers tabular-nums"
           )}
         />
+        {suffix && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none" aria-hidden="true">
+            {suffix}
+          </span>
+        )}
       </div>
       {helperText && (
         <p id={helperId} className="text-xs text-muted-foreground px-1" role="note">

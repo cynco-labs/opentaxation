@@ -28,8 +28,7 @@ interface CalculatorContentProps {
   onStart: () => void;
 }
 
-// Smooth easing
-const smoothEase = [0.25, 0.1, 0.25, 1];
+const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
 // Reduced animation for mobile - shorter duration, less movement
 const fadeUp = {
