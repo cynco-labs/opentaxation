@@ -1,4 +1,3 @@
-import { calculatePersonalTax } from './calculatePersonalTax';
 import { calculateReliefOptimization } from './calculateReliefOptimization';
 import {
   getPersonalTaxBracketBreakdown,
@@ -7,7 +6,8 @@ import {
   meetsNisabThreshold,
   calculatePersonalTaxFromBrackets,
 } from '@tax-engine/config';
-import type { TaxCalculationInputs, SolePropScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult, ReliefClaimValues } from '../types';
+import type { TaxCalculationInputs, SolePropScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult } from '../types';
+import { roundCurrency, roundPercentage } from '../utils/rounding';
 
 /**
  * Calculate Sole Proprietorship / Enterprise scenario
@@ -101,10 +101,10 @@ export function calculateSolePropScenario(
 
     zakatResult = {
       enabled: true,
-      zakatAmount: Math.round(zakatAmount * 100) / 100,
+      zakatAmount: roundCurrency(zakatAmount),
       meetsNisab: meetsNisabThreshold(totalIncome),
-      taxBenefit: Math.round(zakatRebate * 100) / 100,
-      excessZakat: Math.round(excessZakat * 100) / 100,
+      taxBenefit: roundCurrency(zakatRebate),
+      excessZakat: roundCurrency(excessZakat),
     };
   }
 
@@ -179,13 +179,13 @@ export function calculateSolePropScenario(
   const effectiveTaxRate = totalIncome > 0 ? finalPersonalTax / totalIncome : 0;
 
   return {
-    personalTax: Math.round(finalPersonalTax * 100) / 100,
-    netCash: Math.round(netCash * 100) / 100,
-    effectiveTaxRate: Math.round(effectiveTaxRate * 10000) / 10000,
+    personalTax: roundCurrency(finalPersonalTax),
+    netCash: roundCurrency(netCash),
+    effectiveTaxRate: roundPercentage(effectiveTaxRate),
     breakdown: {
-      businessProfit: Math.round(businessProfit * 100) / 100,
-      otherIncome: Math.round(otherIncome * 100) / 100,
-      totalIncome: Math.round(totalIncome * 100) / 100,
+      businessProfit: roundCurrency(businessProfit),
+      otherIncome: roundCurrency(otherIncome),
+      totalIncome: roundCurrency(totalIncome),
       totalReliefs: personalTaxResult.totalReliefs,
       taxableIncome: personalTaxResult.taxableIncome,
     },
@@ -193,7 +193,7 @@ export function calculateSolePropScenario(
     insights,
     taxBracketBreakdown,
     zakat: zakatResult,
-    taxBeforeZakatRebate: zakat?.enabled ? Math.round(taxBeforeZakat * 100) / 100 : undefined,
+    taxBeforeZakatRebate: zakat?.enabled ? roundCurrency(taxBeforeZakat) : undefined,
   };
 }
 

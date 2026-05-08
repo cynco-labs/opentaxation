@@ -7,6 +7,7 @@ import type {
 import { calculateSolePropScenario } from './calculateSolePropScenario';
 import { calculateSdnBhdScenario } from './calculateSdnBhdScenario';
 import { SIMILARITY_THRESHOLD, CROSSOVER_CALCULATION, SME_THRESHOLDS } from '../constants';
+import { roundCurrency } from '../utils/rounding';
 
 /**
  * Compare Sole Prop (Enterprise) vs Sdn Bhd scenarios
@@ -124,8 +125,8 @@ export function compareScenarios(
 
   return {
     whichIsBetter,
-    difference: Math.round(difference * 100) / 100,
-    savingsIfSwitch: Math.round(savingsIfSwitch * 100) / 100,
+    difference: roundCurrency(difference),
+    savingsIfSwitch: roundCurrency(savingsIfSwitch),
     crossoverPointProfit,
     recommendation,
     solePropResult,
@@ -159,34 +160,29 @@ function getCacheKey(inputs: TaxCalculationInputs): string {
 }
 
 /**
- * Calculate crossover point where both scenarios result in equal net cash
- * Uses binary search to find the profit level where Enterprise and Sdn Bhd are equal
- * Results are memoized based on input parameters (excluding businessProfit)
- * 
- * @param inputs - Tax calculation inputs (excluding businessProfit which we'll vary)
- * @param currentProfit - Current business profit level
- * @returns Crossover profit point, or null if not found within reasonable range
+ * Calculate crossover point where both scenarios result in equal net cash.
+ * Uses binary search to find the profit level where Enterprise and Sdn Bhd are equal.
+ * Results are memoized based on input parameters (excluding businessProfit).
  */
 function calculateCrossoverPoint(
   inputs: TaxCalculationInputs,
   currentProfit: number
 ): number | null {
-  // Check cache first
   const cacheKey = getCacheKey(inputs);
   if (crossoverCache.has(cacheKey)) {
     return crossoverCache.get(cacheKey)!;
   }
-  // If they're already very similar, return current profit
-  const currentSoleProp = calculateSolePropScenario({
-    businessProfit: currentProfit,
+
+  const solePropInputsFor = (profit: number) => ({
+    businessProfit: profit,
     otherIncome: inputs.otherIncome || 0,
     reliefs: inputs.reliefs,
     extendedReliefs: inputs.extendedReliefs,
     zakat: inputs.zakat,
   });
 
-  const currentSdnBhd = calculateSdnBhdScenario({
-    businessProfit: currentProfit,
+  const sdnBhdInputsFor = (profit: number) => ({
+    businessProfit: profit,
     monthlySalary: inputs.monthlySalary || 5000,
     otherIncome: inputs.otherIncome || 0,
     complianceCosts: inputs.complianceCosts || 5000,
@@ -199,105 +195,41 @@ function calculateCrossoverPoint(
     zakat: inputs.zakat,
   });
 
-  const currentDiff = Math.abs(currentSdnBhd.netCash - currentSoleProp.netCash);
+  const netCashDiffAt = (profit: number) => {
+    const soleProp = calculateSolePropScenario(solePropInputsFor(profit));
+    const sdnBhd = calculateSdnBhdScenario(sdnBhdInputsFor(profit));
+    return sdnBhd.netCash - soleProp.netCash;
+  };
+
+  const currentDiff = Math.abs(netCashDiffAt(currentProfit));
   if (currentDiff < CROSSOVER_CALCULATION.EARLY_EXIT_THRESHOLD) {
     return Math.round(currentProfit);
   }
 
-  // Binary search for crossover point
   let minProfit = CROSSOVER_CALCULATION.MIN_PROFIT;
   let maxProfit = CROSSOVER_CALCULATION.MAX_PROFIT;
   const tolerance = CROSSOVER_CALCULATION.TOLERANCE;
   const maxIterations = CROSSOVER_CALCULATION.MAX_ITERATIONS;
-  let iterations = 0;
 
-  // Check if there's a crossover point in the search range
-  const minSoleProp = calculateSolePropScenario({
-    businessProfit: minProfit,
-    otherIncome: inputs.otherIncome || 0,
-    reliefs: inputs.reliefs,
-    extendedReliefs: inputs.extendedReliefs,
-    zakat: inputs.zakat,
-  });
+  const minDiff = netCashDiffAt(minProfit);
+  const maxDiff = netCashDiffAt(maxProfit);
 
-  const minSdnBhd = calculateSdnBhdScenario({
-    businessProfit: minProfit,
-    monthlySalary: inputs.monthlySalary || 5000,
-    otherIncome: inputs.otherIncome || 0,
-    complianceCosts: inputs.complianceCosts || 5000,
-    auditCost: inputs.auditCost,
-    auditCriteria: inputs.auditCriteria,
-    reliefs: inputs.reliefs,
-    extendedReliefs: inputs.extendedReliefs,
-    applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
-    dividendDistributionPercent: inputs.dividendDistributionPercent,
-    zakat: inputs.zakat,
-  });
-
-  const maxSoleProp = calculateSolePropScenario({
-    businessProfit: maxProfit,
-    otherIncome: inputs.otherIncome || 0,
-    reliefs: inputs.reliefs,
-    extendedReliefs: inputs.extendedReliefs,
-    zakat: inputs.zakat,
-  });
-
-  const maxSdnBhd = calculateSdnBhdScenario({
-    businessProfit: maxProfit,
-    monthlySalary: inputs.monthlySalary || 5000,
-    otherIncome: inputs.otherIncome || 0,
-    complianceCosts: inputs.complianceCosts || 5000,
-    auditCost: inputs.auditCost,
-    auditCriteria: inputs.auditCriteria,
-    reliefs: inputs.reliefs,
-    extendedReliefs: inputs.extendedReliefs,
-    applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
-    dividendDistributionPercent: inputs.dividendDistributionPercent,
-    zakat: inputs.zakat,
-  });
-
-  // Check if crossover exists (sign change in difference)
-  const minDiff = minSdnBhd.netCash - minSoleProp.netCash;
-  const maxDiff = maxSdnBhd.netCash - maxSoleProp.netCash;
-
-  // If both ends have same sign, no crossover in this range
   if ((minDiff > 0 && maxDiff > 0) || (minDiff < 0 && maxDiff < 0)) {
+    cacheResult(cacheKey, null);
     return null;
   }
 
-  // Binary search for crossover point
+  let iterations = 0;
   while (iterations < maxIterations && (maxProfit - minProfit) > tolerance) {
     const midProfit = (minProfit + maxProfit) / 2;
-
-    const midSoleProp = calculateSolePropScenario({
-      businessProfit: midProfit,
-      otherIncome: inputs.otherIncome || 0,
-      reliefs: inputs.reliefs,
-      extendedReliefs: inputs.extendedReliefs,
-      zakat: inputs.zakat,
-    });
-
-    const midSdnBhd = calculateSdnBhdScenario({
-      businessProfit: midProfit,
-      monthlySalary: inputs.monthlySalary || 5000,
-      otherIncome: inputs.otherIncome || 0,
-      complianceCosts: inputs.complianceCosts || 5000,
-      auditCost: inputs.auditCost,
-      auditCriteria: inputs.auditCriteria,
-      reliefs: inputs.reliefs,
-      extendedReliefs: inputs.extendedReliefs,
-      applyYa2025DividendSurcharge: inputs.applyYa2025DividendSurcharge,
-      dividendDistributionPercent: inputs.dividendDistributionPercent,
-      zakat: inputs.zakat,
-    });
-
-    const midDiff = midSdnBhd.netCash - midSoleProp.netCash;
+    const midDiff = netCashDiffAt(midProfit);
 
     if (Math.abs(midDiff) < tolerance) {
-      return Math.round(midProfit);
+      const result = Math.round(midProfit);
+      cacheResult(cacheKey, result);
+      return result;
     }
 
-    // Determine which side to search
     if ((minDiff > 0 && midDiff > 0) || (minDiff < 0 && midDiff < 0)) {
       minProfit = midProfit;
     } else {
@@ -307,20 +239,17 @@ function calculateCrossoverPoint(
     iterations++;
   }
 
-  // Return midpoint if we converged
-  let result: number | null = null;
-  if (iterations < maxIterations) {
-    result = Math.round((minProfit + maxProfit) / 2);
-  }
+  const result = iterations < maxIterations ? Math.round((minProfit + maxProfit) / 2) : null;
+  cacheResult(cacheKey, result);
+  return result;
+}
 
-  // Cache the result (with size limit)
+function cacheResult(key: string, value: number | null): void {
   if (crossoverCache.size >= CACHE_MAX_SIZE) {
     const firstKey = crossoverCache.keys().next().value;
     if (firstKey !== undefined) {
       crossoverCache.delete(firstKey);
     }
   }
-  crossoverCache.set(cacheKey, result);
-
-  return result;
+  crossoverCache.set(key, value);
 }

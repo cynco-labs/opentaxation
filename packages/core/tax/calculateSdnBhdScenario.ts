@@ -18,10 +18,10 @@ import {
   type PersonalReliefs,
 } from '@tax-engine/config';
 import { calculateCorporateTax } from './calculateCorporateTax';
-import { calculatePersonalTax } from './calculatePersonalTax';
 import { calculateReliefOptimization } from './calculateReliefOptimization';
 import type { TaxCalculationInputs, SdnBhdScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult } from '../types';
 import { SME_THRESHOLDS } from '../constants';
+import { roundCurrency } from '../utils/rounding';
 
 /**
  * Calculate Sdn Bhd (Private Limited Company) scenario
@@ -122,7 +122,7 @@ export function calculateSdnBhdScenario(
     if (zakat.autoCalculate !== false && zakat.amountPaid === undefined) {
       // Auto-calculate zakat at configured rate of aggregate income
       const zakatConfig = getZakatConfig();
-      zakatAmount = Math.round(aggregateIncome * zakatConfig.rate * 100) / 100;
+      zakatAmount = roundCurrency(aggregateIncome * zakatConfig.rate);
     } else {
       zakatAmount = zakat.amountPaid ?? 0;
     }
@@ -134,10 +134,10 @@ export function calculateSdnBhdScenario(
 
     zakatResult = {
       enabled: true,
-      zakatAmount: Math.round(zakatAmount * 100) / 100,
+      zakatAmount: roundCurrency(zakatAmount),
       meetsNisab: meetsNisabThreshold(aggregateIncome),
-      taxBenefit: Math.round(zakatDeduction * 100) / 100, // The deduction value
-      excessZakat: Math.round(excessZakat * 100) / 100,
+      taxBenefit: roundCurrency(zakatDeduction),
+      excessZakat: roundCurrency(excessZakat),
     };
   }
 
@@ -375,41 +375,41 @@ export function calculateSdnBhdScenario(
   }));
 
   return {
-    corporateTax: Math.round(corporateTax * 100) / 100,
-    personalTax: Math.round(personalTax * 100) / 100,
-    employerEPF: Math.round(employerEPF * 100) / 100,
-    employeeEPF: Math.round(employeeEPF * 100) / 100,
-    employerSOCSO: Math.round(employerSOCSO * 100) / 100,
-    employeeSOCSO: Math.round(employeeSOCSO * 100) / 100,
-    totalComplianceCost: Math.round(totalComplianceCost * 100) / 100,
-    netCash: Math.round(netCash * 100) / 100,
+    corporateTax: roundCurrency(corporateTax),
+    personalTax: roundCurrency(personalTax),
+    employerEPF: roundCurrency(employerEPF),
+    employeeEPF: roundCurrency(employeeEPF),
+    employerSOCSO: roundCurrency(employerSOCSO),
+    employeeSOCSO: roundCurrency(employeeSOCSO),
+    totalComplianceCost: roundCurrency(totalComplianceCost),
+    netCash: roundCurrency(netCash),
     salaryAffordability: {
-      maxAffordableSalary: Math.round(maxAffordableSalary * 100) / 100,
+      maxAffordableSalary: roundCurrency(maxAffordableSalary),
       isAffordable,
-      shortfall: Math.round(shortfall * 100) / 100,
+      shortfall: roundCurrency(shortfall),
       companyWouldBeInsolvent,
     },
     breakdown: {
-      annualSalary: Math.round(annualSalary * 100) / 100,
-      companyTaxableProfit: Math.round(companyTaxableProfit * 100) / 100,
-      postTaxProfit: Math.round(postTaxProfit * 100) / 100,
-      dividends: Math.round(dividends * 100) / 100,
-      dividendTax: Math.round(dividendTax * 100) / 100,
-      retainedEarnings: Math.round(retainedEarnings * 100) / 100,
-      salaryAfterEPF: Math.round(salaryAfterEPF * 100) / 100,
-      salaryAfterTax: Math.round(Math.max(0, totalCashFromIncome - otherIncome) * 100) / 100,
-      otherIncome: Math.round(otherIncome * 100) / 100,
-      businessProfit: Math.round(businessProfit * 100) / 100,
+      annualSalary: roundCurrency(annualSalary),
+      companyTaxableProfit: roundCurrency(companyTaxableProfit),
+      postTaxProfit: roundCurrency(postTaxProfit),
+      dividends: roundCurrency(dividends),
+      dividendTax: roundCurrency(dividendTax),
+      retainedEarnings: roundCurrency(retainedEarnings),
+      salaryAfterEPF: roundCurrency(salaryAfterEPF),
+      salaryAfterTax: roundCurrency(Math.max(0, totalCashFromIncome - otherIncome)),
+      otherIncome: roundCurrency(otherIncome),
+      businessProfit: roundCurrency(businessProfit),
     },
     companyWaterfall,
     personalWaterfall,
     insights,
-    epfSavings: Math.round(epfSavings * 100) / 100,
+    epfSavings: roundCurrency(epfSavings),
     corporateTaxBracketBreakdown,
     personalTaxBracketBreakdown,
     zakat: zakatResult,
     corporateTaxBeforeZakat: corporateTaxBeforeZakat !== undefined
-      ? Math.round(corporateTaxBeforeZakat * 100) / 100
+      ? roundCurrency(corporateTaxBeforeZakat)
       : undefined,
   };
 }
