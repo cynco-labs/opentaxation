@@ -87,8 +87,8 @@ export default function ToolNav({ className }: ToolNavProps) {
               cn(
                 'relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all',
                 isActive || isToolActive(tool.path)
-                  ? 'text-[#4A2C2A]'
-                  : 'text-[#6B5B5B] hover:text-[#4A2C2A] hover:bg-[#E8D5C4]/30'
+                  ? 'text-brand-dark-brown'
+                  : 'text-brand-warm-gray hover:text-brand-dark-brown hover:bg-brand-border-ivory/30'
               )
             }
           >
@@ -98,19 +98,19 @@ export default function ToolNav({ className }: ToolNavProps) {
                   weight={isActive || isToolActive(tool.path) ? 'fill' : 'duotone'}
                   className={cn(
                     'h-4 w-4',
-                    isActive || isToolActive(tool.path) ? 'text-[#722F37]' : ''
+                    isActive || isToolActive(tool.path) ? 'text-brand-burgundy' : ''
                   )}
                 />
                 <span>{tool.label}</span>
                 {tool.isNew && (
-                  <span className="px-1.5 py-0.5 text-[11px] font-semibold bg-[#722F37] text-white rounded-full">
+                  <span className="px-1.5 py-0.5 text-[11px] font-semibold bg-brand-burgundy text-white rounded-full">
                     NEW
                   </span>
                 )}
                 {(isActive || isToolActive(tool.path)) && (
                   <motion.div
                     layoutId="tool-indicator"
-                    className="absolute inset-0 bg-[#E8D5C4]/40 rounded-xl -z-10"
+                    className="absolute inset-0 bg-brand-border-ivory/40 rounded-xl -z-10"
                     transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }}
                   />
                 )}
@@ -121,7 +121,7 @@ export default function ToolNav({ className }: ToolNavProps) {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-[#E8D5C4] bg-[#FAF7F2]/95 backdrop-blur-xl pb-safe">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-brand-border-ivory bg-brand-ivory/95 backdrop-blur-xl pb-safe">
         <div className="flex justify-around px-2 py-2">
           {visibleTools.map((tool) => (
             <NavLink
@@ -131,8 +131,8 @@ export default function ToolNav({ className }: ToolNavProps) {
                 cn(
                   'flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-colors min-w-[64px] min-h-[52px]',
                   isActive || isToolActive(tool.path)
-                    ? 'text-[#722F37]'
-                    : 'text-[#6B5B5B]'
+                    ? 'text-brand-burgundy'
+                    : 'text-brand-warm-gray'
                 )
               }
             >
@@ -155,7 +155,7 @@ export default function ToolNav({ className }: ToolNavProps) {
                 onClick={() => setMoreMenuOpen(!moreMenuOpen)}
                 className={cn(
                   'flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-colors min-w-[64px] min-h-[52px]',
-                  moreMenuOpen ? 'text-[#722F37]' : 'text-[#6B5B5B]'
+                  moreMenuOpen ? 'text-brand-burgundy' : 'text-brand-warm-gray'
                 )}
               >
                 <CaretDown
@@ -175,7 +175,7 @@ export default function ToolNav({ className }: ToolNavProps) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute bottom-full right-0 mb-2 w-48 bg-[#FFFCF9] border border-[#E8D5C4] rounded-2xl shadow-lg z-50 overflow-hidden"
+                    className="absolute bottom-full right-0 mb-2 w-48 bg-card border border-brand-border-ivory rounded-2xl shadow-lg z-50 overflow-hidden"
                   >
                     {overflowTools.map((tool) => (
                       <NavLink
@@ -186,8 +186,8 @@ export default function ToolNav({ className }: ToolNavProps) {
                           cn(
                             'flex items-center gap-3 px-4 py-3 text-sm transition-colors',
                             isActive
-                              ? 'bg-[#E8D5C4]/40 text-[#4A2C2A]'
-                              : 'text-[#6B5B5B] hover:bg-[#E8D5C4]/20 hover:text-[#4A2C2A]'
+                              ? 'bg-brand-border-ivory/40 text-brand-dark-brown'
+                              : 'text-brand-warm-gray hover:bg-brand-border-ivory/20 hover:text-brand-dark-brown'
                           )
                         }
                       >

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +11,7 @@ interface RecommendationCardProps {
   comparison: ComparisonResult;
 }
 
-export default function RecommendationCard({ comparison }: RecommendationCardProps) {
+const RecommendationCard = React.memo(function RecommendationCard({ comparison }: RecommendationCardProps) {
   const { t } = useTranslation();
   const { whichIsBetter, savingsIfSwitch, recommendation, hasAffordabilityIssue, hasSmeQualificationIssue, warnings } = comparison;
 
@@ -133,4 +134,6 @@ export default function RecommendationCard({ comparison }: RecommendationCardPro
       </Card>
     </motion.div>
   );
-}
+});
+
+export default RecommendationCard;

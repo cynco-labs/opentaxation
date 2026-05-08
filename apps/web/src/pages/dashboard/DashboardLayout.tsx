@@ -34,8 +34,8 @@ export default function DashboardLayout() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-        <div className="animate-pulse text-[#6B5B4F]">Loading dashboard...</div>
+      <div className="min-h-screen bg-brand-ivory flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Loading dashboard...</div>
       </div>
     );
   }
@@ -46,17 +46,17 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2]">
+    <div className="min-h-screen bg-brand-ivory">
           {/* Header */}
-          <header className="sticky top-0 z-50 border-b border-[#E8D5C4] bg-[#FAF7F2]/95 backdrop-blur-xl">
+          <header className="sticky top-0 z-50 border-b border-brand-border-ivory bg-brand-ivory/95 backdrop-blur-xl">
             <div className="flex h-14 items-center justify-between px-4 sm:px-6">
               {/* Left: Logo + Dashboard badge */}
               <div className="flex items-center gap-3">
                 <NavLink to="/" className="flex-shrink-0">
                   <Logo size="sm" />
                 </NavLink>
-                <div className="hidden sm:block h-5 w-px bg-[#E8D5C4]" />
-                <span className="hidden sm:block text-sm text-[#6B5B4F]">Dashboard</span>
+                <div className="hidden sm:block h-5 w-px bg-brand-border-ivory" />
+                <span className="hidden sm:block text-sm text-muted-foreground">Dashboard</span>
               </div>
 
               {/* Right: Actions */}
@@ -68,7 +68,7 @@ export default function DashboardLayout() {
 
           <div className="flex">
             {/* Sidebar */}
-            <aside className="hidden md:flex w-64 flex-col border-r border-[#E8D5C4] min-h-[calc(100vh-4rem)] bg-[#FAF7F2]">
+            <aside className="hidden md:flex w-64 flex-col border-r border-brand-border-ivory min-h-[calc(100vh-4rem)] bg-brand-ivory">
               <nav className="flex-1 p-4 space-y-1" role="navigation" aria-label="Dashboard navigation">
                 {navItems.map(({ to, icon: Icon, label, end }) => (
                   <NavLink
@@ -78,8 +78,8 @@ export default function DashboardLayout() {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                         isActive
-                          ? 'bg-[#722F37]/10 text-[#722F37] border border-[#722F37]/20'
-                          : 'text-[#6B5B4F] hover:text-[#4A3728] hover:bg-[#F5EDE3]'
+                          ? 'bg-brand-burgundy/10 text-brand-burgundy border border-brand-burgundy/20'
+                          : 'text-muted-foreground hover:text-brand-espresso hover:bg-brand-muted-ivory'
                       }`
                     }
                   >
@@ -92,7 +92,7 @@ export default function DashboardLayout() {
 
             {/* Mobile nav */}
             <nav
-              className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-[#E8D5C4] bg-[#FAF7F2]/95 backdrop-blur-xl p-2 pb-safe"
+              className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-brand-border-ivory bg-brand-ivory/95 backdrop-blur-xl p-2 pb-safe"
               role="navigation"
               aria-label="Dashboard navigation"
             >
@@ -105,8 +105,8 @@ export default function DashboardLayout() {
                     className={({ isActive }) =>
                       `flex flex-col items-center gap-1 p-2 rounded-lg text-xs transition-colors min-h-[52px] ${
                         isActive
-                          ? 'text-[#722F37]'
-                          : 'text-[#6B5B4F]'
+                          ? 'text-brand-burgundy'
+                          : 'text-muted-foreground'
                       }`
                     }
                   >

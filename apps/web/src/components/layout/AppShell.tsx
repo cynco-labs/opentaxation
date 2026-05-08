@@ -10,9 +10,9 @@ interface AppShellProps {
 
 export default function AppShell({ children }: AppShellProps) {
   return (
-    <div className="min-h-screen bg-[#FAF7F2] flex flex-col">
+    <div className="min-h-screen bg-brand-ivory flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-[#E8D5C4] bg-[#FAF7F2]/95 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-brand-border-ivory bg-brand-ivory/95 backdrop-blur-xl">
         <div className="flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Logo */}
           <div className="flex items-center gap-6">

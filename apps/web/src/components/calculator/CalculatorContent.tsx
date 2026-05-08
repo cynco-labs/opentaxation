@@ -58,8 +58,8 @@ function PillButton({
 }) {
   const baseStyles = "inline-flex items-center gap-2 px-6 py-3 min-h-[44px] rounded-full text-[15px] font-medium transition-all duration-200 active:scale-95 active:opacity-90";
   const variants = {
-    default: "bg-[#4A3728] text-[#FAF7F2] hover:bg-[#4A3728]/90",
-    outline: "bg-transparent border border-[#E8D5C4] text-[#4A3728] hover:bg-[#F5EDE3]/50",
+    default: "bg-brand-espresso text-brand-ivory hover:bg-brand-espresso/90",
+    outline: "bg-transparent border border-brand-border-ivory text-brand-espresso hover:bg-brand-muted-ivory/50",
   };
 
   return (
@@ -98,14 +98,14 @@ function HeroCTA({ onClick, children }: { onClick: () => void; children: React.R
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative inline-flex items-center gap-3 pl-6 pr-4 py-3.5 rounded-2xl bg-[#4A3728] text-[#FAF7F2] overflow-hidden"
+      className="group relative inline-flex items-center gap-3 pl-6 pr-4 py-3.5 rounded-2xl bg-brand-espresso text-brand-ivory overflow-hidden"
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.95, opacity: 0.9 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
     >
       {/* Animated gradient background on hover */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-[#4A3728] via-[#4A3728]/90 to-[#4A3728]"
+        className="absolute inset-0 bg-gradient-to-r from-brand-espresso via-brand-espresso/90 to-brand-espresso"
         initial={{ opacity: 0 }}
         animate={{ opacity: isHovered ? 1 : 0 }}
         transition={{ duration: 0.3 }}
@@ -145,7 +145,7 @@ function HeroCTA({ onClick, children }: { onClick: () => void; children: React.R
       </motion.div>
 
       {/* Glow effect */}
-      <div className="absolute -inset-1 bg-[#4A3728]/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 -z-10" />
+      <div className="absolute -inset-1 bg-brand-espresso/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 -z-10" />
     </motion.button>
   );
 }
@@ -185,22 +185,22 @@ function GitHubStarBadge() {
       {/* Main badge container */}
       <div className="relative inline-flex items-center">
         {/* Glow effect on hover */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#4A3728]/5 to-[#4A3728]/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-espresso/5 to-brand-espresso/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         {/* Badge */}
-        <div className="relative inline-flex items-center gap-2.5 pl-3 pr-4 py-2 rounded-full bg-white border border-[#E8D5C4] shadow-sm group-hover:border-[#4A3728]/20 group-hover:shadow-md transition-all duration-300">
+        <div className="relative inline-flex items-center gap-2.5 pl-3 pr-4 py-2 rounded-full bg-white border border-brand-border-ivory shadow-sm group-hover:border-brand-espresso/20 group-hover:shadow-md transition-all duration-300">
           {/* GitHub icon with subtle animation */}
           <div className="relative">
             <GithubLogo
               weight="fill"
-              className="h-5 w-5 text-[#4A3728] transition-transform duration-300 group-hover:scale-110"
+              className="h-5 w-5 text-brand-espresso transition-transform duration-300 group-hover:scale-110"
             />
             {/* Subtle ring on hover */}
-            <div className="absolute inset-0 rounded-full border border-[#4A3728]/20 scale-150 opacity-0 group-hover:opacity-100 group-hover:scale-[1.8] transition-all duration-500" />
+            <div className="absolute inset-0 rounded-full border border-brand-espresso/20 scale-150 opacity-0 group-hover:opacity-100 group-hover:scale-[1.8] transition-all duration-500" />
           </div>
 
           {/* Separator dot */}
-          <div className="w-1 h-1 rounded-full bg-[#E8D5C4]" />
+          <div className="w-1 h-1 rounded-full bg-brand-border-ivory" />
 
           {/* Star section */}
           <div className="flex items-center gap-1.5">
@@ -208,13 +208,13 @@ function GitHubStarBadge() {
               weight="fill"
               className="h-4 w-4 text-amber-500 transition-all duration-300 group-hover:text-amber-400 group-hover:scale-110"
             />
-            <span className="text-sm font-medium text-[#4A3728]">
+            <span className="text-sm font-medium text-brand-espresso">
               Star
             </span>
             {starCount !== null && (
               <>
-                <div className="w-px h-3 bg-[#E8D5C4] mx-0.5" />
-                <span className="text-sm font-semibold text-[#4A3728] tabular-nums">
+                <div className="w-px h-3 bg-brand-border-ivory mx-0.5" />
+                <span className="text-sm font-semibold text-brand-espresso tabular-nums">
                   {starCount}
                 </span>
               </>
@@ -263,7 +263,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
   ];
 
   return (
-    <div className="min-h-full bg-[#FAF7F2]">
+    <div className="min-h-full bg-brand-ivory">
       {/* HERO SECTION */}
       <section className="relative flex items-center justify-center overflow-hidden">
         {/* Subtle topographic background - desktop only */}
@@ -280,7 +280,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0}
-            className="font-serif text-[1.75rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.75rem] font-normal leading-[1.15] tracking-tight text-[#4A3728] mb-5 sm:mb-6"
+            className="font-serif text-[1.75rem] sm:text-[2.5rem] md:text-[3rem] lg:text-[3.75rem] font-normal leading-[1.15] tracking-tight text-brand-espresso mb-5 sm:mb-6"
           >
             {t('landingPage.hero.title1')}
             <br />
@@ -292,7 +292,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0.1}
-            className="text-[15px] sm:text-base md:text-lg text-[#6B5B4F] max-w-xl mx-auto mb-6 sm:mb-10 text-balance"
+            className="text-[15px] sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-6 sm:mb-10 text-balance"
           >
             {t('landingPage.hero.subtitle')}
           </motion.p>
@@ -305,7 +305,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-10"
           >
             {isLoading ? (
-              <div className="h-14 w-48 bg-[#F5EDE3] animate-pulse rounded-2xl" />
+              <div className="h-14 w-48 bg-brand-muted-ivory animate-pulse rounded-2xl" />
             ) : (
               <>
                 <HeroCTA onClick={onStart}>
@@ -328,7 +328,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0.3}
-            className="text-sm text-[#6B5B4F]"
+            className="text-sm text-muted-foreground"
           >
             {t('landingPage.hero.free')}
           </motion.p>
@@ -338,7 +338,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             initial="hidden"
             animate="visible"
             custom={0.4}
-            className="text-xs text-[#8B7B6B] mt-3"
+            className="text-xs text-brand-medium-gray mt-3"
           >
             {t('landingPage.hero.socialProof')}
           </motion.p>
@@ -346,11 +346,11 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* THE DECISION - Interactive Comparison */}
-      <section className="py-12 sm:py-20 bg-[#F5EDE3]">
+      <section className="py-12 sm:py-20 bg-brand-muted-ivory">
         <div className="container-content text-center px-4 sm:px-6">
-          <p className="text-[11px] uppercase tracking-[0.15em] text-[#6B5B4F] mb-3">The Question</p>
+          <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">The Question</p>
           <h2
-            className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-[#4A3728]"
+            className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-brand-espresso"
           >
             Which structure keeps more in your pocket?
           </h2>
@@ -359,41 +359,41 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* CROSSOVER VISUALIZATION */}
-      <section id="crossover" className="py-12 sm:py-20 bg-[#F5EDE3]">
+      <section id="crossover" className="py-12 sm:py-20 bg-brand-muted-ivory">
         <div className="container-content px-4 sm:px-6">
           <div className="text-center mb-2">
-            <p className="text-[11px] uppercase tracking-[0.15em] text-[#6B5B4F] mb-3">The Insight</p>
+            <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">The Insight</p>
             <h2
-              className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal mb-3 text-[#4A3728]"
+              className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-normal mb-3 text-brand-espresso"
               >
               {t('landingPage.magic.title')}{' '}
               <span className="italic">{t('landingPage.magic.range')}</span>
             </h2>
-            <p className="text-sm sm:text-base text-[#6B5B4F] max-w-md mx-auto text-balance">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto text-balance">
               {t('landingPage.magic.below')} {t('landingPage.magic.above')}
             </p>
           </div>
           <CrossoverVisualization />
-          <p className="text-center text-xs sm:text-sm text-[#8B7B6B] mt-3">{t('landingPage.magic.caveat')}</p>
+          <p className="text-center text-xs sm:text-sm text-brand-medium-gray mt-3">{t('landingPage.magic.caveat')}</p>
         </div>
       </section>
 
       {/* THE HONEST TRUTH - Bento Grid Style */}
-      <section className="py-12 sm:py-20 bg-[#FAF7F2]">
+      <section className="py-12 sm:py-20 bg-brand-ivory">
         <div className="container-content px-4 sm:px-6">
           <div className="text-center mb-8 sm:mb-12">
             <h2
-              className="font-serif text-xl sm:text-2xl md:text-3xl font-normal mb-3 text-[#4A3728]"
+              className="font-serif text-xl sm:text-2xl md:text-3xl font-normal mb-3 text-brand-espresso"
               >
               {t('landingPage.truth.title')}
             </h2>
-            <p className="text-sm sm:text-base text-[#6B5B4F]">{t('landingPage.truth.subtitle')}</p>
+            <p className="text-sm sm:text-base text-muted-foreground">{t('landingPage.truth.subtitle')}</p>
           </div>
 
           {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {/* Large feature card */}
-            <div className="md:row-span-2 p-6 sm:p-8 rounded-2xl bg-[#4A3728] text-white relative overflow-hidden">
+            <div className="md:row-span-2 p-6 sm:p-8 rounded-2xl bg-brand-espresso text-white relative overflow-hidden">
               <div className="absolute top-4 right-4 text-[60px] sm:text-[80px] font-bold leading-none text-white/5 select-none">
                 01
               </div>
@@ -407,30 +407,30 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             </div>
 
             {/* Muted accent card */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-[#F5EDE3]/50 border border-[#E8D5C4] relative overflow-hidden">
-              <div className="absolute top-3 right-3 text-[50px] sm:text-[60px] font-bold leading-none text-[#4A3728]/5 select-none">
+            <div className="p-5 sm:p-6 rounded-2xl bg-brand-muted-ivory/50 border border-brand-border-ivory relative overflow-hidden">
+              <div className="absolute top-3 right-3 text-[50px] sm:text-[60px] font-bold leading-none text-brand-espresso/5 select-none">
                 02
               </div>
               <div className="relative z-10">
-                <div className="w-9 h-9 rounded-lg bg-[#F5EDE3] flex items-center justify-center mb-4">
-                  <Receipt weight="light" className="h-4 w-4 text-[#4A3728]" />
+                <div className="w-9 h-9 rounded-lg bg-brand-muted-ivory flex items-center justify-center mb-4">
+                  <Receipt weight="light" className="h-4 w-4 text-brand-espresso" />
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold text-[#4A3728] mb-2">{t('landingPage.truth.hidden.title')}</h3>
-                <p className="text-sm text-[#6B5B4F] leading-relaxed">{t('landingPage.truth.hidden.desc')}</p>
+                <h3 className="text-base sm:text-lg font-semibold text-brand-espresso mb-2">{t('landingPage.truth.hidden.title')}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{t('landingPage.truth.hidden.desc')}</p>
               </div>
             </div>
 
             {/* Simple card */}
-            <div className="p-5 sm:p-6 rounded-2xl bg-white border border-[#E8D5C4] relative overflow-hidden">
-              <div className="absolute top-3 right-3 text-[50px] sm:text-[60px] font-bold leading-none text-[#4A3728]/5 select-none">
+            <div className="p-5 sm:p-6 rounded-2xl bg-white border border-brand-border-ivory relative overflow-hidden">
+              <div className="absolute top-3 right-3 text-[50px] sm:text-[60px] font-bold leading-none text-brand-espresso/5 select-none">
                 03
               </div>
               <div className="relative z-10">
-                <div className="w-9 h-9 rounded-lg bg-[#F5EDE3] flex items-center justify-center mb-4">
-                  <Coins weight="light" className="h-4 w-4 text-[#4A3728]" />
+                <div className="w-9 h-9 rounded-lg bg-brand-muted-ivory flex items-center justify-center mb-4">
+                  <Coins weight="light" className="h-4 w-4 text-brand-espresso" />
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold text-[#4A3728] mb-2">{t('landingPage.truth.changed.title')}</h3>
-                <p className="text-sm text-[#6B5B4F] leading-relaxed">{t('landingPage.truth.changed.desc')}</p>
+                <h3 className="text-base sm:text-lg font-semibold text-brand-espresso mb-2">{t('landingPage.truth.changed.title')}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{t('landingPage.truth.changed.desc')}</p>
               </div>
             </div>
           </div>
@@ -438,12 +438,12 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* WHAT YOU'LL KNOW - Elegant Checklist */}
-      <section id="features" className="py-12 sm:py-20 bg-[#F5EDE3]">
+      <section id="features" className="py-12 sm:py-20 bg-brand-muted-ivory">
         <div className="container-content px-4 sm:px-6">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-8 sm:mb-10">
               <h2
-                className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-[#4A3728]"
+                className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-brand-espresso"
                   >
                 {t('landingPage.know.title')}
               </h2>
@@ -458,12 +458,12 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
                 >
                   {/* Check circle */}
                   <div className="relative flex-shrink-0 mt-0.5">
-                    <div className="w-5 h-5 rounded-full border border-[#4A3728]/20 flex items-center justify-center bg-[#F5EDE3]/50">
-                      <CheckCircle weight="fill" className="h-3.5 w-3.5 text-[#4A3728]/60" />
+                    <div className="w-5 h-5 rounded-full border border-brand-espresso/20 flex items-center justify-center bg-brand-muted-ivory/50">
+                      <CheckCircle weight="fill" className="h-3.5 w-3.5 text-brand-espresso/60" />
                     </div>
                   </div>
                   {/* Text */}
-                  <span className="text-sm sm:text-[15px] text-[#4A3728] leading-relaxed">
+                  <span className="text-sm sm:text-[15px] text-brand-espresso leading-relaxed">
                     {t(item.textKey)}
                   </span>
                 </div>
@@ -471,29 +471,29 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
             </div>
 
             {/* Subtle bottom decoration */}
-            <div className="flex items-center justify-center gap-2 mt-8 sm:mt-10 text-[#8B7B6B]/40">
-              <div className="w-8 h-px bg-[#E8D5C4]" />
+            <div className="flex items-center justify-center gap-2 mt-8 sm:mt-10 text-brand-medium-gray/40">
+              <div className="w-8 h-px bg-brand-border-ivory" />
               <span className="text-[10px] uppercase tracking-widest">2 min</span>
-              <div className="w-8 h-px bg-[#E8D5C4]" />
+              <div className="w-8 h-px bg-brand-border-ivory" />
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ SECTION */}
-      <section id="faq" className="py-12 sm:py-20 bg-[#FAF7F2]">
+      <section id="faq" className="py-12 sm:py-20 bg-brand-ivory">
         <div className="container-content max-w-3xl px-4 sm:px-6">
           {/* Header */}
           <div className="text-center mb-8 sm:mb-10">
-            <p className="text-[11px] uppercase tracking-[0.15em] text-[#6B5B4F] mb-3">
+            <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-3">
               Common Questions
             </p>
             <h2
-              className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-[#4A3728] mb-3"
+              className="font-serif text-xl sm:text-2xl md:text-3xl font-normal text-brand-espresso mb-3"
               >
               {t('landingPage.faq.title')}
             </h2>
-            <p className="text-sm text-[#6B5B4F] max-w-md mx-auto text-balance">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto text-balance">
               Everything you need to know about Enterprise vs <span className="whitespace-nowrap">Sdn Bhd</span>
             </p>
           </div>
@@ -513,11 +513,11 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           </div>
 
           {/* Bottom helper text */}
-          <p className="text-center text-sm text-[#6B5B4F] mt-8">
+          <p className="text-center text-sm text-muted-foreground mt-8">
             Still have questions?{' '}
             <a
               href="mailto:hello@opentaxation.my"
-              className="text-[#4A3728] underline underline-offset-4 hover:text-[#4A3728]/70 transition-colors"
+              className="text-brand-espresso underline underline-offset-4 hover:text-brand-espresso/70 transition-colors"
             >
               Get in touch
             </a>
@@ -526,7 +526,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* FINAL CTA */}
-      <section className="relative py-14 sm:py-20 lg:py-24 bg-[#4A3728] text-white overflow-hidden">
+      <section className="relative py-14 sm:py-20 lg:py-24 bg-brand-espresso text-white overflow-hidden">
         {/* Content */}
         <div className="relative container-content text-center max-w-2xl px-4 sm:px-6">
           <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/40 mb-4 sm:mb-5">
@@ -546,7 +546,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           {/* CTA Button */}
           <button
             onClick={onStart}
-            className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-white text-[#4A3728] font-medium active:scale-95 active:opacity-90 transition-transform"
+            className="inline-flex items-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-white text-brand-espresso font-medium active:scale-95 active:opacity-90 transition-transform"
           >
             <span className="text-sm sm:text-[15px]">{t('landingPage.hero.cta')}</span>
             <ArrowRight weight="bold" className="h-4 w-4" />
@@ -568,7 +568,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
       </section>
 
       {/* FOOTER */}
-      <footer className="py-10 sm:py-14 bg-[#FAF7F2] border-t border-[#E8D5C4]">
+      <footer className="py-10 sm:py-14 bg-brand-ivory border-t border-brand-border-ivory">
         <div className="container-content px-4 sm:px-6">
           {/* Main footer content */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
@@ -579,18 +579,18 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
                   <svg viewBox="0 0 24 24" fill="none" className="w-full h-full" aria-hidden="true">
                     <path
                       d="M12 3a9 9 0 1 0 6.36 2.64"
-                      stroke="#4A3728"
+                      stroke="currentColor"
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       fill="none"
                     />
                   </svg>
                 </div>
-                <span className="font-medium tracking-tight text-[15px] text-[#4A3728]">
-                  opentaxation<span className="text-[#6B5B4F]">.my</span>
+                <span className="font-medium tracking-tight text-[15px] text-brand-espresso">
+                  opentaxation<span className="text-muted-foreground">.my</span>
                 </span>
               </a>
-              <p className="text-xs sm:text-sm text-[#6B5B4F]">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Open-source tax calculator for Malaysian businesses
               </p>
             </div>
@@ -607,7 +607,7 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="text-xs sm:text-sm text-[#6B5B4F] hover:text-[#4A3728] transition-colors"
+                  className="text-xs sm:text-sm text-muted-foreground hover:text-brand-espresso transition-colors"
                 >
                   {link.label}
                 </a>
@@ -617,9 +617,9 @@ const CalculatorContent = memo(function CalculatorContent({ onStart }: Calculato
           </div>
 
           {/* Bottom section */}
-          <div className="pt-6 border-t border-[#E8D5C4]">
+          <div className="pt-6 border-t border-brand-border-ivory">
             <p
-              className="text-xs text-[#8B7B6B] italic text-center sm:text-left max-w-xl text-balance"
+              className="text-xs text-brand-medium-gray italic text-center sm:text-left max-w-xl text-balance"
               >
               {t('landingPage.footer.disclaimer')}
             </p>

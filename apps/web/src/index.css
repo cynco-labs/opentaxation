@@ -101,6 +101,11 @@
     --brand-border-maroon: 350 30% 30%; /* #5A2330 - Maroon border */
     --brand-muted-ivory: 35 25% 94%;    /* #F3EBE3 - Muted ivory */
     --brand-muted-rose: 20 25% 75%;     /* #D9B9B1 - Muted rose */
+    --brand-sage: 150 20% 50%;          /* #5B8A72 - Success/positive green */
+    --brand-amber: 38 75% 60%;          /* #E5A84B - Warning/attention amber */
+    --brand-warm-gray: 25 8% 40%;       /* #6B5B5B - Muted text */
+    --brand-dark-brown: 10 25% 22%;     /* #4A2C2A - Dark text variant */
+    --brand-medium-gray: 30 10% 48%;    /* #8B7B6B - Secondary muted text */
   }
 
   /* Dark mode - Warm charcoal tones */
@@ -679,19 +684,29 @@
     animation-delay: 1s;
   }
 
+  /* Disable backdrop-blur on mobile for GPU performance */
+  @media (max-width: 640px) {
+    .backdrop-blur-sm,
+    .backdrop-blur-md,
+    .backdrop-blur-xl {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   /* Optimize animations for mobile */
   @media (max-width: 640px) {
-    /* Reduce motion for better performance */
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
     /* Use GPU acceleration for smoother animations */
     .motion-safe\:transform-gpu {
       transform: translateZ(0);

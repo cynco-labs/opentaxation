@@ -30,14 +30,14 @@ const entityIcons: Record<EntityType, typeof User> = {
 // Entity colors - Open Ledger design system
 const entityColors: Record<EntityType, { bg: string; text: string; border: string }> = {
   Individual: { bg: 'bg-brand-rose/15', text: 'text-brand-espresso', border: 'border-brand-rose/30' },
-  Company: { bg: 'bg-[#5B8A72]/10', text: 'text-[#2F3A31]', border: 'border-[#5B8A72]/20' },
+  Company: { bg: 'bg-brand-sage/10', text: 'text-[#2F3A31]', border: 'border-brand-sage/20' },
   Employer: { bg: 'bg-brand-gold/20', text: 'text-brand-espresso', border: 'border-brand-gold/30' },
   Partnership: { bg: 'bg-brand-muted-rose/40', text: 'text-brand-espresso', border: 'border-brand-border-ivory' },
 };
 
 const entityDotColors: Record<EntityType, string> = {
   Individual: 'bg-brand-rose',
-  Company: 'bg-[#5B8A72]',
+  Company: 'bg-brand-sage',
   Employer: 'bg-brand-gold',
   Partnership: 'bg-brand-muted-rose',
 };

@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import html2canvas from 'html2canvas';
 import { Button } from '@/components/ui/button';
 import {
   DownloadSimple,
@@ -39,9 +38,10 @@ export default function ShareScreen({
       // Wait for fonts to load
       await document.fonts.ready;
 
+      const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(cardRef.current, {
         backgroundColor: '#FAF7F2',
-        scale: 2, // High quality / retina display
+        scale: 2,
         logging: false,
         useCORS: true,
       });
@@ -72,7 +72,7 @@ export default function ShareScreen({
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#FAF7F2] flex items-center justify-center p-3 sm:p-6">
+    <div className="h-screen overflow-hidden bg-brand-ivory flex items-center justify-center p-3 sm:p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,7 +82,7 @@ export default function ShareScreen({
       >
         {/* Title - Compact on mobile */}
         <div className="text-center">
-          <h2 className="text-xl sm:text-3xl font-bold text-[#722F37] mb-1">
+          <h2 className="text-xl sm:text-3xl font-bold text-brand-burgundy mb-1">
             your zakat wrapped
           </h2>
           <p className="text-xs sm:text-base text-muted-foreground">

@@ -41,7 +41,7 @@ export default function ReceiptChecklistScreen({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen w-full bg-[#FAF7F2] flex flex-col"
+      className="min-h-screen w-full bg-brand-ivory flex flex-col"
     >
       {/* Beautiful Header - Sticky */}
       <div className="sticky top-0 z-20 flex-shrink-0 bg-gradient-to-b from-white to-white/95 backdrop-blur-xl border-b border-gray-200 shadow-sm">
@@ -49,7 +49,7 @@ export default function ReceiptChecklistScreen({
           {/* Progress Info */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-[2px] bg-gradient-to-br from-[#5A2129] to-[#722F37] flex items-center justify-center shadow-md">
+              <div className="w-8 h-8 rounded-[2px] bg-gradient-to-br from-brand-maroon to-brand-burgundy flex items-center justify-center shadow-md">
                 <span className="text-white text-sm font-bold">{completedIds.length}</span>
               </div>
               <div>
@@ -64,7 +64,7 @@ export default function ReceiptChecklistScreen({
             {completedIds.length > 0 && (
               <button
                 onClick={onReset}
-                className="text-xs text-gray-500 hover:text-[#5A2129] transition-colors font-medium"
+                className="text-xs text-gray-500 hover:text-brand-maroon transition-colors font-medium"
               >
                 reset
               </button>
@@ -74,7 +74,7 @@ export default function ReceiptChecklistScreen({
           {/* Beautiful Progress Bar */}
           <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden shadow-inner">
             <motion.div
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#5A2129] to-[#722F37] rounded-full shadow-lg"
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-brand-maroon to-brand-burgundy rounded-full shadow-lg"
               initial={{ width: 0 }}
               animate={{ width: `${(completedIds.length / CHECKPOINTS.length) * 100}%` }}
               transition={{ type: 'spring', bounce: 0.3, duration: 0.8 }}

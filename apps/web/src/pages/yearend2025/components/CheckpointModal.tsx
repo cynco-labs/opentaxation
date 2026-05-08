@@ -64,11 +64,11 @@ export default function CheckpointModal({
                   {/* Header */}
                   <div className="mb-6">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-[#722F37]/10 flex items-center justify-center font-bold text-[#722F37] text-lg">
+                      <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-brand-burgundy/10 flex items-center justify-center font-bold text-brand-burgundy text-lg">
                         {checkpoint.id}
                       </div>
                       <div className="flex-1">
-                        <Dialog.Title className="text-xl md:text-2xl font-bold text-[#722F37]">
+                        <Dialog.Title className="text-xl md:text-2xl font-bold text-brand-burgundy">
                           {checkpoint.titleMy}
                         </Dialog.Title>
                         <p className="text-sm text-muted-foreground mt-0.5">
@@ -78,7 +78,7 @@ export default function CheckpointModal({
                     </div>
 
                     {checkpoint.emphasis === 'high' && (
-                      <Badge className="bg-[#E5A84B] text-white border-none">
+                      <Badge className="bg-brand-amber text-white border-none">
                         penting! double check this one
                       </Badge>
                     )}
@@ -86,7 +86,7 @@ export default function CheckpointModal({
 
                   {/* Main description */}
                   <div className="mb-6">
-                    <p className="text-base text-[#4A3728] leading-relaxed">
+                    <p className="text-base text-brand-espresso leading-relaxed">
                       {checkpoint.descriptionMy}
                     </p>
                   </div>
@@ -152,7 +152,7 @@ export default function CheckpointModal({
                     </Button>
                     {!isCompleted && (
                       <Button
-                        className="flex-1 bg-[#722F37] hover:bg-[#722F37]/90"
+                        className="flex-1 bg-brand-burgundy hover:bg-brand-burgundy/90"
                         onClick={handleComplete}
                         size="lg"
                       >

@@ -133,6 +133,7 @@ export default function ShareButton({
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-1.5 rounded-lg hover:bg-muted transition-colors"
+                  aria-label="Close share dialog"
                 >
                   <X weight="bold" className="h-4 w-4 text-muted-foreground" />
                 </button>

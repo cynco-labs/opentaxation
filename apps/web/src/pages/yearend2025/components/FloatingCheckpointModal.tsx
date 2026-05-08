@@ -108,7 +108,7 @@ export default function FloatingCheckpointModal({
                       {checkpoint.titleEn}
                     </p>
                     {checkpoint.emphasis === 'high' && (
-                      <p className="text-[10px] text-[#E5A84B] font-bold mt-1">
+                      <p className="text-[10px] text-brand-amber font-bold mt-1">
                         ⭐ PENTING
                       </p>
                     )}

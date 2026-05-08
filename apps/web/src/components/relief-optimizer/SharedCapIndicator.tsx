@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Warning } from 'phosphor-react';
 import type { SharedCapUsage } from '@tax-engine/core';
@@ -15,7 +16,7 @@ function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
-export default function SharedCapIndicator({
+const SharedCapIndicator = React.memo(function SharedCapIndicator({
   usage,
   compact = false,
 }: SharedCapIndicatorProps) {
@@ -110,4 +111,6 @@ export default function SharedCapIndicator({
       )}
     </div>
   );
-}
+});
+
+export default SharedCapIndicator;

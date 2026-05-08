@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import type { TaxBracketBreakdown } from '@tax-engine/core';
 import { formatRM, formatBracketLabel, formatPercent } from '@/lib/formatters';
@@ -14,7 +15,7 @@ interface TaxBracketBreakdownProps {
  * Displays the progressive tax bracket breakdown showing how income/profit
  * flows through each tier with the rate and tax amount for each.
  */
-export default function TaxBracketBreakdownComponent({
+const TaxBracketBreakdownComponent = React.memo(function TaxBracketBreakdownComponent({
   breakdown,
   title = 'Tax Bracket Breakdown',
   taxableIncome,
@@ -132,4 +133,6 @@ export default function TaxBracketBreakdownComponent({
       </p>
     </div>
   );
-}
+});
+
+export default TaxBracketBreakdownComponent;

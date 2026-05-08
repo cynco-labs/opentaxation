@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { formatRM } from '@/lib/formatters';
@@ -9,7 +10,7 @@ interface WaterfallBreakdownProps {
   className?: string;
 }
 
-export default function WaterfallBreakdown({ steps, title, className }: WaterfallBreakdownProps) {
+const WaterfallBreakdown = React.memo(function WaterfallBreakdown({ steps, title, className }: WaterfallBreakdownProps) {
   const getPrefix = (type: WaterfallStep['type']) => {
     switch (type) {
       case 'add':
@@ -85,4 +86,6 @@ export default function WaterfallBreakdown({ steps, title, className }: Waterfal
       ))}
     </div>
   );
-}
+});
+
+export default WaterfallBreakdown;

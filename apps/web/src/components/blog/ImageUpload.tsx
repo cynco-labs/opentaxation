@@ -100,7 +100,7 @@ export default function ImageUpload({
       <div className={`relative ${aspectRatio} rounded-lg overflow-hidden bg-muted group`}>
         <img
           src={value}
-          alt="Uploaded"
+          alt="Uploaded cover image preview"
           className="w-full h-full object-cover"
           onError={() => setError('Failed to load image')}
         />
@@ -110,6 +110,7 @@ export default function ImageUpload({
             onClick={() => fileInputRef.current?.click()}
             className="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
             title="Replace image"
+            aria-label="Replace image"
           >
             <Upload weight="bold" className="h-5 w-5 text-white" />
           </button>
@@ -118,6 +119,7 @@ export default function ImageUpload({
             onClick={handleRemove}
             className="p-2 bg-red-500/80 hover:bg-red-500 rounded-lg transition-colors"
             title="Remove image"
+            aria-label="Remove image"
           >
             <X weight="bold" className="h-5 w-5 text-white" />
           </button>

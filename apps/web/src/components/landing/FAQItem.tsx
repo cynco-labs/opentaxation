@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CaretDown } from 'phosphor-react';
 
@@ -12,7 +13,7 @@ interface FAQItemProps {
 /**
  * Accordion FAQ item with numbered badges and smooth animations
  */
-export default function FAQItem({
+const FAQItem = React.memo(function FAQItem({
   question,
   answer,
   isOpen,
@@ -87,4 +88,6 @@ export default function FAQItem({
       </AnimatePresence>
     </div>
   );
-}
+});
+
+export default FAQItem;

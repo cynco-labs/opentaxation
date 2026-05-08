@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   LineChart,
@@ -23,12 +23,12 @@ interface CrossoverChartProps {
 
 /**
  * Crossover Chart Component
- * 
+ *
  * Per React best practices: https://react.dev/learn/you-might-not-need-an-effect
  * - Uses useMemo to cache expensive chart data calculations
  * - Only recalculates when relevant inputs change
  */
-export default function CrossoverChart({ inputs }: CrossoverChartProps) {
+const CrossoverChart = React.memo(function CrossoverChart({ inputs }: CrossoverChartProps) {
   const { t } = useTranslation();
   // Extract reliefs values for dependency array
   const reliefs = inputs.reliefs;
@@ -199,4 +199,6 @@ export default function CrossoverChart({ inputs }: CrossoverChartProps) {
       </CardContent>
     </Card>
   );
-}
+});
+
+export default CrossoverChart;

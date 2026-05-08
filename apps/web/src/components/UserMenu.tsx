@@ -42,6 +42,7 @@ export function UserMenu() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-center h-10 w-10 rounded-full overflow-hidden border border-border hover:border-foreground/30 transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20"
+        aria-label="Open user menu"
       >
         {userImage ? (
           <img

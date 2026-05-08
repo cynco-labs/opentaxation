@@ -115,13 +115,13 @@ function CircularProgress({ progress, size = 56, strokeWidth = 4 }: { progress: 
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="transform -rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#E8DDD0" strokeWidth={strokeWidth} />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="hsl(var(--brand-border-ivory))" strokeWidth={strokeWidth} />
         <motion.circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={isComplete ? '#5B8A72' : '#722F37'}
+          stroke={isComplete ? 'hsl(var(--brand-sage))' : 'hsl(var(--brand-burgundy))'}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
@@ -133,10 +133,10 @@ function CircularProgress({ progress, size = 56, strokeWidth = 4 }: { progress: 
       <div className="absolute inset-0 flex items-center justify-center">
         {isComplete ? (
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 25 }}>
-            <CheckCircle weight="fill" className="w-6 h-6 text-[#5B8A72]" />
+            <CheckCircle weight="fill" className="w-6 h-6 text-brand-sage" />
           </motion.div>
         ) : (
-          <span className="text-sm font-semibold tabular-nums text-[#4A3728]">{progress}%</span>
+          <span className="text-sm font-semibold tabular-nums text-brand-espresso">{progress}%</span>
         )}
       </div>
     </div>
@@ -195,7 +195,7 @@ export default function EInvoicingHub() {
         <meta name="description" content="Interactive e-invoicing compliance checker for Malaysian businesses. Find your phase, deadline, and get a personalized action plan." />
       </Helmet>
 
-      <div className="min-h-[calc(100vh-3.5rem)] min-h-[calc(100dvh-3.5rem)] w-full bg-[#FAF7F2] flex flex-col">
+      <div className="min-h-[calc(100vh-3.5rem)] min-h-[calc(100dvh-3.5rem)] w-full bg-brand-ivory flex flex-col">
         {/* ===== MAIN CONTENT ===== */}
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -213,10 +213,10 @@ export default function EInvoicingHub() {
                   className={cn(!result && 'text-center')}
                 >
                   <div className={cn(
-                    'inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-white/60 border border-[#E8DDD0] text-xs font-medium text-[#6B5B4F]',
+                    'inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-white/60 border border-brand-border-ivory text-xs font-medium text-muted-foreground',
                     !result && 'mx-auto'
                   )}>
-                    <Receipt weight="fill" className="h-3.5 w-3.5 text-[#722F37]" />
+                    <Receipt weight="fill" className="h-3.5 w-3.5 text-brand-burgundy" />
                     MyInvois Compliance Checker
                   </div>
 
@@ -241,20 +241,20 @@ export default function EInvoicingHub() {
                       className={cn('h-7 mb-4', !result && 'flex items-center justify-center')}
                     >
                       {previewResult && !result ? (
-                        <span className="inline-flex items-center gap-1.5 text-xs text-[#8B7B6B]">
+                        <span className="inline-flex items-center gap-1.5 text-xs text-brand-medium-gray">
                           <Info weight="fill" className="w-3 h-3" />
                           {previewResult.id === 'exempt' ? 'Exempt from e-invoicing' : `${previewResult.name} – Tap to confirm`}
                         </span>
                       ) : result ? (
                         <span className={cn(
                           'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium',
-                          isExempt ? 'bg-[#5B8A72]/10 text-[#5B8A72]' : 'bg-brand-gold/20 text-brand-espresso'
+                          isExempt ? 'bg-brand-sage/10 text-brand-sage' : 'bg-brand-gold/20 text-brand-espresso'
                         )}>
                           {isExempt ? <ShieldCheck weight="fill" className="w-3.5 h-3.5" /> : <CalendarBlank weight="fill" className="w-3.5 h-3.5" />}
                           {isExempt ? 'Exempt' : result.name}
                         </span>
                       ) : (
-                        <span className="text-[11px] uppercase tracking-[0.15em] text-[#8B7B6B]/60">
+                        <span className="text-[11px] uppercase tracking-[0.15em] text-brand-medium-gray/60">
                           Select your annual revenue
                         </span>
                       )}
@@ -283,7 +283,7 @@ export default function EInvoicingHub() {
                             'relative min-h-[44px] px-4 py-3 rounded-2xl text-sm font-medium transition-all touch-manipulation',
                             isSelected
                               ? tierExempt
-                                ? 'bg-[#5B8A72] text-white'
+                                ? 'bg-brand-sage text-white'
                                 : 'bg-brand-gold text-brand-espresso'
                               : isHovered && !result
                                 ? 'bg-white border-2 border-brand-rose/30 text-brand-espresso'
@@ -293,7 +293,7 @@ export default function EInvoicingHub() {
                           <span className="hidden sm:inline">{tier.label}</span>
                           <span className="sm:hidden">{tier.shortLabel}</span>
                           {tierExempt && !isSelected && (
-                            <span className="absolute -top-1.5 -right-1.5 text-[10px] px-1.5 py-0.5 bg-[#5B8A72] text-white rounded-full font-bold">
+                            <span className="absolute -top-1.5 -right-1.5 text-[10px] px-1.5 py-0.5 bg-brand-sage text-white rounded-full font-bold">
                               FREE
                             </span>
                           )}
@@ -308,7 +308,7 @@ export default function EInvoicingHub() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.25 }}
-                      className="flex items-center justify-center gap-1.5 text-[11px] text-[#8B7B6B]/50 mt-5"
+                      className="flex items-center justify-center gap-1.5 text-[11px] text-brand-medium-gray/50 mt-5"
                     >
                       <ShieldCheck weight="fill" className="w-3 h-3" />
                       Based on LHDN Dec 2025 guidelines
@@ -327,7 +327,7 @@ export default function EInvoicingHub() {
                     >
                       {/* Tab Switcher */}
                       <div className="flex mb-6">
-                        <div className="relative inline-flex items-center p-1 bg-white/60 border border-[#E8DDD0] rounded-2xl">
+                        <div className="relative inline-flex items-center p-1 bg-white/60 border border-brand-border-ivory rounded-2xl">
                           <motion.div
                             className="absolute top-1 bottom-1 bg-white rounded-xl shadow-sm"
                             initial={false}
@@ -343,7 +343,7 @@ export default function EInvoicingHub() {
                               onClick={() => setActiveTab(id)}
                               className={cn(
                                 'relative z-10 flex items-center gap-2 min-h-[44px] px-5 rounded-xl text-sm font-medium transition-colors touch-manipulation',
-                                activeTab === id ? 'text-[#4A3728]' : 'text-[#8B7B6B]'
+                                activeTab === id ? 'text-brand-espresso' : 'text-brand-medium-gray'
                               )}
                             >
                               <Icon weight={activeTab === id ? 'fill' : 'regular'} className="w-4 h-4" />
@@ -351,7 +351,7 @@ export default function EInvoicingHub() {
                               {id === 'checklist' && checked.length > 0 && (
                                 <span className={cn(
                                   'text-[11px] px-1.5 py-0.5 rounded-full font-semibold',
-                                  checkProgress === 100 ? 'bg-[#5B8A72] text-white' : 'bg-[#F5EDE3] text-[#6B5B4F]'
+                                  checkProgress === 100 ? 'bg-brand-sage text-white' : 'bg-brand-muted-ivory text-muted-foreground'
                                 )}>
                                   {checked.length}/{checklistItems.length}
                                 </span>
@@ -373,7 +373,7 @@ export default function EInvoicingHub() {
                             className="space-y-3"
                           >
                             {/* Step 1 - Identifiers (always visible) */}
-                            <div className="p-4 rounded-2xl bg-white border border-[#E8DDD0]">
+                            <div className="p-4 rounded-2xl bg-white border border-brand-border-ivory">
                             <div className="flex items-center gap-3 mb-3">
                               <div className="w-8 h-8 rounded-lg bg-brand-gold/20 text-brand-espresso flex items-center justify-center text-sm font-bold flex-shrink-0">1</div>
                               <div className="flex-1">
@@ -411,7 +411,7 @@ export default function EInvoicingHub() {
                                   sw.comingSoon ? (
                                     <span key={sw.name} className="inline-flex items-center gap-1.5 text-xs px-3 py-2 bg-brand-muted-ivory border border-brand-border-ivory rounded-xl text-brand-espresso/50">
                                       {sw.name}
-                                      <span className="text-[10px] px-1.5 py-0.5 bg-[#5B8A72] text-white rounded-full font-bold">Soon</span>
+                                      <span className="text-[10px] px-1.5 py-0.5 bg-brand-sage text-white rounded-full font-bold">Soon</span>
                                     </span>
                                   ) : (
                                     <a key={sw.name} href={sw.url} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-2 bg-white border border-brand-border-ivory rounded-xl text-brand-espresso hover:bg-brand-muted-ivory transition-colors">
@@ -431,15 +431,15 @@ export default function EInvoicingHub() {
                             </div>
 
                             {/* Step 3 - Test & Go Live */}
-                            <div className="p-4 rounded-2xl bg-white border border-[#E8DDD0]">
+                            <div className="p-4 rounded-2xl bg-white border border-brand-border-ivory">
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-[#5B8A72] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
+                                <div className="w-8 h-8 rounded-lg bg-brand-sage text-white flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
                                 <div className="flex-1">
-                                  <span className="font-semibold text-[#4A3728]">Test & go live</span>
+                                  <span className="font-semibold text-brand-espresso">Test & go live</span>
                                 </div>
-                                <div className="flex items-center gap-3 text-xs text-[#6B5B4F]">
-                                  <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#E8DDD0]" />Sandbox</span>
-                                  <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#5B8A72]" />Production</span>
+                                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                  <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-brand-border-ivory" />Sandbox</span>
+                                  <span className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-brand-sage" />Production</span>
                                 </div>
                               </div>
                             </div>
@@ -447,13 +447,13 @@ export default function EInvoicingHub() {
                             {/* Industry Rules Link */}
                             <button
                               onClick={() => setShowIndustries(true)}
-                              className="w-full flex items-center justify-between p-3 rounded-xl border border-[#E8DDD0] text-left bg-white/60 hover:bg-white hover:border-[#D4C4B0] transition-all touch-manipulation"
+                              className="w-full flex items-center justify-between p-3 rounded-xl border border-brand-border-ivory text-left bg-white/60 hover:bg-white hover:border-brand-border-ivory transition-all touch-manipulation"
                             >
                               <div className="flex items-center gap-2">
-                                <Buildings weight="duotone" className="w-4 h-4 text-[#8B7B6B]" />
-                                <span className="text-sm text-[#6B5B4F]">Industry-specific rules</span>
+                                <Buildings weight="duotone" className="w-4 h-4 text-brand-medium-gray" />
+                                <span className="text-sm text-muted-foreground">Industry-specific rules</span>
                               </div>
-                              <CaretRight weight="bold" className="w-3 h-3 text-[#8B7B6B]" />
+                              <CaretRight weight="bold" className="w-3 h-3 text-brand-medium-gray" />
                             </button>
                           </motion.div>
                         )}
@@ -468,7 +468,7 @@ export default function EInvoicingHub() {
                             className="space-y-3"
                           >
                             {/* Progress Header */}
-                            <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-[#E8DDD0]">
+                            <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-brand-border-ivory">
                               <div className="flex items-center gap-3">
                                 <CircularProgress progress={checkProgress} size={48} strokeWidth={3} />
                                 <div>
@@ -480,7 +480,7 @@ export default function EInvoicingHub() {
                                 <motion.div
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
-                                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#5B8A72] text-white rounded-full text-xs font-medium"
+                                  className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-sage text-white rounded-full text-xs font-medium"
                                 >
                                   <Confetti weight="fill" className="w-3.5 h-3.5" />
                                   Ready!
@@ -502,7 +502,7 @@ export default function EInvoicingHub() {
                                     className={cn(
                                       'w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all touch-manipulation',
                                       isChecked
-                                        ? 'bg-[#5B8A72]/5 border-[#5B8A72]/20'
+                                        ? 'bg-brand-sage/5 border-brand-sage/20'
                                         : item.urgent
                                           ? 'bg-red-500/5 border-red-500/20 hover:bg-red-500/10'
                                           : 'bg-white border-brand-border-ivory hover:border-brand-rose/30'
@@ -510,14 +510,14 @@ export default function EInvoicingHub() {
                                   >
                                     <div className={cn(
                                       'w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all',
-                                      isChecked ? 'bg-[#5B8A72] border-[#5B8A72]' : item.urgent ? 'border-red-400' : 'border-brand-border-ivory'
+                                      isChecked ? 'bg-brand-sage border-brand-sage' : item.urgent ? 'border-red-400' : 'border-brand-border-ivory'
                                     )}>
                                       {isChecked && <CheckCircle weight="fill" className="w-4 h-4 text-white" />}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <span className={cn(
                                         'font-medium text-sm',
-                                        isChecked ? 'text-[#8B7B6B] line-through' : item.urgent ? 'text-red-600' : 'text-brand-espresso'
+                                        isChecked ? 'text-brand-medium-gray line-through' : item.urgent ? 'text-red-600' : 'text-brand-espresso'
                                       )}>
                                         {item.label}
                                       </span>
@@ -565,16 +565,16 @@ export default function EInvoicingHub() {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-6 rounded-3xl bg-white/60 border border-[#E8DDD0]"
+                    className="p-6 rounded-3xl bg-white/60 border border-brand-border-ivory"
                   >
-                    <p className="text-[#6B5B4F] mb-5">
+                    <p className="text-muted-foreground mb-5">
                       Businesses under RM1 million are exempt from mandatory e-invoicing. You can still implement voluntarily.
                     </p>
                     <a
                       href="https://www.hasil.gov.my/en/e-invoice/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#722F37] text-white text-sm font-medium hover:bg-[#5A252C] transition-colors touch-manipulation"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-burgundy text-white text-sm font-medium hover:bg-brand-maroon transition-colors touch-manipulation"
                     >
                       Learn more <ArrowSquareOut weight="bold" className="w-4 h-4" />
                     </a>
@@ -596,7 +596,7 @@ export default function EInvoicingHub() {
                       className={cn(
                         'p-6 sm:p-7 rounded-3xl border shadow-soft',
                         isExempt
-                          ? 'bg-[#5B8A72]/10 border-[#5B8A72]/20 text-[#2F3A31]'
+                          ? 'bg-brand-sage/10 border-brand-sage/20 text-[#2F3A31]'
                           : 'bg-gradient-to-br from-brand-ivory to-brand-muted-ivory border-brand-border-ivory text-brand-espresso'
                       )}
                     >
@@ -605,10 +605,10 @@ export default function EInvoicingHub() {
                         <div className="flex items-center gap-4 mb-6">
                           <div className={cn(
                             'w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0',
-                            isExempt ? 'bg-[#5B8A72]/20' : 'bg-brand-muted-ivory'
+                            isExempt ? 'bg-brand-sage/20' : 'bg-brand-muted-ivory'
                           )}>
                             {isExempt ? (
-                              <ShieldCheck weight="fill" className="w-8 h-8 text-[#5B8A72]" />
+                              <ShieldCheck weight="fill" className="w-8 h-8 text-brand-sage" />
                             ) : (
                               <Clock weight="light" className="w-8 h-8 text-brand-espresso/80" />
                             )}
@@ -628,11 +628,11 @@ export default function EInvoicingHub() {
                             ) : (
                               <>
                                 <div
-                                  className="font-serif text-2xl font-normal text-[#4A3728]"
+                                  className="font-serif text-2xl font-normal text-brand-espresso"
                                 >
                                   No Deadline
                                 </div>
-                                <div className="text-sm text-[#5B8A72]">Voluntary compliance</div>
+                                <div className="text-sm text-brand-sage">Voluntary compliance</div>
                               </>
                             )}
                           </div>
@@ -710,16 +710,16 @@ export default function EInvoicingHub() {
                     </div>
 
                     {/* Quick Links */}
-                    <div className="mt-4 p-4 rounded-2xl bg-white/60 border border-[#E8DDD0]">
-                      <p className="text-xs text-[#8B7B6B] mb-3">Quick Links</p>
+                    <div className="mt-4 p-4 rounded-2xl bg-white/60 border border-brand-border-ivory">
+                      <p className="text-xs text-brand-medium-gray mb-3">Quick Links</p>
                       <div className="flex flex-wrap gap-2">
-                        <a href="https://myinvois.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-2 bg-[#F5EDE3] rounded-xl text-[#4A3728] hover:bg-[#E8DDD0] transition-colors">
+                        <a href="https://myinvois.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-2 bg-brand-muted-ivory rounded-xl text-brand-espresso hover:bg-brand-border-ivory transition-colors">
                           MyInvois Portal
                         </a>
-                        <a href="https://sdk.myinvois.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-2 bg-[#F5EDE3] rounded-xl text-[#4A3728] hover:bg-[#E8DDD0] transition-colors">
+                        <a href="https://sdk.myinvois.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-2 bg-brand-muted-ivory rounded-xl text-brand-espresso hover:bg-brand-border-ivory transition-colors">
                           SDK Docs
                         </a>
-                        <a href="https://mytax.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-2 bg-[#F5EDE3] rounded-xl text-[#4A3728] hover:bg-[#E8DDD0] transition-colors">
+                        <a href="https://mytax.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-2 bg-brand-muted-ivory rounded-xl text-brand-espresso hover:bg-brand-border-ivory transition-colors">
                           MyTax
                         </a>
                       </div>
@@ -732,11 +732,11 @@ export default function EInvoicingHub() {
         </main>
 
         {/* ===== FOOTER ===== */}
-        <footer className="py-5 border-t border-[#E8DDD0] bg-[#FFFCF9]/50">
-          <div className="max-w-7xl mx-auto px-4 flex justify-center gap-6 text-xs text-[#8B7B6B]">
-            <a href="https://myinvois.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="hover:text-[#722F37] transition-colors">MyInvois</a>
-            <a href="https://sdk.myinvois.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="hover:text-[#722F37] transition-colors">SDK</a>
-            <a href="https://mytax.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="hover:text-[#722F37] transition-colors">MyTax</a>
+        <footer className="py-5 border-t border-brand-border-ivory bg-card/50">
+          <div className="max-w-7xl mx-auto px-4 flex justify-center gap-6 text-xs text-brand-medium-gray">
+            <a href="https://myinvois.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-burgundy transition-colors">MyInvois</a>
+            <a href="https://sdk.myinvois.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-burgundy transition-colors">SDK</a>
+            <a href="https://mytax.hasil.gov.my/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-burgundy transition-colors">MyTax</a>
           </div>
         </footer>
 
@@ -744,35 +744,35 @@ export default function EInvoicingHub() {
         <AnimatePresence>
           {showIndustries && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50">
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={closeIndustries} />
+              <button type="button" aria-label="Close industry panel" className="absolute inset-0 bg-black/40" onClick={closeIndustries} onKeyDown={(e) => e.key === 'Escape' && closeIndustries()} />
               <motion.div
                 initial={{ y: '100%' }}
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-                className="absolute bottom-0 left-0 right-0 bg-[#FAF7F2] rounded-t-3xl max-h-[80vh] flex flex-col pb-safe lg:left-auto lg:right-4 lg:bottom-4 lg:w-[480px] lg:rounded-3xl lg:max-h-[70vh]"
+                className="absolute bottom-0 left-0 right-0 bg-brand-ivory rounded-t-3xl max-h-[80vh] flex flex-col pb-safe lg:left-auto lg:right-4 lg:bottom-4 lg:w-[480px] lg:rounded-3xl lg:max-h-[70vh]"
               >
                 {/* Handle - mobile only */}
                 <div className="flex justify-center pt-3 pb-2 lg:hidden">
-                  <div className="w-9 h-1 rounded-full bg-[#E8DDD0]" />
+                  <div className="w-9 h-1 rounded-full bg-brand-border-ivory" />
                 </div>
 
                 {/* Header */}
-                <div className="px-4 py-3 flex items-center justify-between border-b border-[#E8DDD0]">
+                <div className="px-4 py-3 flex items-center justify-between border-b border-brand-border-ivory">
                   <div className="flex items-center gap-2">
                     {selectedIndustryData && (
-                      <button onClick={() => setSelectedIndustry(null)} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#F5EDE3] touch-manipulation transition-colors">
-                        <ArrowLeft weight="bold" className="w-4 h-4 text-[#4A3728]" />
+                      <button aria-label="Back to industry list" onClick={() => setSelectedIndustry(null)} className="w-11 h-11 flex items-center justify-center rounded-xl hover:bg-brand-muted-ivory touch-manipulation transition-colors">
+                        <ArrowLeft weight="bold" className="w-4 h-4 text-brand-espresso" />
                       </button>
                     )}
                     <span
-                      className="font-serif font-normal text-[#4A3728]"
+                      className="font-serif font-normal text-brand-espresso"
                     >
                       {selectedIndustryData?.name || 'Industry Guide'}
                     </span>
                   </div>
-                  <button onClick={closeIndustries} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#F5EDE3] touch-manipulation transition-colors">
-                    <X weight="bold" className="w-4 h-4 text-[#4A3728]" />
+                  <button aria-label="Close industry panel" onClick={closeIndustries} className="w-11 h-11 flex items-center justify-center rounded-xl hover:bg-brand-muted-ivory touch-manipulation transition-colors">
+                    <X weight="bold" className="w-4 h-4 text-brand-espresso" />
                   </button>
                 </div>
 
@@ -781,29 +781,29 @@ export default function EInvoicingHub() {
                   <AnimatePresence mode="wait">
                     {selectedIndustryData ? (
                       <motion.div key="detail" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} className="space-y-4">
-                        <p className="text-sm text-[#6B5B4F]">{selectedIndustryData.summary}</p>
+                        <p className="text-sm text-muted-foreground">{selectedIndustryData.summary}</p>
                         <div className={cn(
                           'rounded-2xl p-4 flex items-center gap-3',
-                          selectedIndustryData.consolidatedAllowed ? 'bg-[#5B8A72]/10' : 'bg-[#F5EDE3]'
+                          selectedIndustryData.consolidatedAllowed ? 'bg-brand-sage/10' : 'bg-brand-muted-ivory'
                         )}>
                           {selectedIndustryData.consolidatedAllowed ? (
-                            <CheckCircle weight="fill" className="w-6 h-6 text-[#5B8A72]" />
+                            <CheckCircle weight="fill" className="w-6 h-6 text-brand-sage" />
                           ) : (
-                            <X weight="bold" className="w-6 h-6 text-[#8B7B6B]" />
+                            <X weight="bold" className="w-6 h-6 text-brand-medium-gray" />
                           )}
                           <div>
-                            <span className="font-medium text-[#4A3728] block">Consolidated: {selectedIndustryData.consolidatedAllowed ? 'Yes' : 'No'}</span>
+                            <span className="font-medium text-brand-espresso block">Consolidated: {selectedIndustryData.consolidatedAllowed ? 'Yes' : 'No'}</span>
                             {selectedIndustryData.consolidatedNotes && (
-                              <span className="text-sm text-[#6B5B4F]">{selectedIndustryData.consolidatedNotes}</span>
+                              <span className="text-sm text-muted-foreground">{selectedIndustryData.consolidatedNotes}</span>
                             )}
                           </div>
                         </div>
                         <div>
-                          <span className="text-xs uppercase tracking-wider text-[#8B7B6B] block mb-2">Key Points</span>
+                          <span className="text-xs uppercase tracking-wider text-brand-medium-gray block mb-2">Key Points</span>
                           <div className="space-y-2">
                             {selectedIndustryData.keyPoints.map((point, i) => (
-                              <div key={i} className="flex items-start gap-2.5 text-sm text-[#4A3728]">
-                                <Circle weight="fill" className="w-1.5 h-1.5 text-[#722F37] mt-2 flex-shrink-0" />
+                              <div key={i} className="flex items-start gap-2.5 text-sm text-brand-espresso">
+                                <Circle weight="fill" className="w-1.5 h-1.5 text-brand-burgundy mt-2 flex-shrink-0" />
                                 <span>{point}</span>
                               </div>
                             ))}
@@ -826,13 +826,13 @@ export default function EInvoicingHub() {
                           <button
                             key={ind.id}
                             onClick={() => setSelectedIndustry(ind.id)}
-                            className="flex items-center gap-2 p-4 rounded-2xl border border-[#E8DDD0] bg-white/60 text-left hover:bg-white hover:border-[#D4C4B0] transition-all touch-manipulation min-h-[52px]"
+                            className="flex items-center gap-2 p-4 rounded-2xl border border-brand-border-ivory bg-white/60 text-left hover:bg-white hover:border-brand-border-ivory transition-all touch-manipulation min-h-[52px]"
                           >
-                            <span className="flex-1 min-w-0 font-medium text-sm text-[#4A3728] truncate">{ind.name}</span>
+                            <span className="flex-1 min-w-0 font-medium text-sm text-brand-espresso truncate">{ind.name}</span>
                             {ind.consolidatedAllowed ? (
-                              <CheckCircle weight="fill" className="w-5 h-5 text-[#5B8A72] flex-shrink-0" />
+                              <CheckCircle weight="fill" className="w-5 h-5 text-brand-sage flex-shrink-0" />
                             ) : (
-                              <X weight="bold" className="w-5 h-5 text-[#8B7B6B] flex-shrink-0" />
+                              <X weight="bold" className="w-5 h-5 text-brand-medium-gray flex-shrink-0" />
                             )}
                           </button>
                         ))}

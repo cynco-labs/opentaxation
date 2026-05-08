@@ -25,7 +25,7 @@ export default function ScoreScreen({
   const isComplete = completedCount === totalCount;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FAF7F2] via-white to-[#FAF7F2] flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
+    <div className="min-h-screen bg-gradient-to-br from-brand-ivory via-white to-brand-ivory flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -85,7 +85,7 @@ export default function ScoreScreen({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="p-5 sm:p-6 md:p-8 shadow-xl border-gray-300 bg-gradient-to-br from-[#5A2129] to-[#4A1B21] text-white rounded-[2px]">
+              <Card className="p-5 sm:p-6 md:p-8 shadow-xl border-gray-300 bg-gradient-to-br from-brand-maroon to-brand-maroon text-white rounded-[2px]">
                 <div className="flex flex-col sm:flex-row items-start gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-white/10 rounded-[2px] flex items-center justify-center mx-auto sm:mx-0">
                     <Calendar weight="duotone" className="h-6 w-6" />
@@ -98,7 +98,7 @@ export default function ScoreScreen({
                     <Button
                       asChild
                       size="default"
-                      className="bg-white hover:bg-gray-100 active:bg-gray-200 text-[#5A2129] font-semibold w-full sm:w-auto py-3 sm:py-2.5 touch-manipulation active:scale-95 transition-all"
+                      className="bg-white hover:bg-gray-100 active:bg-gray-200 text-brand-maroon font-semibold w-full sm:w-auto py-3 sm:py-2.5 touch-manipulation active:scale-95 transition-all"
                     >
                       <a
                         href="https://zakat2u.com.my/cart/troli"

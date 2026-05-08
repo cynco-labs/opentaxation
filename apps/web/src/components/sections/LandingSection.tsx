@@ -60,7 +60,7 @@ function GoogleLoginButton() {
           {user.user_metadata?.avatar_url ? (
             <img
               src={user.user_metadata.avatar_url}
-              alt=""
+              alt={`${user.email || 'User'} avatar`}
               className="w-7 h-7 rounded-full ring-2 ring-background"
             />
           ) : (

@@ -24,8 +24,8 @@ export default function ReceiptField({
         'border-2 hover:shadow-md active:scale-[0.98]',
         isCompleted
           ? 'border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50'
-          : 'border-border/40 bg-white hover:border-[#722F37]/30 hover:bg-[#FAF7F2]/50',
-        isEmphasized && !isCompleted && 'ring-2 ring-[#E5A84B]/30 border-[#E5A84B]/50'
+          : 'border-border/40 bg-white hover:border-brand-burgundy/30 hover:bg-brand-ivory/50',
+        isEmphasized && !isCompleted && 'ring-2 ring-brand-amber/30 border-brand-amber/50'
       )}
       onClick={onClick}
       onKeyDown={(e) => {
@@ -64,7 +64,7 @@ export default function ReceiptField({
             'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base transition-all',
             isCompleted
               ? 'bg-emerald-500 text-white shadow-sm'
-              : 'bg-muted text-muted-foreground group-hover:bg-[#722F37]/10 group-hover:text-[#722F37]'
+              : 'bg-muted text-muted-foreground group-hover:bg-brand-burgundy/10 group-hover:text-brand-burgundy'
           )}
         >
           {isCompleted ? (
@@ -84,7 +84,7 @@ export default function ReceiptField({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <p className="text-base font-semibold text-[#4A3728] mb-0.5 group-hover:text-[#722F37] transition-colors">
+              <p className="text-base font-semibold text-brand-espresso mb-0.5 group-hover:text-brand-burgundy transition-colors">
                 {checkpoint.titleMy}
               </p>
               <p className="text-sm text-muted-foreground">
@@ -96,7 +96,7 @@ export default function ReceiptField({
             {!isCompleted && (
               <ArrowRight
                 weight="bold"
-                className="h-5 w-5 text-muted-foreground group-hover:text-[#722F37] group-hover:translate-x-1 transition-all flex-shrink-0"
+                className="h-5 w-5 text-muted-foreground group-hover:text-brand-burgundy group-hover:translate-x-1 transition-all flex-shrink-0"
               />
             )}
           </div>
@@ -104,7 +104,7 @@ export default function ReceiptField({
 
         {/* Emphasis badge */}
         {isEmphasized && !isCompleted && (
-          <Badge className="bg-[#E5A84B] text-white border-none flex-shrink-0 text-xs px-2 py-0.5">
+          <Badge className="bg-brand-amber text-white border-none flex-shrink-0 text-xs px-2 py-0.5">
             penting
           </Badge>
         )}

@@ -76,10 +76,10 @@ export default function VisualReceipt({
               <div>
                 <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide flex items-center gap-1">
                   No. Kad Pengenalan
-                  <span className="text-[10px] text-[#E5A84B]">⭐</span>
+                  <span className="text-[10px] text-brand-amber">⭐</span>
                 </label>
-                <div className="mt-0.5 sm:mt-1 h-6 sm:h-8 bg-amber-50/50 border-b-2 border-[#E5A84B] flex items-center px-2">
-                  <div className="w-full h-px bg-[#E5A84B]/40" />
+                <div className="mt-0.5 sm:mt-1 h-6 sm:h-8 bg-amber-50/50 border-b-2 border-brand-amber flex items-center px-2">
+                  <div className="w-full h-px bg-brand-amber/40" />
                 </div>
               </div>
 
@@ -189,8 +189,8 @@ export default function VisualReceipt({
                     ? 'bg-emerald-500 border-emerald-600 text-white shadow-sm'
                     : isEmphasized
                     ? 'bg-amber-400 border-amber-500 text-white shadow-sm'
-                    : 'bg-white/90 backdrop-blur-sm border-[#5A2129]/30 text-[#5A2129] shadow-sm',
-                  isActive && 'ring-2 ring-[#5A2129]/20 scale-110'
+                    : 'bg-white/90 backdrop-blur-sm border-brand-maroon/30 text-brand-maroon shadow-sm',
+                  isActive && 'ring-2 ring-brand-maroon/20 scale-110'
                 )}
                 style={{
                   top: pos.top,

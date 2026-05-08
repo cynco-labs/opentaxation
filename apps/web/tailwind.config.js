@@ -93,6 +93,11 @@ export default {
           'border-maroon': "hsl(var(--brand-border-maroon))",
           'muted-ivory': "hsl(var(--brand-muted-ivory))",
           'muted-rose': "hsl(var(--brand-muted-rose))",
+          'sage': "hsl(var(--brand-sage))",
+          'amber': "hsl(var(--brand-amber))",
+          'warm-gray': "hsl(var(--brand-warm-gray))",
+          'dark-brown': "hsl(var(--brand-dark-brown))",
+          'medium-gray': "hsl(var(--brand-medium-gray))",
         },
       },
       borderRadius: {

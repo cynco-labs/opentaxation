@@ -368,7 +368,7 @@ export default function LandingHub() {
                       onClick={() => navigate(app.path)}
                       whileHover={{ scale: 1.02, y: -4 }}
                       whileTap={{ scale: 0.98 }}
-                      className="relative flex-shrink-0 w-[260px] sm:w-[280px] h-[320px] sm:h-[340px] rounded-3xl overflow-hidden snap-start cursor-pointer group bg-gradient-to-br from-white to-brand-muted-ivory text-brand-espresso shadow-card border border-brand-border-ivory"
+                      className="relative flex-shrink-0 w-[75vw] xs:w-[260px] sm:w-[280px] h-[320px] sm:h-[340px] rounded-3xl overflow-hidden snap-start cursor-pointer group bg-gradient-to-br from-white to-brand-muted-ivory text-brand-espresso shadow-card border border-brand-border-ivory"
                     >
                       {/* NEW badge */}
                       {app.isNew && (

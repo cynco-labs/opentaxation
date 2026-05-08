@@ -98,25 +98,25 @@ function Section({ id, children }: { id: string; children: React.ReactNode }) {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#4A2C2A] mb-4 tracking-tight">
+    <h2 className="font-serif text-2xl sm:text-3xl font-normal text-brand-dark-brown mb-4 tracking-tight">
       {children}
     </h2>
   );
 }
 
 function SectionDesc({ children }: { children: React.ReactNode }) {
-  return <p className="text-[#6B5B5B] leading-relaxed mb-6">{children}</p>;
+  return <p className="text-brand-warm-gray leading-relaxed mb-6">{children}</p>;
 }
 
 function Highlight({ children }: { children: React.ReactNode }) {
-  return <span className="font-medium text-[#4A2C2A]">{children}</span>;
+  return <span className="font-medium text-brand-dark-brown">{children}</span>;
 }
 
 function InfoBox({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
-    <div className="my-6 p-5 rounded-2xl bg-[#FDF5F0] border border-[#E8D5C4]">
-      {title && <p className="font-medium text-[#4A2C2A] text-sm mb-2">{title}</p>}
-      <div className="text-sm text-[#6B5B5B]">{children}</div>
+    <div className="my-6 p-5 rounded-2xl bg-brand-muted-ivory border border-brand-border-ivory">
+      {title && <p className="font-medium text-brand-dark-brown text-sm mb-2">{title}</p>}
+      <div className="text-sm text-brand-warm-gray">{children}</div>
     </div>
   );
 }
@@ -124,21 +124,21 @@ function InfoBox({ title, children }: { title?: string; children: React.ReactNod
 function WarningBox({ children }: { children: React.ReactNode }) {
   return (
     <div className="my-6 p-5 rounded-2xl bg-[#FEF3E2] border border-[#E5C9A8]">
-      <div className="text-sm text-[#6B5B5B]">{children}</div>
+      <div className="text-sm text-brand-warm-gray">{children}</div>
     </div>
   );
 }
 
 function FeatureCard({ title, description, icon: Icon }: { title: string; description: string; icon: React.ElementType }) {
   return (
-    <div className="p-4 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9] hover:bg-[#FDF5F0] transition-colors">
+    <div className="p-4 rounded-2xl border border-brand-border-ivory bg-card hover:bg-brand-muted-ivory transition-colors">
       <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-[#722F37]/10 flex items-center justify-center flex-shrink-0">
-          <Icon weight="duotone" className="h-4 w-4 text-[#722F37]" />
+        <div className="w-9 h-9 rounded-xl bg-brand-burgundy/10 flex items-center justify-center flex-shrink-0">
+          <Icon weight="duotone" className="h-4 w-4 text-brand-burgundy" />
         </div>
         <div>
-          <p className="font-medium text-[#4A2C2A] text-sm">{title}</p>
-          <p className="text-xs text-[#6B5B5B] mt-0.5">{description}</p>
+          <p className="font-medium text-brand-dark-brown text-sm">{title}</p>
+          <p className="text-xs text-brand-warm-gray mt-0.5">{description}</p>
         </div>
       </div>
     </div>
@@ -147,20 +147,20 @@ function FeatureCard({ title, description, icon: Icon }: { title: string; descri
 
 function TaxTable({ data }: { data: { range: string; rate: string; notes?: string }[] }) {
   return (
-    <div className="my-6 overflow-x-auto rounded-2xl border border-[#E8D5C4]">
+    <div className="my-6 overflow-x-auto rounded-2xl border border-brand-border-ivory">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-[#FDF5F0]">
-            <th className="text-left py-3 px-4 font-medium text-[#4A2C2A]">Income Range</th>
-            <th className="text-left py-3 px-4 font-medium text-[#4A2C2A]">Rate</th>
-            <th className="text-left py-3 px-4 font-medium text-[#4A2C2A]">Notes</th>
+          <tr className="bg-brand-muted-ivory">
+            <th className="text-left py-3 px-4 font-medium text-brand-dark-brown">Income Range</th>
+            <th className="text-left py-3 px-4 font-medium text-brand-dark-brown">Rate</th>
+            <th className="text-left py-3 px-4 font-medium text-brand-dark-brown">Notes</th>
           </tr>
         </thead>
-        <tbody className="text-[#6B5B5B]">
+        <tbody className="text-brand-warm-gray">
           {data.map((row, i) => (
-            <tr key={i} className="border-t border-[#E8D5C4]">
+            <tr key={i} className="border-t border-brand-border-ivory">
               <td className="py-3 px-4 font-mono text-xs">{row.range}</td>
-              <td className="py-3 px-4 font-medium text-[#722F37]">{row.rate}</td>
+              <td className="py-3 px-4 font-medium text-brand-burgundy">{row.rate}</td>
               <td className="py-3 px-4 text-xs">{row.notes || '—'}</td>
             </tr>
           ))}
@@ -175,12 +175,12 @@ function StepList({ steps }: { steps: { title: string; desc: string }[] }) {
     <div className="my-6 space-y-4">
       {steps.map((step, i) => (
         <div key={i} className="flex gap-4">
-          <div className="w-8 h-8 rounded-full bg-[#722F37] flex items-center justify-center flex-shrink-0 text-sm font-medium text-white">
+          <div className="w-8 h-8 rounded-full bg-brand-burgundy flex items-center justify-center flex-shrink-0 text-sm font-medium text-white">
             {i + 1}
           </div>
           <div className="pt-1">
-            <p className="font-medium text-[#4A2C2A]">{step.title}</p>
-            <p className="text-sm text-[#6B5B5B] mt-0.5">{step.desc}</p>
+            <p className="font-medium text-brand-dark-brown">{step.title}</p>
+            <p className="text-sm text-brand-warm-gray mt-0.5">{step.desc}</p>
           </div>
         </div>
       ))}
@@ -192,16 +192,16 @@ function LinkCard({ to, title, description, icon: Icon }: { to: string; title: s
   return (
     <Link
       to={to}
-      className="group flex items-center gap-4 p-5 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9] hover:bg-[#FDF5F0] hover:border-[#D4B8A0] transition-all"
+      className="group flex items-center gap-4 p-5 rounded-2xl border border-brand-border-ivory bg-card hover:bg-brand-muted-ivory hover:border-brand-border-ivory transition-all"
     >
-      <div className="w-12 h-12 rounded-xl bg-[#722F37]/10 flex items-center justify-center flex-shrink-0">
-        <Icon weight="duotone" className="h-6 w-6 text-[#722F37]" />
+      <div className="w-12 h-12 rounded-xl bg-brand-burgundy/10 flex items-center justify-center flex-shrink-0">
+        <Icon weight="duotone" className="h-6 w-6 text-brand-burgundy" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-[#4A2C2A]">{title}</p>
-        <p className="text-sm text-[#6B5B5B] mt-0.5">{description}</p>
+        <p className="font-medium text-brand-dark-brown">{title}</p>
+        <p className="text-sm text-brand-warm-gray mt-0.5">{description}</p>
       </div>
-      <ArrowRight weight="bold" className="h-5 w-5 text-[#722F37]/40 group-hover:text-[#722F37] group-hover:translate-x-1 transition-all" />
+      <ArrowRight weight="bold" className="h-5 w-5 text-brand-burgundy/40 group-hover:text-brand-burgundy group-hover:translate-x-1 transition-all" />
     </Link>
   );
 }
@@ -374,7 +374,7 @@ export default function DocsPage() {
               <div className="lg:hidden mb-6">
                 <Link
                   to="/"
-                  className="inline-flex items-center gap-2 text-sm text-[#6B5B5B] hover:text-[#4A2C2A] transition-colors"
+                  className="inline-flex items-center gap-2 text-sm text-brand-warm-gray hover:text-brand-dark-brown transition-colors"
                 >
                   <ArrowLeft weight="bold" className="h-4 w-4" />
                   Back
@@ -387,7 +387,7 @@ export default function DocsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-2"
               >
-                <p className="text-sm font-medium text-[#722F37]">{currentCategory?.category || 'Getting Started'}</p>
+                <p className="text-sm font-medium text-brand-burgundy">{currentCategory?.category || 'Getting Started'}</p>
               </motion.div>
 
               <div className="max-w-2xl">
@@ -399,15 +399,15 @@ export default function DocsPage() {
                   </SectionDesc>
 
                   <div className="grid sm:grid-cols-2 gap-4 my-8">
-                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#FDF5F0] to-[#F5E6D8] border border-[#E8D5C4]">
-                      <p className="font-serif font-semibold text-[#4A2C2A] mb-2">Enterprise</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#FDF5F0] to-[#F5E6D8] border border-brand-border-ivory">
+                      <p className="font-serif font-semibold text-brand-dark-brown mb-2">Enterprise</p>
+                      <p className="text-sm text-brand-warm-gray">
                         Business profit flows directly to you. Pay personal income tax (0-30%) on the total. Minimal compliance, unlimited liability.
                       </p>
                     </div>
-                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#722F37]/5 to-[#722F37]/10 border border-[#722F37]/20">
-                      <p className="font-serif font-semibold text-[#4A2C2A] mb-2">Sdn Bhd</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                    <div className="p-6 rounded-2xl bg-gradient-to-br from-brand-burgundy/5 to-brand-burgundy/10 border border-brand-burgundy/20">
+                      <p className="font-serif font-semibold text-brand-dark-brown mb-2">Sdn Bhd</p>
+                      <p className="text-sm text-brand-warm-gray">
                         Company pays corporate tax (15-24%). You receive salary + dividends, each taxed separately. Limited liability, mandatory EPF.
                       </p>
                     </div>
@@ -452,26 +452,26 @@ export default function DocsPage() {
                   </SectionDesc>
 
                   <div className="space-y-4 my-6">
-                    <div className="p-5 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
+                    <div className="p-5 rounded-2xl border border-brand-border-ivory bg-card">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 rounded-lg bg-[#722F37]/10 flex items-center justify-center">
-                          <Coins weight="duotone" className="h-4 w-4 text-[#722F37]" />
+                        <div className="w-8 h-8 rounded-lg bg-brand-burgundy/10 flex items-center justify-center">
+                          <Coins weight="duotone" className="h-4 w-4 text-brand-burgundy" />
                         </div>
-                        <p className="font-medium text-[#4A2C2A]">Profit Mode (Default)</p>
+                        <p className="font-medium text-brand-dark-brown">Profit Mode (Default)</p>
                       </div>
-                      <p className="text-sm text-[#6B5B5B] ml-11">
+                      <p className="text-sm text-brand-warm-gray ml-11">
                         Enter your expected annual business profit. The calculator shows how much you keep after tax in each structure.
                       </p>
                     </div>
 
-                    <div className="p-5 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
+                    <div className="p-5 rounded-2xl border border-brand-border-ivory bg-card">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 rounded-lg bg-[#E5A84B]/10 flex items-center justify-center">
-                          <ChartLine weight="duotone" className="h-4 w-4 text-[#E5A84B]" />
+                        <div className="w-8 h-8 rounded-lg bg-brand-amber/10 flex items-center justify-center">
+                          <ChartLine weight="duotone" className="h-4 w-4 text-brand-amber" />
                         </div>
-                        <p className="font-medium text-[#4A2C2A]">Target Mode (Reverse)</p>
+                        <p className="font-medium text-brand-dark-brown">Target Mode (Reverse)</p>
                       </div>
-                      <p className="text-sm text-[#6B5B5B] ml-11">
+                      <p className="text-sm text-brand-warm-gray ml-11">
                         Enter your desired monthly take-home income. The calculator reverse-calculates the business profit needed to achieve it.
                       </p>
                     </div>
@@ -487,20 +487,20 @@ export default function DocsPage() {
 
                   <div className="space-y-6 my-6">
                     <div>
-                      <p className="font-medium text-[#4A2C2A] mb-2">Monthly Salary</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                      <p className="font-medium text-brand-dark-brown mb-2">Monthly Salary</p>
+                      <p className="text-sm text-brand-warm-gray">
                         Your director's salary draw. This triggers <Highlight>mandatory EPF contributions</Highlight> (13% employer + 11% employee for salary ≤RM5,000/month).
                       </p>
                     </div>
                     <div>
-                      <p className="font-medium text-[#4A2C2A] mb-2">Compliance Costs</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                      <p className="font-medium text-brand-dark-brown mb-2">Compliance Costs</p>
+                      <p className="text-sm text-brand-warm-gray">
                         Annual costs for company secretary, accounting, SSM fees. Typical range: RM5,000 - RM15,000/year.
                       </p>
                     </div>
                     <div>
-                      <p className="font-medium text-[#4A2C2A] mb-2">Foreign Ownership</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                      <p className="font-medium text-brand-dark-brown mb-2">Foreign Ownership</p>
+                      <p className="text-sm text-brand-warm-gray">
                         If your company has ≥20% foreign ownership, it <Highlight>does not qualify for SME tax rates</Highlight>. All profit is taxed at 24%.
                       </p>
                     </div>
@@ -518,9 +518,9 @@ export default function DocsPage() {
                     Control how post-tax company profits are distributed to you.
                   </SectionDesc>
 
-                  <div className="my-6 p-5 rounded-2xl bg-[#722F37]/5 border border-[#722F37]/20">
-                    <p className="font-medium text-[#4A2C2A] mb-2">YA 2025 Dividend Surcharge</p>
-                    <p className="text-sm text-[#6B5B5B]">
+                  <div className="my-6 p-5 rounded-2xl bg-brand-burgundy/5 border border-brand-burgundy/20">
+                    <p className="font-medium text-brand-dark-brown mb-2">YA 2025 Dividend Surcharge</p>
+                    <p className="text-sm text-brand-warm-gray">
                       Starting YA 2025, individuals receiving dividends exceeding <Highlight>RM100,000/year</Highlight> pay an additional <Highlight>2% surcharge</Highlight> on the excess amount.
                     </p>
                   </div>
@@ -543,9 +543,9 @@ export default function DocsPage() {
                       { label: 'Total Assets', value: '≤ RM300,000' },
                       { label: 'Employees', value: '≤ 5 people' },
                     ].map((item) => (
-                      <div key={item.label} className="p-5 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9] text-center">
-                        <p className="text-xs text-[#6B5B5B] mb-1">{item.label}</p>
-                        <p className="font-serif font-semibold text-[#722F37]">{item.value}</p>
+                      <div key={item.label} className="p-5 rounded-2xl border border-brand-border-ivory bg-card text-center">
+                        <p className="text-xs text-brand-warm-gray mb-1">{item.label}</p>
+                        <p className="font-serif font-semibold text-brand-burgundy">{item.value}</p>
                       </div>
                     ))}
                   </div>
@@ -579,19 +579,19 @@ export default function DocsPage() {
                     Some reliefs have individual caps, while others share a combined cap.
                   </SectionDesc>
 
-                  <div className="my-6 rounded-2xl border border-[#E8D5C4] overflow-hidden">
+                  <div className="my-6 rounded-2xl border border-brand-border-ivory overflow-hidden">
                     {[
                       { group: 'Lifestyle General', cap: 'RM2,500', items: 'Books, Electronics, Internet' },
                       { group: 'Sports & Recreation', cap: 'RM1,000', items: 'Gym, equipment, activities' },
                       { group: 'EPF & Life Insurance', cap: 'RM7,000', items: 'EPF + life insurance combined' },
                       { group: 'PRS & Annuity', cap: 'RM3,000', items: 'Private retirement schemes' },
                     ].map((item, i) => (
-                      <div key={item.group} className={`flex items-center justify-between p-4 ${i !== 0 ? 'border-t border-[#E8D5C4]' : ''} bg-[#FFFCF9] hover:bg-[#FDF5F0] transition-colors`}>
+                      <div key={item.group} className={`flex items-center justify-between p-4 ${i !== 0 ? 'border-t border-brand-border-ivory' : ''} bg-card hover:bg-brand-muted-ivory transition-colors`}>
                         <div>
-                          <p className="font-medium text-[#4A2C2A] text-sm">{item.group}</p>
-                          <p className="text-xs text-[#6B5B5B]">{item.items}</p>
+                          <p className="font-medium text-brand-dark-brown text-sm">{item.group}</p>
+                          <p className="text-xs text-brand-warm-gray">{item.items}</p>
                         </div>
-                        <p className="font-mono text-sm font-medium text-[#722F37]">{item.cap}</p>
+                        <p className="font-mono text-sm font-medium text-brand-burgundy">{item.cap}</p>
                       </div>
                     ))}
                   </div>
@@ -604,8 +604,8 @@ export default function DocsPage() {
                     Don't know which reliefs apply? Quick Setup asks simple questions to pre-fill common reliefs.
                   </SectionDesc>
 
-                  <div className="my-6 p-6 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
-                    <p className="font-medium text-[#4A2C2A] mb-4">Questions asked:</p>
+                  <div className="my-6 p-6 rounded-2xl border border-brand-border-ivory bg-card">
+                    <p className="font-medium text-brand-dark-brown mb-4">Questions asked:</p>
                     <ul className="space-y-3">
                       {[
                         'Are you married with spouse having no income?',
@@ -614,8 +614,8 @@ export default function DocsPage() {
                         'Do you contribute to EPF voluntarily?',
                         'Did you pay for parents\' medical expenses?',
                       ].map((q, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-[#6B5B5B]">
-                          <CheckCircle weight="fill" className="h-5 w-5 text-[#722F37] mt-0.5 flex-shrink-0" />
+                        <li key={i} className="flex items-start gap-3 text-sm text-brand-warm-gray">
+                          <CheckCircle weight="fill" className="h-5 w-5 text-brand-burgundy mt-0.5 flex-shrink-0" />
                           <span>{q}</span>
                         </li>
                       ))}
@@ -675,30 +675,30 @@ export default function DocsPage() {
 
                   <div className="my-6 space-y-6">
                     <div>
-                      <p className="font-medium text-[#4A2C2A] mb-3">EPF (Employees Provident Fund)</p>
+                      <p className="font-medium text-brand-dark-brown mb-3">EPF (Employees Provident Fund)</p>
                       <div className="grid sm:grid-cols-2 gap-3">
-                        <div className="p-4 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
-                          <p className="text-xs text-[#6B5B5B] mb-1">Employer</p>
-                          <p className="font-semibold text-[#4A2C2A]">13% <span className="font-normal text-[#6B5B5B] text-sm">(≤RM5k/month)</span></p>
-                          <p className="font-semibold text-[#4A2C2A]">12% <span className="font-normal text-[#6B5B5B] text-sm">(&gt;RM5k/month)</span></p>
+                        <div className="p-4 rounded-2xl border border-brand-border-ivory bg-card">
+                          <p className="text-xs text-brand-warm-gray mb-1">Employer</p>
+                          <p className="font-semibold text-brand-dark-brown">13% <span className="font-normal text-brand-warm-gray text-sm">(≤RM5k/month)</span></p>
+                          <p className="font-semibold text-brand-dark-brown">12% <span className="font-normal text-brand-warm-gray text-sm">(&gt;RM5k/month)</span></p>
                         </div>
-                        <div className="p-4 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
-                          <p className="text-xs text-[#6B5B5B] mb-1">Employee</p>
-                          <p className="font-semibold text-[#4A2C2A]">11% <span className="font-normal text-[#6B5B5B] text-sm">(deducted from salary)</span></p>
+                        <div className="p-4 rounded-2xl border border-brand-border-ivory bg-card">
+                          <p className="text-xs text-brand-warm-gray mb-1">Employee</p>
+                          <p className="font-semibold text-brand-dark-brown">11% <span className="font-normal text-brand-warm-gray text-sm">(deducted from salary)</span></p>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <p className="font-medium text-[#4A2C2A] mb-3">SOCSO (Social Security)</p>
+                      <p className="font-medium text-brand-dark-brown mb-3">SOCSO (Social Security)</p>
                       <div className="grid sm:grid-cols-2 gap-3">
-                        <div className="p-4 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
-                          <p className="text-xs text-[#6B5B5B] mb-1">Employer</p>
-                          <p className="font-semibold text-[#4A2C2A]">~1.75%</p>
+                        <div className="p-4 rounded-2xl border border-brand-border-ivory bg-card">
+                          <p className="text-xs text-brand-warm-gray mb-1">Employer</p>
+                          <p className="font-semibold text-brand-dark-brown">~1.75%</p>
                         </div>
-                        <div className="p-4 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
-                          <p className="text-xs text-[#6B5B5B] mb-1">Employee</p>
-                          <p className="font-semibold text-[#4A2C2A]">~0.5%</p>
+                        <div className="p-4 rounded-2xl border border-brand-border-ivory bg-card">
+                          <p className="text-xs text-brand-warm-gray mb-1">Employee</p>
+                          <p className="font-semibold text-brand-dark-brown">~0.5%</p>
                         </div>
                       </div>
                     </div>
@@ -713,21 +713,21 @@ export default function DocsPage() {
                   </SectionDesc>
 
                   <div className="my-6 grid sm:grid-cols-2 gap-4">
-                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#FDF5F0] to-[#F5E6D8] border border-[#E8D5C4]">
-                      <p className="font-serif font-semibold text-[#4A2C2A] mb-2">Enterprise</p>
-                      <p className="text-sm text-[#6B5B5B] mb-3">
+                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#FDF5F0] to-[#F5E6D8] border border-brand-border-ivory">
+                      <p className="font-serif font-semibold text-brand-dark-brown mb-2">Enterprise</p>
+                      <p className="text-sm text-brand-warm-gray mb-3">
                         Zakat is a <Highlight>100% tax rebate</Highlight>. It directly reduces your tax payable.
                       </p>
-                      <p className="text-xs text-[#6B5B5B]">
+                      <p className="text-xs text-brand-warm-gray">
                         RM5,000 tax - RM2,500 zakat = RM2,500 final tax
                       </p>
                     </div>
-                    <div className="p-6 rounded-2xl bg-gradient-to-br from-[#722F37]/5 to-[#722F37]/10 border border-[#722F37]/20">
-                      <p className="font-serif font-semibold text-[#4A2C2A] mb-2">Sdn Bhd</p>
-                      <p className="text-sm text-[#6B5B5B] mb-3">
+                    <div className="p-6 rounded-2xl bg-gradient-to-br from-brand-burgundy/5 to-brand-burgundy/10 border border-brand-burgundy/20">
+                      <p className="font-serif font-semibold text-brand-dark-brown mb-2">Sdn Bhd</p>
+                      <p className="text-sm text-brand-warm-gray mb-3">
                         Zakat is a <Highlight>tax deduction</Highlight> (max 2.5%). Reduces taxable profit, not tax directly.
                       </p>
-                      <p className="text-xs text-[#6B5B5B]">
+                      <p className="text-xs text-brand-warm-gray">
                         Saves ~15-24% of zakat amount
                       </p>
                     </div>
@@ -741,7 +741,7 @@ export default function DocsPage() {
                     Never miss a deadline. Key Malaysian tax dates to remember:
                   </SectionDesc>
 
-                  <div className="my-6 rounded-2xl border border-[#E8D5C4] overflow-hidden">
+                  <div className="my-6 rounded-2xl border border-brand-border-ivory overflow-hidden">
                     {[
                       { form: 'Form BE', date: 'April 30', desc: 'Individuals without business income' },
                       { form: 'Form B', date: 'June 30', desc: 'Individuals with business income' },
@@ -749,12 +749,12 @@ export default function DocsPage() {
                       { form: 'Form C', date: '7 months after FY', desc: 'Company annual return' },
                       { form: 'CP204', date: '30 days before FY', desc: 'Company tax estimate' },
                     ].map((item, i) => (
-                      <div key={item.form} className={`flex items-center justify-between p-4 ${i !== 0 ? 'border-t border-[#E8D5C4]' : ''} bg-[#FFFCF9]`}>
+                      <div key={item.form} className={`flex items-center justify-between p-4 ${i !== 0 ? 'border-t border-brand-border-ivory' : ''} bg-card`}>
                         <div>
-                          <p className="font-medium text-[#4A2C2A]">{item.form}</p>
-                          <p className="text-xs text-[#6B5B5B]">{item.desc}</p>
+                          <p className="font-medium text-brand-dark-brown">{item.form}</p>
+                          <p className="text-xs text-brand-warm-gray">{item.desc}</p>
                         </div>
-                        <p className="text-sm font-medium text-[#722F37]">{item.date}</p>
+                        <p className="text-sm font-medium text-brand-burgundy">{item.date}</p>
                       </div>
                     ))}
                   </div>
@@ -776,21 +776,21 @@ export default function DocsPage() {
                     Malaysia is implementing mandatory e-invoicing in phases based on company revenue.
                   </SectionDesc>
 
-                  <div className="my-6 rounded-2xl border border-[#E8D5C4] overflow-hidden">
+                  <div className="my-6 rounded-2xl border border-brand-border-ivory overflow-hidden">
                     {[
-                      { phase: 'Phase 1', revenue: '> RM100M', date: 'Aug 2024', status: 'Completed', color: 'text-[#6B5B5B]' },
+                      { phase: 'Phase 1', revenue: '> RM100M', date: 'Aug 2024', status: 'Completed', color: 'text-brand-warm-gray' },
                       { phase: 'Phase 2', revenue: 'RM25M - RM100M', date: 'Jan 2025', status: 'Active', color: 'text-[#2D7A4F]' },
-                      { phase: 'Phase 3', revenue: 'RM5M - RM25M', date: 'Jul 2025', status: 'Upcoming', color: 'text-[#E5A84B]' },
-                      { phase: 'Phase 4', revenue: 'RM1M - RM5M', date: 'Jan 2026', status: 'Upcoming', color: 'text-[#E5A84B]' },
-                      { phase: 'Exempt', revenue: '< RM1M', date: '-', status: 'No Deadline', color: 'text-[#5B8A72]' },
+                      { phase: 'Phase 3', revenue: 'RM5M - RM25M', date: 'Jul 2025', status: 'Upcoming', color: 'text-brand-amber' },
+                      { phase: 'Phase 4', revenue: 'RM1M - RM5M', date: 'Jan 2026', status: 'Upcoming', color: 'text-brand-amber' },
+                      { phase: 'Exempt', revenue: '< RM1M', date: '-', status: 'No Deadline', color: 'text-brand-sage' },
                     ].map((item, i) => (
-                      <div key={item.phase} className={`flex items-center justify-between p-4 ${i !== 0 ? 'border-t border-[#E8D5C4]' : ''} bg-[#FFFCF9]`}>
+                      <div key={item.phase} className={`flex items-center justify-between p-4 ${i !== 0 ? 'border-t border-brand-border-ivory' : ''} bg-card`}>
                         <div>
-                          <p className="font-medium text-[#4A2C2A]">{item.phase}</p>
-                          <p className="text-xs text-[#6B5B5B]">Revenue {item.revenue}</p>
+                          <p className="font-medium text-brand-dark-brown">{item.phase}</p>
+                          <p className="text-xs text-brand-warm-gray">Revenue {item.revenue}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-medium text-[#4A2C2A]">{item.date}</p>
+                          <p className="text-sm font-medium text-brand-dark-brown">{item.date}</p>
                           <p className={`text-xs ${item.color}`}>{item.status}</p>
                         </div>
                       </div>
@@ -822,7 +822,7 @@ export default function DocsPage() {
                     ]}
                   />
 
-                  <p className="text-sm text-[#6B5B5B]">
+                  <p className="text-sm text-brand-warm-gray">
                     The <Highlight>waterfall breakdown</Highlight> shows how your profit flows. The <Highlight>crossover chart</Highlight> shows at what profit level each structure wins.
                   </p>
                 </Section>
@@ -850,15 +850,15 @@ export default function DocsPage() {
                   </SectionDesc>
 
                   <div className="my-6 space-y-4">
-                    <div className="p-5 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
-                      <p className="font-medium text-[#4A2C2A] mb-1">Shareable Link</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                    <div className="p-5 rounded-2xl border border-brand-border-ivory bg-card">
+                      <p className="font-medium text-brand-dark-brown mb-1">Shareable Link</p>
+                      <p className="text-sm text-brand-warm-gray">
                         Generate a URL with your inputs encoded. Recipients can open it without signing in.
                       </p>
                     </div>
-                    <div className="p-5 rounded-2xl border border-[#E8D5C4] bg-[#FFFCF9]">
-                      <p className="font-medium text-[#4A2C2A] mb-1">PDF Export</p>
-                      <p className="text-sm text-[#6B5B5B]">
+                    <div className="p-5 rounded-2xl border border-brand-border-ivory bg-card">
+                      <p className="font-medium text-brand-dark-brown mb-1">PDF Export</p>
+                      <p className="text-sm text-brand-warm-gray">
                         Download a professional report. Perfect for sharing with your accountant.
                       </p>
                     </div>
@@ -873,7 +873,7 @@ export default function DocsPage() {
                   </SectionDesc>
 
                   <div className="my-6">
-                    <p className="font-medium text-[#4A2C2A] mb-3">What's NOT included:</p>
+                    <p className="font-medium text-brand-dark-brown mb-3">What's NOT included:</p>
                     <ul className="space-y-2">
                       {[
                         'Capital allowances and business losses',
@@ -881,8 +881,8 @@ export default function DocsPage() {
                         'Complex holding structures',
                         'Foreign income and withholding tax',
                       ].map((item, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-[#6B5B5B]">
-                          <Info weight="fill" className="h-4 w-4 text-[#6B5B5B] mt-0.5 flex-shrink-0" />
+                        <li key={i} className="flex items-start gap-3 text-sm text-brand-warm-gray">
+                          <Info weight="fill" className="h-4 w-4 text-brand-warm-gray mt-0.5 flex-shrink-0" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -893,13 +893,13 @@ export default function DocsPage() {
                     <strong>Always consult a tax professional</strong> for complex situations. This tool helps you understand concepts, not replace professional advice.
                   </WarningBox>
 
-                  <p className="text-sm text-[#6B5B5B] mt-6">
+                  <p className="text-sm text-brand-warm-gray mt-6">
                     OpenTaxation is <Highlight>open source</Highlight>. View our methodology on{' '}
                     <a
                       href="https://github.com/hazlijohar95/opentaxation.my"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#722F37] hover:underline"
+                      className="text-brand-burgundy hover:underline"
                     >
                       GitHub
                     </a>.
@@ -928,7 +928,7 @@ export default function DocsPage() {
             {/* Right Sidebar */}
             <aside className="hidden xl:block w-48 flex-shrink-0 py-10 pr-6">
               <div className="sticky top-24">
-                <p className="text-[11px] font-semibold text-[#6B5B5B] uppercase tracking-wider mb-3">
+                <p className="text-[11px] font-semibold text-brand-warm-gray uppercase tracking-wider mb-3">
                   On this page
                 </p>
                 {currentCategory && (
@@ -939,8 +939,8 @@ export default function DocsPage() {
                           href={`#${id}`}
                           className={`block text-sm transition-colors ${
                             activeSection === id
-                              ? 'text-[#722F37] font-medium border-l-2 border-[#722F37] pl-3 -ml-[2px]'
-                              : 'text-[#6B5B5B] hover:text-[#4A2C2A]'
+                              ? 'text-brand-burgundy font-medium border-l-2 border-brand-burgundy pl-3 -ml-[2px]'
+                              : 'text-brand-warm-gray hover:text-brand-dark-brown'
                           }`}
                         >
                           {label}

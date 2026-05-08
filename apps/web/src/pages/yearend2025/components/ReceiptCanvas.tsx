@@ -32,11 +32,11 @@ export default function ReceiptCanvas({
         animate={{ opacity: 1, y: 0 }}
         className="text-center flex-shrink-0"
       >
-        <h1 className="text-lg sm:text-2xl md:text-4xl font-black text-[#4A3728] leading-tight mb-1 sm:mb-2 px-2">
+        <h1 className="text-lg sm:text-2xl md:text-4xl font-black text-brand-espresso leading-tight mb-1 sm:mb-2 px-2">
           Zakat Receipt Checklist{' '}
-          <span className="text-[#5A2129]">10 Essential Items</span>
+          <span className="text-brand-maroon">10 Essential Items</span>
         </h1>
-        <p className="text-xs sm:text-sm md:text-base text-[#6B5B4F] max-w-3xl mx-auto px-2">
+        <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-3xl mx-auto px-2">
           Verify items 1 to 10 to ensure your zakat receipt has sufficient proof and accurate data
         </p>
 

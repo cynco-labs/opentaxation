@@ -98,7 +98,7 @@ export default function YearEnd2025Page() {
   );
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2]">
+    <div className="min-h-screen bg-brand-ivory">
       <AnimatePresence mode="wait">
         {state.currentStep === 1 && (
           <IntroScreen key="intro" onStart={handleStart} />
