@@ -9,31 +9,6 @@ import { calculateSdnBhdScenario } from './calculateSdnBhdScenario';
 import { SIMILARITY_THRESHOLD, CROSSOVER_CALCULATION, SME_THRESHOLDS } from '../constants';
 import { roundCurrency } from '../utils/rounding';
 
-/**
- * Compare Sole Prop (Enterprise) vs Sdn Bhd scenarios
- *
- * ## Comparison Logic
- * - Calculates net cash difference between scenarios
- * - Uses RM3,000 threshold to determine if scenarios are "similar"
- * - Recommends the scenario with higher net cash to owner
- *
- * ## Warnings Generated
- * - **Affordability**: If proposed salary exceeds company's capacity
- * - **SME Qualification**: If company doesn't qualify for SME rates (15-17%)
- *   - Revenue > RM50M
- *   - ≥20% foreign ownership
- *
- * ## Crossover Point
- * - Uses binary search to find profit level where both scenarios are equal
- * - Searches RM0 to RM2M with RM100 tolerance
- * - Results are cached for performance
- *
- * @param solePropResult - Calculated Sole Prop scenario
- * @param sdnBhdResult - Calculated Sdn Bhd scenario
- * @param businessProfit - Current business profit level
- * @param inputs - Original calculation inputs
- * @returns Comparison result with recommendation and crossover point
- */
 export function compareScenarios(
   solePropResult: SolePropScenarioResult,
   sdnBhdResult: SdnBhdScenarioResult,
@@ -43,7 +18,6 @@ export function compareScenarios(
   const difference = sdnBhdResult.netCash - solePropResult.netCash;
   const savingsIfSwitch = Math.abs(difference);
 
-  // Check for salary affordability issues
   const hasAffordabilityIssue = sdnBhdResult.salaryAffordability.companyWouldBeInsolvent;
   const warnings: string[] = [];
 
@@ -110,17 +84,14 @@ export function compareScenarios(
     recommendation = `Better to stay as Enterprise. You save RM${savingsIfSwitch.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} compared to switching to Sdn Bhd.`;
   }
 
-  // Override recommendation if there's an affordability issue
   if (hasAffordabilityIssue) {
     recommendation = `Warning: The Sdn Bhd scenario is not viable because your proposed salary exceeds the company's capacity. ` +
       `Consider reducing salary to RM${Math.round(sdnBhdResult.salaryAffordability.maxAffordableSalary / 12).toLocaleString('en-MY')}/month or less.`;
-    // Don't recommend Sdn Bhd if it's insolvent
     if (whichIsBetter === 'sdnBhd') {
       whichIsBetter = 'soleProp';
     }
   }
 
-  // Calculate crossover point (profit level where both scenarios are equal)
   const crossoverPointProfit = calculateCrossoverPoint(inputs, businessProfit);
 
   return {
@@ -137,13 +108,9 @@ export function compareScenarios(
   };
 }
 
-// Cache for crossover point calculations to avoid redundant computations
 const crossoverCache = new Map<string, number | null>();
 const CACHE_MAX_SIZE = 50;
 
-/**
- * Generate cache key from inputs (excluding businessProfit)
- */
 function getCacheKey(inputs: TaxCalculationInputs): string {
   return JSON.stringify({
     otherIncome: inputs.otherIncome || 0,
@@ -159,11 +126,7 @@ function getCacheKey(inputs: TaxCalculationInputs): string {
   });
 }
 
-/**
- * Calculate crossover point where both scenarios result in equal net cash.
- * Uses binary search to find the profit level where Enterprise and Sdn Bhd are equal.
- * Results are memoized based on input parameters (excluding businessProfit).
- */
+// Binary search for profit level where Enterprise net cash = Sdn Bhd net cash
 function calculateCrossoverPoint(
   inputs: TaxCalculationInputs,
   currentProfit: number

@@ -6,9 +6,6 @@ import {
 } from '@tax-engine/config';
 import { roundCurrency, roundPercentage, isNonNegative } from '../utils/rounding';
 
-/**
- * Calculate personal income tax
- */
 export function calculatePersonalTax(
   totalIncome: number,
   reliefs?: PersonalReliefs

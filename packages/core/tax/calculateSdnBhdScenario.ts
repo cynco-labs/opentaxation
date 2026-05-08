@@ -23,40 +23,9 @@ import type { TaxCalculationInputs, SdnBhdScenarioResult, WaterfallStep, TaxBrac
 import { SME_THRESHOLDS } from '../constants';
 import { roundCurrency } from '../utils/rounding';
 
-/**
- * Calculate Sdn Bhd (Private Limited Company) scenario
- *
- * ## Cash Flow Formula
- *
- * **Company Side:**
- * ```
- * Taxable Profit = Business Profit - Salary - Employer EPF - Employer SOCSO - Zakat Deduction
- * Corporate Tax = Progressive rate on Taxable Profit (15% up to RM150k, 17% RM150k-600k, 24% above)
- * Post-Tax Profit = Taxable Profit - Corporate Tax
- * Dividends = Post-Tax Profit × Distribution %
- * ```
- *
- * **Personal Side:**
- * ```
- * Take-Home Salary = Gross Salary - Employee EPF (11%) - Employee SOCSO
- * Personal Tax = Progressive rate on (Salary + Other Income - Reliefs)
- * Net Cash = Take-Home Salary + Other Income - Personal Tax + Dividends - Dividend Tax - Compliance - Zakat
- * ```
- *
- * ## Key Features
- * - EPF relief auto-calculated from actual contributions (capped at RM7,000)
- * - Supports partial dividend distribution (retaining earnings)
- * - Checks salary affordability against company profit
- * - Allows negative net cash to show loss scenarios
- *
- * ## Zakat Treatment (Sdn Bhd/Company)
- * - Zakat is a TAX DEDUCTION from aggregate income (NOT rebate)
- * - Maximum deduction: 2.5% of aggregate income
- * - Reference: Section 44(11A) Income Tax Act 1967
- *
- * @param inputs - Calculation inputs including profit, salary, compliance costs
- * @returns Complete Sdn Bhd scenario results with waterfall breakdowns
- */
+// Company: Taxable Profit = Business Profit - Salary - Employer EPF/SOCSO - Zakat Deduction
+// Personal: Net Cash = Take-Home Salary + Other Income - Personal Tax + Dividends - Compliance
+// Zakat is a tax DEDUCTION (not rebate) capped at 2.5% of aggregate income (s.44(11A) ITA 1967)
 export function calculateSdnBhdScenario(
   inputs: Required<Pick<TaxCalculationInputs, 'businessProfit' | 'monthlySalary' | 'otherIncome' | 'complianceCosts'>> &
     Pick<TaxCalculationInputs, 'auditCost' | 'auditCriteria' | 'reliefs' | 'extendedReliefs' | 'applyYa2025DividendSurcharge' | 'dividendDistributionPercent' | 'zakat' | 'hasForeignOwnership' | 'paidUpCapital' | 'grossIncome' | 'relatedCompanyShare'>
@@ -79,7 +48,6 @@ export function calculateSdnBhdScenario(
     relatedCompanyShare,
   } = inputs;
 
-  // Input validation and sanitization
   if (!isFinite(businessProfit) || businessProfit < 0) {
     throw new Error('Business profit must be a valid non-negative number');
   }
@@ -93,24 +61,18 @@ export function calculateSdnBhdScenario(
     throw new Error('Compliance costs must be a valid non-negative number');
   }
 
-  // Validate dividend distribution percentage
   const distributionPercent = Math.max(0, Math.min(100, dividendDistributionPercent));
 
-  // Company side calculations
   const annualSalary = monthlySalary * 12;
   const employerEPF = calculateEmployerEPF(annualSalary);
 
-  // SOCSO + EIS calculations (simplified, mandatory under wage caps)
   const employerSOCSO = calculateEmployerSOCSO(monthlySalary) * 12;
   const employeeSOCSO = calculateEmployeeSOCSO(monthlySalary) * 12;
   const employerEIS = calculateEmployerEIS(monthlySalary) * 12;
   const employeeEIS = calculateEmployeeEIS(monthlySalary) * 12;
 
-  // Company taxable profit includes SOCSO as a deductible expense
   const companyTaxableProfitBeforeZakat = businessProfit - annualSalary - employerEPF - employerSOCSO - employerEIS;
 
-  // Calculate zakat deduction for company if enabled
-  // For Sdn Bhd, zakat is a deduction from aggregate income (max 2.5% of aggregate income)
   let zakatResult: ZakatResult | undefined;
   let zakatDeduction = 0;
   let zakatAmount = 0;
@@ -118,16 +80,13 @@ export function calculateSdnBhdScenario(
   const aggregateIncome = Math.max(0, companyTaxableProfitBeforeZakat);
 
   if (zakat?.enabled) {
-    // Determine zakat amount: use provided amount or auto-calculate
     if (zakat.autoCalculate !== false && zakat.amountPaid === undefined) {
-      // Auto-calculate zakat at configured rate of aggregate income
       const zakatConfig = getZakatConfig();
       zakatAmount = roundCurrency(aggregateIncome * zakatConfig.rate);
     } else {
       zakatAmount = zakat.amountPaid ?? 0;
     }
 
-    // Calculate the deduction (max 2.5% of aggregate income)
     const deductionResult = calculateBusinessZakatDeduction(zakatAmount, aggregateIncome);
     zakatDeduction = deductionResult.deduction;
     excessZakat = deductionResult.excessZakat;
@@ -141,19 +100,14 @@ export function calculateSdnBhdScenario(
     };
   }
 
-  // Company taxable profit after zakat deduction
   const companyTaxableProfit = Math.max(0, companyTaxableProfitBeforeZakat - zakatDeduction);
 
-  // Calculate salary affordability
-  // This checks if the company can actually pay the proposed salary
   const maxAffordableSalary = calculateMaxAffordableSalary(businessProfit);
   const totalSalaryCost = annualSalary + employerEPF + employerSOCSO + employerEIS;
   const isAffordable = totalSalaryCost <= businessProfit;
   const shortfall = isAffordable ? 0 : totalSalaryCost - businessProfit;
   const companyWouldBeInsolvent = !isAffordable;
 
-  // Calculate corporate tax on profit after zakat deduction
-  // Determine SME qualification (paid-up, gross income, related share, foreign ownership)
   const disqualifySme = Boolean(
     (paidUpCapital !== undefined && paidUpCapital > SME_THRESHOLDS.MAX_PAID_UP_CAPITAL) ||
     (grossIncome !== undefined && grossIncome > SME_THRESHOLDS.MAX_REVENUE) ||
@@ -164,60 +118,45 @@ export function calculateSdnBhdScenario(
   const corporateTaxResult = calculateCorporateTax(companyTaxableProfit, { forceStandardRate: disqualifySme });
   const corporateTax = corporateTaxResult.tax;
 
-  // Calculate what corporate tax would have been without zakat deduction (for display)
   const corporateTaxBeforeZakat = zakat?.enabled
     ? calculateCorporateTax(Math.max(0, companyTaxableProfitBeforeZakat)).tax
     : undefined;
 
-  // Post-tax profit
   const postTaxProfit = Math.max(0, companyTaxableProfit - corporateTax);
 
-  // Dividends - support partial distribution
-  // Note: Starting YA 2025, dividends > RM100k are subject to 2% tax
   const dividends = Math.max(0, postTaxProfit * (distributionPercent / 100));
   const retainedEarnings = postTaxProfit - dividends;
   const dividendTax = applyYa2025DividendSurcharge && dividends > 0
     ? calculateDividendTax(dividends)
     : 0;
 
-  // Owner side calculations
   const employeeEPF = calculateEmployeeEPF(annualSalary);
-  // Salary after deducting employee EPF and SOCSO contributions
   const salaryAfterEPF = annualSalary - employeeEPF - employeeSOCSO - employeeEIS;
 
-  // Auto-calculate EPF relief from actual employee EPF contributions
-  // EPF relief is capped at RM7,000 per Malaysian tax law
+  // EPF relief capped at RM7,000
   const actualEpfRelief = Math.min(employeeEPF, RELIEF_LIMITS.epfAndLifeInsurance);
 
-  // Personal tax on salary + other income
-  // In Malaysia, personal tax is calculated on gross income, with EPF claimed as relief
   const totalPersonalIncome = annualSalary + otherIncome;
 
-  // Determine total personal reliefs: use extended reliefs if available
   const hasExtendedReliefs = extendedReliefs && Object.keys(extendedReliefs).length > 0;
   let totalReliefsAmount: number;
   let effectiveReliefs: PersonalReliefs;
 
   if (hasExtendedReliefs) {
-    // Calculate reliefs from extended optimizer, but override EPF with actual contribution
     const extendedWithEpf = {
       ...extendedReliefs,
-      epf: { amount: actualEpfRelief }, // Override EPF with actual contribution
+      epf: { amount: actualEpfRelief },
     };
     const optimizationResult = calculateReliefOptimization(extendedWithEpf);
     totalReliefsAmount = optimizationResult.total;
-    // Create effectiveReliefs for backward compatibility
     effectiveReliefs = { basic: RELIEF_LIMITS.basic, epfAndLifeInsurance: actualEpfRelief, medical: 0 };
   } else {
-    // Merge user-provided reliefs with calculated EPF relief
-    // The calculated EPF relief replaces the default/user-provided value for accuracy
     effectiveReliefs = reliefs
       ? { ...reliefs, epfAndLifeInsurance: actualEpfRelief }
       : { basic: RELIEF_LIMITS.basic, epfAndLifeInsurance: actualEpfRelief, medical: RELIEF_LIMITS.medical };
     totalReliefsAmount = Object.values(effectiveReliefs).reduce((sum: number, v) => sum + (typeof v === 'number' ? v : 0), 0);
   }
 
-  // Calculate personal tax with determined reliefs
   const taxableIncome = Math.max(0, totalPersonalIncome - totalReliefsAmount);
   const personalTax = calculatePersonalTaxFromBrackets(taxableIncome);
   const personalTaxResult = {
@@ -227,12 +166,7 @@ export function calculateSdnBhdScenario(
     effectiveRate: totalPersonalIncome > 0 ? personalTax / totalPersonalIncome : 0,
   };
 
-  // Total cash from salary and other income after EPF and tax
-  // EPF is deducted from gross salary, then tax is paid from remaining income
-  // Formula: (Gross Salary - Employee EPF) + Other Income - Personal Tax
   const totalCashFromIncome = salaryAfterEPF + otherIncome - personalTax;
-
-  // Compliance costs
   let totalComplianceCost = complianceCosts;
   if (auditCriteria) {
     const auditRequired = !isAuditExempt(auditCriteria);
@@ -241,15 +175,9 @@ export function calculateSdnBhdScenario(
     }
   }
 
-  // Net cash = (salary + other income after EPF and tax) + dividends - dividend tax - compliance costs - zakat paid
-  // Note: We allow negative values to show when a scenario results in loss
-  // Zakat paid by the company reduces what's available for distribution/owner
   const netCash = totalCashFromIncome + dividends - dividendTax - totalComplianceCost - zakatAmount;
-
-  // Total EPF savings (forced retirement savings)
   const epfSavings = employerEPF + employeeEPF;
 
-  // Generate company-level waterfall steps
   const companyWaterfall: WaterfallStep[] = [
     { label: 'Business Profit', amount: businessProfit, type: 'add' },
     { label: 'Director Salary', amount: annualSalary, type: 'subtract' },
@@ -258,7 +186,6 @@ export function calculateSdnBhdScenario(
     { label: 'Employer EIS', amount: employerEIS, type: 'subtract', indent: true },
   ];
 
-  // Show zakat in company waterfall if enabled
   if (zakat?.enabled && zakatAmount > 0) {
     companyWaterfall.push(
       { label: 'Aggregate Income', amount: aggregateIncome, type: 'equals' },
@@ -276,7 +203,6 @@ export function calculateSdnBhdScenario(
     { label: 'Post-Tax Profit', amount: postTaxProfit, type: 'equals' },
   );
 
-  // Add dividend distribution if applicable
   if (distributionPercent > 0 && postTaxProfit > 0) {
     companyWaterfall.push(
       { label: `Dividends (${distributionPercent}%)`, amount: dividends, type: 'subtract' }
@@ -294,7 +220,6 @@ export function calculateSdnBhdScenario(
     );
   }
 
-  // Generate personal-level waterfall steps
   const personalWaterfall: WaterfallStep[] = [
     { label: 'Salary (gross)', amount: annualSalary, type: 'add' },
     { label: 'Employee EPF (11%)', amount: employeeEPF, type: 'subtract', indent: true },
@@ -318,7 +243,6 @@ export function calculateSdnBhdScenario(
     { label: 'Compliance Costs', amount: totalComplianceCost, type: 'subtract' },
   );
 
-  // Show zakat paid in personal waterfall if enabled
   if (zakat?.enabled && zakatAmount > 0) {
     personalWaterfall.push(
       { label: 'Business Zakat Paid', amount: zakatAmount, type: 'subtract' },
@@ -329,10 +253,8 @@ export function calculateSdnBhdScenario(
     { label: 'Net Cash to You', amount: netCash, type: 'total', highlight: true }
   );
 
-  // Generate insights specific to Sdn Bhd
   const insights: string[] = [];
 
-  // Add zakat insight if enabled
   if (zakat?.enabled && zakatAmount > 0) {
     const taxSavings = (corporateTaxBeforeZakat ?? 0) - corporateTax;
     if (taxSavings > 0) {
@@ -354,7 +276,6 @@ export function calculateSdnBhdScenario(
   insights.push('Limited liability - personal assets protected');
   insights.push(`Higher compliance burden (~RM${Math.round(totalComplianceCost).toLocaleString('en-MY')}/year)`);
 
-  // Get corporate tax bracket breakdown for company taxable profit
   const corporateBracketRaw = getCorporateTaxBracketBreakdown(Math.max(0, companyTaxableProfit));
   const corporateTaxBracketBreakdown: TaxBracketBreakdown[] = corporateBracketRaw.map(b => ({
     bracketMin: b.bracketMin,
@@ -364,7 +285,6 @@ export function calculateSdnBhdScenario(
     taxForBracket: b.taxForBracket,
   }));
 
-  // Get personal tax bracket breakdown for director's income
   const personalBracketRaw = getPersonalTaxBracketBreakdown(personalTaxResult.taxableIncome);
   const personalTaxBracketBreakdown: TaxBracketBreakdown[] = personalBracketRaw.map(b => ({
     bracketMin: b.bracketMin,

@@ -2,18 +2,11 @@ import type { TaxCalculationInputs } from './types';
 import { isValidNumber, isNonNegative } from './utils/rounding';
 import { getReliefLimits } from '@tax-engine/config';
 
-/**
- * Validation functions for tax calculation inputs
- */
-
 export interface ValidationError {
   field: string;
   message: string;
 }
 
-/**
- * Validate a numeric field
- */
 function validateNumericField(
   value: number | undefined,
   fieldName: string,
@@ -156,19 +149,12 @@ export function validateInputs(inputs: TaxCalculationInputs): ValidationError[] 
   return errors;
 }
 
-/**
- * Sanitize a numeric value, replacing invalid values with 0
- */
 function sanitizeNumeric(value: number | undefined, defaultValue: number = 0): number {
   if (value === undefined) return defaultValue;
   if (!isValidNumber(value)) return defaultValue;
   return Math.max(0, value);
 }
 
-/**
- * Sanitize inputs to ensure they are valid numbers
- * Replaces NaN, Infinity, and negative values with safe defaults
- */
 export function sanitizeInputs(inputs: Partial<TaxCalculationInputs>): TaxCalculationInputs {
   const reliefLimits = getReliefLimits();
 

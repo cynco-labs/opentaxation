@@ -9,38 +9,13 @@ import {
 import type { TaxCalculationInputs, SolePropScenarioResult, WaterfallStep, TaxBracketBreakdown, ZakatResult } from '../types';
 import { roundCurrency, roundPercentage } from '../utils/rounding';
 
-/**
- * Calculate Sole Proprietorship / Enterprise scenario
- *
- * ## Cash Flow Formula
- * ```
- * Total Income = Business Profit + Other Income
- * Taxable Income = Total Income - Personal Reliefs
- * Personal Tax = Progressive rate on Taxable Income (0-30% across 10 brackets)
- * Final Tax = Personal Tax - Zakat Rebate (if applicable)
- * Net Cash = Total Income - Final Tax - Zakat Paid
- * ```
- *
- * ## Effective Tax Rate
- * ```
- * Effective Rate = Final Tax / Total Income
- * ```
- *
- * ## Zakat Treatment (Enterprise/Individual)
- * - Zakat is a 100% TAX REBATE (direct reduction from tax payable)
- * - Capped at the tax amount itself (cannot create negative tax)
- * - Excess zakat over tax payable is reported but provides no additional tax benefit
- * - Reference: Section 6A(3) Income Tax Act 1967
- *
- * @param inputs - Business profit, other income, reliefs, and zakat settings
- * @returns Complete Sole Prop scenario results with tax breakdown
- */
+// Net Cash = (Business Profit + Other Income) - Personal Tax - Zakat Paid
+// Zakat is a 100% tax rebate capped at tax payable (s.6A(3) ITA 1967)
 export function calculateSolePropScenario(
   inputs: Pick<TaxCalculationInputs, 'businessProfit' | 'otherIncome' | 'reliefs' | 'extendedReliefs' | 'zakat'>
 ): SolePropScenarioResult {
   const { businessProfit, otherIncome = 0, reliefs, extendedReliefs, zakat } = inputs;
 
-  // Input validation and sanitization
   if (!isFinite(businessProfit) || businessProfit < 0) {
     throw new Error('Business profit must be a valid non-negative number');
   }
@@ -48,25 +23,20 @@ export function calculateSolePropScenario(
     throw new Error('Other income must be a valid non-negative number');
   }
 
-  // Total income = business profit + other income
   const totalIncome = businessProfit + otherIncome;
 
-  // Determine total reliefs: use extended reliefs if available, otherwise legacy reliefs
   const hasExtendedReliefs = extendedReliefs && Object.keys(extendedReliefs).length > 0;
   let totalReliefsAmount: number;
 
   if (hasExtendedReliefs) {
-    // Calculate reliefs from extended optimizer
     const optimizationResult = calculateReliefOptimization(extendedReliefs);
     totalReliefsAmount = optimizationResult.total;
   } else {
-    // Fall back to legacy reliefs calculation
     totalReliefsAmount = reliefs
       ? Object.values(reliefs).reduce((sum: number, v) => sum + (typeof v === 'number' ? v : 0), 0)
       : 24000; // Default: basic (9000) + EPF (7000) + medical (8000)
   }
 
-  // Calculate personal tax on total income with the determined relief total
   const taxableIncome = Math.max(0, totalIncome - totalReliefsAmount);
   const taxAmount = calculatePersonalTaxFromBrackets(taxableIncome);
   const personalTaxResult = {
@@ -76,25 +46,20 @@ export function calculateSolePropScenario(
     effectiveRate: totalIncome > 0 ? taxAmount / totalIncome : 0,
   };
 
-  // Store the tax before any zakat rebate
   const taxBeforeZakat = personalTaxResult.tax;
 
-  // Calculate zakat if enabled
   let zakatResult: ZakatResult | undefined;
   let zakatRebate = 0;
   let excessZakat = 0;
   let zakatAmount = 0;
 
   if (zakat?.enabled) {
-    // Determine zakat amount: use provided amount or auto-calculate
     if (zakat.autoCalculate !== false && zakat.amountPaid === undefined) {
-      // Auto-calculate zakat at 2.5% of gross income
       zakatAmount = calculateZakatGrossIncome(totalIncome);
     } else {
       zakatAmount = zakat.amountPaid ?? 0;
     }
 
-    // Calculate the rebate (100% of zakat, capped at tax payable)
     const rebateResult = calculateIndividualZakatRebate(zakatAmount, taxBeforeZakat);
     zakatRebate = rebateResult.rebate;
     excessZakat = rebateResult.excessZakat;
@@ -108,14 +73,9 @@ export function calculateSolePropScenario(
     };
   }
 
-  // Final personal tax after zakat rebate
   const finalPersonalTax = Math.max(0, taxBeforeZakat - zakatRebate);
-
-  // Net cash = total income - final tax - zakat paid
-  // Note: Zakat is paid out of income, but rebate reduces tax
   const netCash = totalIncome - finalPersonalTax - zakatAmount;
 
-  // Generate waterfall steps for clear visualization
   const waterfall: WaterfallStep[] = [
     { label: 'Business Profit', amount: businessProfit, type: 'add' },
   ];
@@ -130,7 +90,6 @@ export function calculateSolePropScenario(
     { label: 'Taxable Income', amount: personalTaxResult.taxableIncome, type: 'equals' },
   );
 
-  // Show zakat in waterfall if enabled
   if (zakat?.enabled && zakatAmount > 0) {
     waterfall.push(
       { label: 'Income Tax (before zakat)', amount: taxBeforeZakat, type: 'subtract' },
@@ -148,14 +107,12 @@ export function calculateSolePropScenario(
     { label: 'Net Cash to You', amount: netCash, type: 'total', highlight: true }
   );
 
-  // Generate insights specific to Enterprise
   const insights: string[] = [
     'No liability protection - personal assets at risk',
     'No forced savings (EPF) - you manage your own retirement',
     'Minimal compliance costs (~RM60/year)',
   ];
 
-  // Add zakat insight if enabled
   if (zakat?.enabled && zakatAmount > 0) {
     if (zakatRebate > 0) {
       insights.unshift(`Zakat rebate saves you RM${Math.round(zakatRebate).toLocaleString('en-MY')} in tax`);
@@ -165,7 +122,6 @@ export function calculateSolePropScenario(
     }
   }
 
-  // Get progressive tax bracket breakdown to show how tax is calculated tier by tier
   const bracketBreakdownRaw = getPersonalTaxBracketBreakdown(personalTaxResult.taxableIncome);
   const taxBracketBreakdown: TaxBracketBreakdown[] = bracketBreakdownRaw.map(b => ({
     bracketMin: b.bracketMin,
@@ -175,7 +131,6 @@ export function calculateSolePropScenario(
     taxForBracket: b.taxForBracket,
   }));
 
-  // Recalculate effective rate based on final tax
   const effectiveTaxRate = totalIncome > 0 ? finalPersonalTax / totalIncome : 0;
 
   return {

@@ -1,9 +1,6 @@
 import { calculateCorporateTaxFromBrackets } from '@tax-engine/config';
 import { roundCurrency, roundPercentage, isNonNegative } from '../utils/rounding';
 
-/**
- * Calculate corporate tax for SME companies
- */
 export function calculateCorporateTax(
   taxableProfit: number,
   options?: { forceStandardRate?: boolean }

@@ -1,13 +1,5 @@
-/**
- * Relief Optimization Calculator
- * Handles shared cap enforcement and relief calculations
- *
- * Key concepts:
- * - Individual limits: Max per relief (e.g., lifestyle_books max RM2,500)
- * - Shared caps: Some reliefs share a combined limit (e.g., lifestyle_general RM2,500 total)
- * - Per-unit reliefs: Multiply by quantity (e.g., child_under18 × 3 children)
- * - Basic relief: Always RM9,000, added automatically
- */
+// Enforces individual limits, shared group caps, and per-unit multiplication.
+// Basic relief (RM9,000) is always applied automatically.
 
 import {
   SHARED_CAP_LIMITS,
@@ -23,13 +15,8 @@ import type {
   CappedItem,
 } from '../types';
 
-// Basic relief is always applied
 const BASIC_RELIEF_AMOUNT = 9000;
 
-/**
- * Calculate the effective claim amount for a single relief
- * Handles per-unit reliefs by multiplying amount × quantity
- */
 function getEffectiveClaim(
   entry: ReliefClaimEntry,
   reliefId: string
@@ -58,10 +45,6 @@ function getEffectiveClaim(
   };
 }
 
-/**
- * Apply individual relief limit
- * Returns the capped amount and whether it was reduced
- */
 function applyIndividualLimit(
   reliefId: string,
   claimed: number
@@ -77,17 +60,12 @@ function applyIndividualLimit(
   return { allowed, wasCapped: allowed < claimed };
 }
 
-/**
- * Calculate relief optimization with shared cap enforcement
- */
 export function calculateReliefOptimization(
   claims: ReliefClaimValues
 ): ReliefOptimizationResult {
-  // Track results
   const breakdown: Record<string, number> = {};
   const cappedItems: CappedItem[] = [];
 
-  // Track shared cap usage
   const sharedCapTotals: Record<SharedCapGroup, number> = {
     lifestyle_general: 0,
     lifestyle_sports: 0,
@@ -96,7 +74,6 @@ export function calculateReliefOptimization(
     none: 0,
   };
 
-  // Track which reliefs contribute to each shared cap
   const sharedCapReliefs: Record<SharedCapGroup, string[]> = {
     lifestyle_general: [],
     lifestyle_sports: [],
@@ -105,7 +82,6 @@ export function calculateReliefOptimization(
     none: [],
   };
 
-  // First pass: Apply individual limits and track claims by shared cap group
   const afterIndividualLimits: Record<string, number> = {};
 
   for (const [reliefId, entry] of Object.entries(claims)) {
@@ -131,31 +107,26 @@ export function calculateReliefOptimization(
     sharedCapReliefs[relief.sharedCapGroup].push(reliefId);
   }
 
-  // Second pass: Apply shared cap limits
-  // Process each shared cap group
   for (const group of Object.keys(SHARED_CAP_LIMITS) as SharedCapGroup[]) {
     if (group === 'none') continue;
 
     const limit = SHARED_CAP_LIMITS[group];
     const reliefIds = sharedCapReliefs[group];
 
-    // Sum all claims in this group
     let totalInGroup = 0;
     for (const reliefId of reliefIds) {
       totalInGroup += afterIndividualLimits[reliefId] || 0;
     }
 
     if (totalInGroup <= limit) {
-      // Under the cap, use full amounts
       for (const reliefId of reliefIds) {
         breakdown[reliefId] = afterIndividualLimits[reliefId] || 0;
       }
       sharedCapTotals[group] = totalInGroup;
     } else {
-      // Over the cap, need to distribute proportionally
       sharedCapTotals[group] = limit;
 
-      // Distribute the cap proportionally among claimed reliefs
+      // Distribute proportionally among claimed reliefs
       const allocations = reliefIds.map((reliefId) => {
         const claimed = afterIndividualLimits[reliefId] || 0;
         const raw = (claimed / totalInGroup) * limit;
@@ -213,12 +184,10 @@ export function calculateReliefOptimization(
     }
   }
 
-  // Process 'none' group (no shared cap)
   for (const reliefId of sharedCapReliefs.none) {
     breakdown[reliefId] = afterIndividualLimits[reliefId] || 0;
   }
 
-  // Calculate group usage for UI
   const groupUsage: SharedCapUsage[] = [];
   for (const group of Object.keys(SHARED_CAP_LIMITS) as SharedCapGroup[]) {
     if (group === 'none') continue;
@@ -227,7 +196,6 @@ export function calculateReliefOptimization(
     const used = sharedCapTotals[group];
     const reliefIds = sharedCapReliefs[group];
 
-    // Only include groups that have at least one relief claimed
     if (reliefIds.length > 0) {
       groupUsage.push({
         group,
@@ -241,7 +209,6 @@ export function calculateReliefOptimization(
     }
   }
 
-  // Calculate totals
   const additionalReliefs = Object.values(breakdown).reduce((sum, val) => sum + val, 0);
   const total = BASIC_RELIEF_AMOUNT + additionalReliefs;
 
@@ -255,10 +222,6 @@ export function calculateReliefOptimization(
   };
 }
 
-/**
- * Convert extended relief claims to the legacy PersonalReliefs format
- * Used for backward compatibility with existing tax calculations
- */
 export function convertToLegacyReliefs(
   claims: ReliefClaimValues
 ): { totalReliefs: number; breakdown: Record<string, number> } {
@@ -269,26 +232,15 @@ export function convertToLegacyReliefs(
   };
 }
 
-/**
- * Get the total relief amount from extended claims
- * This is the main function used in tax calculations
- */
 export function getTotalReliefsFromExtended(claims: ReliefClaimValues): number {
   return calculateReliefOptimization(claims).total;
 }
 
-/**
- * Check if any shared caps are exceeded
- */
 export function hasExceededCaps(claims: ReliefClaimValues): boolean {
   const result = calculateReliefOptimization(claims);
   return result.cappedItems.length > 0;
 }
 
-/**
- * Get optimization suggestions based on current claims
- * Returns suggestions for reliefs user might be missing
- */
 export function getOptimizationSuggestions(
   claims: ReliefClaimValues,
   userProfile?: {
@@ -300,7 +252,6 @@ export function getOptimizationSuggestions(
 ): string[] {
   const suggestions: string[] = [];
 
-  // Check for unclaimed common reliefs based on profile
   if (userProfile?.hasChildren) {
     const hasChildClaim = Object.keys(claims).some(id =>
       id.startsWith('child_') || id === 'childcare'
@@ -331,7 +282,6 @@ export function getOptimizationSuggestions(
     }
   }
 
-  // Check shared cap utilization
   const result = calculateReliefOptimization(claims);
   for (const usage of result.groupUsage) {
     if (usage.percentUsed < 50 && usage.limit !== Infinity) {

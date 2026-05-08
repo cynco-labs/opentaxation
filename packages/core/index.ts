@@ -1,8 +1,3 @@
-/**
- * Core tax calculation engine
- * Main export point for all tax calculations
- */
-
 export * from './types';
 export * from './validation';
 export * from './constants';
